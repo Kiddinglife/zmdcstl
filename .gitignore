@@ -1,0 +1,168 @@
+# Prerequisites
+*.d
+*.so.*
+tzmdnet
+test-system-zmdnet-env
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# cmake build
+/builds
+/_builds
+/build
+/_build
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+src/config.h
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+*.vcxproj
+
+# Executables
+*.exe
+*.out
+*.app
+
+.vs
+msvc/.vs
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+*.iobj
+*.tlog
+# Precompiled Headers
+*.gch
+*.pch
+*.log
+*.pdb
+*.tlog
+*.idb
+*.ilk
+# Compiled Dynamic libraries
+*.dylib
+*.lib
+*.ipdb
+# Fortran module files
+*.mod
+*.exe
+# Compiled Static libraries
+*.lai
+*.la
+*.db
+# Executables
+*.out
+*.app
+
+# virtual studio temp files
+*.suo
+*.pdf
+*.sdf
+*.opensdf
+*.filters
+*.user
+*.mk
+*~
+*.opendb
+geco-engine.VC.db
+*.idb
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/
+/Debug/

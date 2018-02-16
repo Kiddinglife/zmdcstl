@@ -1,0 +1,7 @@
+2014-01-25    mengdi zhang <jakezhnag1989@hotmail.com>
+    * Release libcstl-2.3.0
+    * Update type mechnanism for supporting generic pointer type. 
+    * Support c99 builtin type(unix only).
+    * Add type cache for improving efficiency.
+    * Fixup bug 5, 24, 26
+
