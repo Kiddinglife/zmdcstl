@@ -50,6 +50,9 @@ compile_commands.json
 CTestTestfile.cmake
 src/config.h
 
+/Debug
+/Release
+
 # Prerequisites
 *.d
 
