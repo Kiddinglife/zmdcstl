@@ -6,8 +6,16 @@ extern "C"
 {
 #endif
 
-#if __STDC_VERSION__ < 201112L
-#error "your compiler does not support c11!"
+#if defined(_MSC_VER)
+#if  _MSC_VER < 1900
+#error "your compiler does not support c99"
+#endif
+#elif defined(__STDC_VERSION__)
+#if  __STDC_VERSION__ < 201112L
+#error "your compiler does not support c99"
+#endif
+#else
+#error "your compiler does not support __STDC_VERSION__ "
 #endif
 
 /** include section **/

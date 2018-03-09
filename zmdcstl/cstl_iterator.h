@@ -193,9 +193,15 @@ typedef output_iterator_t ostream_iterator_t;
  * @param it_iter      iterator.
  * @return whether iterator is valid.
  */
-#define iterator_is_valid(it_iter)\
-((it_iter->hdr->_t_containertype >= _VECTOR_CONTAINER && it_iter->hdr->_t_containertype <= _BASIC_STRING_CONTAINER)\
-    && (it_iter->hdr->_t_iteratortype >= _INPUT_ITERATOR && it_iter->hdr->_t_iteratortype <= _RANDOM_ACCESS_ITERATOR))
+extern bool iterator_is_valid(iterator_t* it_iter);
+
+/**
+* Get pointer that pointed by iterator, but ignore char*.
+* @param it_iter      iterator.
+* @return pointer
+* @remakes it_iter must be valid and must be not end(), otherwise the behavior is undefined.
+*/
+extern const void* iterator_get_pointer_ignore_cstr(iterator_t* it_iter);
 
 /**
  * Get pointer that pointed by iterator, but ignore char*.
@@ -203,14 +209,16 @@ typedef output_iterator_t ostream_iterator_t;
  * @return pointer
  * @remakes it_iter must be valid and must be not end(), otherwise the behavior is undefined.
  */
-#define iterator_same_type(it_first,it_second)\
-assert(iterator_is_valid(it_first));\
-assert(iterator_is_valid(it_second));\
-if (it_first->hdr->_t_containertype == it_second->hdr->_t_containertype && \
-it_first->hdr->_t_iteratortype == it_second->hdr->_t_iteratortype) \
-    return true;\
-else \
-    return false;
+extern bool iterator_same_type(iterator_t* it_first, iterator_t* it_second);
+
+/**
+* Test whether an iterator on another front.
+* @param it_first     first iterator.
+* @param it_second    second iterator.
+* @return whether the first iterator on the second front.
+* @remarks two iterator must be valid and type muse be same, otherwise behavior is undefined.
+*/
+extern bool iterator_before(iterator_t* it_first, iterator_t* it_second);
 
 /**
  * Test whether the iterator type of restriction.
@@ -223,12 +231,55 @@ else \
 extern bool iterator_limit_type(iterator_t* it_iter, iteratortype_t t_limittype);
 
 /**
- * Get pointer that pointed by iterator, but ignore char*.
- * @param it_iter      iterator.
- * @return pointer
- * @remakes it_iter must be valid and must be not end(), otherwise the behavior is undefined.
- */
-extern const void* iterator_get_pointer_ignore_cstr(iterator_t* it_iter);
+* Test whether the [it_first, it_end) is valid range.
+* @param it_first     first iterator.
+* @param it_end      last iterator.
+* @return whether the [it_first, it_end) is valid range.
+* @remarks two iterator must be valid iterator and iterator type must be valid type, otherwise behavior is undefined.
+*/
+extern bool iterator_valid_range(iterator_t* it_first, iterator_t* it_end, iteratortype_t t_type);
+
+/**
+* Get typeinfo of iterator.
+* @param it_iter      iterator.
+* @return typeinfo pointer of iterator.
+* @remarks iterator must be valid, otherwise behavior is undefined.
+*/
+#define iterator_get_typeinfo(it_iter) ((type_info_t*)((it_iter)->hdr->_pt_container))
+
+/**
+* Get type style of iterator.
+* @param it_iter      iterator.
+* @return type style pointer of iterator.
+* @remarks iterator must be valid, otherwise behavior is undefined.
+*/
+#define iterator_get_typestyle(it_iter) (((type_info_t*)((it_iter)->hdr->_pt_container))->_pt_type->_t_style)
+
+/**
+* Get type size of iterator.
+* @param it_iter      iterator.
+* @return type size of iterator.
+* @remarks iterator must be valid, otherwise behavior is undefined.
+*/
+#define iterator_get_typesize(it_iter)  (((type_info_t*)((it_iter)->hdr->_pt_container))->_pt_type->_t_typesize)
+
+/**
+* Test whether two iterator point to same type element.
+* @param it_first     first iterator.
+* @param it_second    second iterator.
+* @return whether tow iterator point to same type element.
+* @remarks two iterator must be valid, other behavior is undefined.
+*/
+extern bool iterator_same_elem_type(iterator_t* it_first, iterator_t* it_second);
+
+/**
+* Test two iterator are equal or not.
+* @param it_first     first iterator.
+* @param it_second    second iterator.
+* @return whether equal or not.
+* @remakes two iterator must be valid, otherwise the behavior is undefined.
+*/
+extern bool iterator_equal(iterator_t* it_first, iterator_t* it_second);
 
 /**
  * Iterator distance.
