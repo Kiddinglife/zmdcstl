@@ -14,7 +14,7 @@ extern "C"
 #define TYPE_REGISTER_BUCKET_COUNT  64
 #define TYPE_ID_SIZE              8
 
-enum
+typedef enum
 {
   cstl_int8t = 0,
   cstl_uint8,
@@ -32,12 +32,12 @@ enum
   cstl_list,
   cstl_map,
   cstl_hash,
-};
+} typeid_t;
 
-enum
+typedef enum
 {
   ctype = 0, cstltype, userdefined, invalidtype
-};
+} typestyle_t;
 
 /*
  * Type definition of unary function and binary function.
@@ -63,13 +63,14 @@ typedef struct
 {
   unsigned char _t_typeids[TYPE_ID_SIZE];
   unsigned char _t_typeidsize;
-  type_t* _t_type;
+  type_t* _pt_type;
 } type_info_t;
 
 extern type_t* _apt_bucket[TYPE_REGISTER_BUCKET_COUNT];
 extern void show_registered_types();
 extern void init_types(void);
-
+extern const char* get_type_name(typeid_t typeid);
+extern const char* get_type_names(typeid_t typeids[], size_t size);
 #ifdef __cplusplus
 }
 #endif

@@ -1,8 +1,13 @@
 #include "cstl_types.h"
 #include "cstl_types_builtin.h"
 
-static const char* g_buildin_type_str[] = { "int8t", "uint8t", "int16t", "uint16t", "int32t", "uint32t", "int64t",
-    "uint64t", "floatt", "doublet", "voidpointert", "vector_tt", "list_tt", "map_tt", "hash_tt" };
+static const char* g_buildin_type_str[TYPE_REGISTER_BUCKET_COUNT] = { "int8t", "uint8t", "int16t", "uint16t", "int32t",
+    "uint32t", "int64t", "uint64t", "floatt", "doublet", "voidpointert", "vector_tt", "list_tt", "map_tt", "hash_tt",
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL, NULL,
+    NULL, NULL, NULL };
 
 static const char* g_type_style_str[] = { "ctype", "cstltype", "userdefined", "userdefined", "invalidtype", };
 
@@ -24,6 +29,28 @@ static const char* g_type_style_str[] = { "ctype", "cstltype", "userdefined", "u
 static bool _t_isinit = false; /* is initializate for c and cstl built in types */
 static unsigned char _registered_type_count = 0;
 extern type_t* _apt_bucket[TYPE_REGISTER_BUCKET_COUNT] = { 0 };
+
+const char* get_type_name(typeid_t typeid)
+{
+  const char* str  = g_buildin_type_str[typeid];
+  assert(str!=NULL);
+  return str;
+}
+const char* get_type_names(typeid_t typeids[], size_t size)
+{
+  char buff[256];
+  char* buf = buff;
+  int n;
+  int maxbsize = 256;
+  for(int i=0;i<size;i++)
+  {
+    assert(g_buildin_type_str[i]!=NULL);
+    n = snprintf(buf, maxbsize, "%s, ", g_buildin_type_str[i]);
+    buf+=n;
+    maxbsize-=n;
+  }
+  return buff;
+}
 
 void init_types(void)
 {
@@ -137,5 +164,5 @@ void set_type_info_(type_info_t* typeinfo, const char* s_typename)
     }
   } while (*s_typename++);
   assert(typeinfo->_t_typeids[0] >= 0 || typeinfo->_t_typeids[0] < TYPE_REGISTER_BUCKET_COUNT);
-  typeinfo->_t_type = _apt_bucket[typeinfo->_t_typeids[0]];
+  typeinfo->_pt_type = _apt_bucket[typeinfo->_t_typeids[0]];
 }
