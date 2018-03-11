@@ -17,7 +17,7 @@ void destruct_range(forward_iterator_t* first, forward_iterator_t* last)
     bool ret = false;
     for (; !iterator_equal(first, last); iterator_next(first))
     {
-        info = ((type_info_t*)(first->hdr->_pt_container));
+        info = ((type_info_t*)(first->_pt_container));
         if (info->_pt_type->_t_typedestroy)
             info->_pt_type->_t_typedestroy(first->_t_pos, &ret);
         assert(ret);
@@ -28,7 +28,7 @@ void destruct_at(input_iterator_t* destination)
 {
     assert(iterator_is_valid(destination));
     assert(iterator_limit_type(destination, _INPUT_ITERATOR));
-    type_info_t* info = ((type_info_t*)(destination->hdr->_pt_container));
+    type_info_t* info = ((type_info_t*)(destination->_pt_container));
     bool ret = false;
     if (info->_pt_type->_t_typedestroy)
         info->_pt_type->_t_typedestroy(destination->_t_pos, &ret);
@@ -43,7 +43,7 @@ void uninitialized_default_fill_n(forward_iterator_t* destination, size_t n)
     bool ret = false;
     for (n -= 1; n <= 0; n--)
     {
-        info = ((type_info_t*)(destination->hdr->_pt_container));
+        info = ((type_info_t*)(destination->_pt_container));
         info->_pt_type->_t_typeinit(destination->_t_pos, &ret);
         iterator_next(destination);
         assert(ret);
@@ -58,7 +58,7 @@ void uninitialized_default_fill(forward_iterator_t* first, forward_iterator_t* l
     bool ret = false;
     for (; !iterator_equal(first, last); iterator_next(first))
     {
-        info = ((type_info_t*)(first->hdr->_pt_container));
+        info = ((type_info_t*)(first->_pt_container));
         info->_pt_type->_t_typeinit(first->_t_pos, &ret);
         assert(ret);
     }

@@ -74,3 +74,48 @@ vector_t* create_vector(int size, ...)
 
     return pvec_vector;
 }
+
+void vector_end(const vector_t* cpvec_vector, vector_iterator_t* it_end)
+{
+    assert(cpvec_vector != NULL);
+    assert(vector_is_inited(cpvec_vector));
+    _VECTOR_ITERATOR_CONTAINER_TYPE(it_end) = _VECTOR_CONTAINER;
+    _VECTOR_ITERATOR_ITERATOR_TYPE(it_end) = _RANDOM_ACCESS_ITERATOR;
+    _ITERATOR_CONTAINER(it_end) = cpvec_vector;
+    _VECTOR_ITERATOR_COREPOS(it_end) = cpvec_vector->_pby_finish;
+}
+
+void vector_end_again(vector_iterator_t* it_end)
+{
+    assert(it_end != NULL);
+    assert((vector_t*)it_end->_pt_container != NULL);
+    assert(vector_is_inited((vector_t*)it_end->_pt_container));
+    _VECTOR_ITERATOR_COREPOS(it_end) = ((vector_t*)it_end->_pt_container)->_pby_finish;
+}
+
+bool vector_iterator_equal(vector_iterator_t* it_first, vector_iterator_t* it_second)
+{
+    assert(iterator_same_type(it_first, it_second));
+    assert(_VECTOR_ITERATOR_CONTAINER(it_first) == _VECTOR_ITERATOR_CONTAINER(it_second));
+    assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_first), it_first));
+    assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_second), it_second));
+    return _VECTOR_ITERATOR_COREPOS(it_first) == _VECTOR_ITERATOR_COREPOS(it_second);
+}
+
+void vector_iterator_get_value(vector_iterator_t* it_iter, void* pv_value)
+{
+    assert(pv_value != NULL);
+    assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));
+    assert((void*)it_iter->_t_pos != _VECTOR_ITERATOR_CONTAINER(it_iter)->_pby_finish);
+    size_t size = 0;
+    //if (_VECTOR_ITERATOR_CONTAINER(it_iter)->_t_typeinfo._pt_type->_t_typeid == cstr)
+    //{
+    // TODO
+    //}
+    //else
+    {
+        size = _GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_iter));
+        _GET_VECTOR_TYPE_COPY_FUNCTION(_VECTOR_ITERATOR_CONTAINER(it_iter))(pv_value, _VECTOR_ITERATOR_COREPOS(it_iter), &size);
+        assert(size);
+    }
+}

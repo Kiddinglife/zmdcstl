@@ -89,6 +89,43 @@ extern "C"
     extern void vector_iterator_next(vector_iterator_t* it_iter);
 
     /**
+    * Compare two iterators for equality.
+    * @param it_first   first iterator.
+    * @param it_second  second iterator.
+    * @return true if two iterators are equal, otherwise return false.
+    * @remarks if two iterators with different container type or iterator type, then behavior is undefined.
+    *          if two iterators are not belong to same container, then behavior is undefined.
+    */
+    extern bool vector_iterator_equal(vector_iterator_t* it_first, vector_iterator_t* it_second);
+
+    /**
+    * a iterator that points just beyond the end of vector container.
+    * @param cpvec_vector  vector container.
+    * @return a iterator to the end of vector.
+    * @remarks if cpvec_vector == NULL, then the behavior is undefined. the vector must be initialized, otherwise the behavior
+    *          is undefined.
+    */
+    extern void vector_end(const vector_t* cpvec_vector, vector_iterator_t* it_end);
+
+    /**
+    * a  iterator that points just beyond the end of vector container.
+    * will resiign end position internally
+    * @param cpvec_vector  vector container.
+    * @remarks vector_end() has been called to init it_end
+    */
+    extern void vector_end_again(vector_iterator_t* it_end);
+
+    /**
+    * Get iterator reference data.
+    * @param it_iter vector iterator.
+    * @param pv_value point to buffer that be used to save date.
+    * @return void.
+    * @remarks it_iter must be valid vector iterator, otherwise the behavior is undefined. if pv_value == NULL,
+    *          then the behavior is undefined.
+    */
+    extern void vector_iterator_get_value(vector_iterator_t* it_iter, void* pv_value);
+
+    /**
      * Create new vector iterator.
      * @param void.
      * @return new vector iterator.
