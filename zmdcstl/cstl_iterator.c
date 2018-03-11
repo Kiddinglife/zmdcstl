@@ -22,6 +22,11 @@ bool iterator_same_type(iterator_t* it_first, iterator_t* it_second)
         (it_first->hdr->_t_iteratortype == it_second->hdr->_t_iteratortype));
 }
 
+void* iterator_allocate_init_elem(const iterator_t* it_iter)
+{
+
+}
+
 bool iterator_before(iterator_t* it_first, iterator_t* it_second)
 {
     assert(iterator_same_type(it_first, it_second));
@@ -169,9 +174,7 @@ bool iterator_equal(iterator_t* it_first, iterator_t* it_second)
     assert(iterator_limit_type(it_second, _INPUT_ITERATOR));
     assert(iterator_get_typeinfo(it_first));
     assert(iterator_get_typeinfo(it_second));
-
-    if (it_first->hdr->_t_containertype != it_second->hdr->_t_containertype)
-        return false;
+    assert(it_first->hdr->_t_containertype != it_second->hdr->_t_containertype);
 
     switch (it_first->hdr->_t_containertype)
     {
