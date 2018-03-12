@@ -66,7 +66,7 @@ void init_types(void)
     register_type(float, float, ctype);
     register_type(double, double, ctype);
     register_type(void*, pointer, ctype);
-
+    
     //@TODO register cstl types
 
     for (int i = _registered_type_count; i < TYPE_REGISTER_BUCKET_COUNT; i++)

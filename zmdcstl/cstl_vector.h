@@ -88,6 +88,8 @@ extern "C"
 
     extern void vector_iterator_next(vector_iterator_t* it_iter);
 
+
+
     /**
     * Compare two iterators for equality.
     * @param it_first   first iterator.

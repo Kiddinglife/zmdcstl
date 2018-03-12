@@ -32,6 +32,7 @@ typedef enum
   cstl_list,
   cstl_map,
   cstl_hash,
+  cstl_string,
 } typeid_t;
 
 typedef enum

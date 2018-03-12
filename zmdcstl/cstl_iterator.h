@@ -293,15 +293,6 @@ extern "C"
     extern void iterator_get_value(const input_iterator_t* it_iter, void* pv_value);
 
     /**
-     * Iterator distance.
-     * @param it_first     first iterator.
-     * @param it_second    second iterator.
-     * @return iterator distance.
-     * @remakes two iterator must be valid, otherwise the behavior is undefined.
-     */
-    extern size_t iterator_minus(iterator_t* it_first, iterator_t* it_second);
-
-    /**
      * Move iterator to next position.
      * @param it_iter      iterator.
      * @remakes it_iter must be valid and must be not end(), otherwise the behavior is undefined.
@@ -330,6 +321,79 @@ extern "C"
     * @remakes it_iter must be valid and must be not end(), otherwise the behavior is undefined.
     */
     extern void iterator_prev_n(random_access_iterator_t* it_iter, int n_step);
+
+    /**
+    * Test first iterator is less than second iterator.
+    * @param it_first     first iterator.
+    * @param it_second    second iterator.
+    * @return whether first iterator less than second iterator or not.
+    * @remakes two iterator must be valid, otherwise the behavior is undefined.
+    */
+    extern bool iterator_less(random_access_iterator_t* it_first, random_access_iterator_t* it_second);
+
+    /**
+    * Test first iterator is less than or equal to second iterator.
+    * @param it_first     first iterator.
+    * @param it_second    second iterator.
+    * @return whether first iterator less than or equal to second iterator or not.
+    * @remakes two iterator must be valid, otherwise the behavior is undefined.
+    */
+    extern bool iterator_less_equal(random_access_iterator_t* it_first, random_access_iterator_t* it_second);
+
+    /**
+    * Test first iterator is greater than second iterator.
+    * @param it_first     first iterator.
+    * @param it_second    second iterator.
+    * @return whether first iterator greater than second iterator or not.
+    * @remakes two iterator must be valid, otherwise the behavior is undefined.
+    */
+    extern bool iterator_greater(random_access_iterator_t* it_first, random_access_iterator_t* it_second);
+
+    /**
+    * Test first iterator is greater than or equal to second iterator.
+    * @param it_first     first iterator.
+    * @param it_second    second iterator.
+    * @return whether first iterator greater than or equal to second iterator or not.
+    * @remakes two iterator must be valid, otherwise the behavior is undefined.
+    */
+    extern bool iterator_greater_equal(random_access_iterator_t* it_first, random_access_iterator_t* it_second);
+
+    /**
+    * Element random access.
+    * @param it_iter      iterator.
+    * @param n_index      index.
+    * @return element pointer.
+    * @remarks iterator must be valid, otherwise the behavior is undefined.
+    */
+    extern void* iterator_at(random_access_iterator_t* it_iter, int n_index);
+
+    /**
+    * Iterator distance.
+    * @param it_first     first iterator.
+    * @param it_second    second iterator.
+    * @return iterator distance.
+    * @remakes two iterator must be valid, otherwise the behavior is undefined.
+    */
+    extern int iterator_minus(random_access_iterator_t* it_first, random_access_iterator_t* it_second);
+
+    /**
+    * Iterator next n for all iterator type.
+    * @param it_iter      iterator.
+    * @param n_step       step.
+    * @return next n iterator.
+    * @remarks iterator must be valid, otherwise the behavior is undefined.
+    */
+    extern void iterator_advance(forward_iterator_t* it_iter, size_t n_step);
+    extern void iterator_disadvance(bidirectional_iterator_t* it_iter, size_t n_step);
+
+    /**
+    * Iterator distance for all iterator type.
+    * @param it_first     first iterator.
+    * @param it_second    second iterator.
+    * @return iterator distance.
+    * @remakes two iterator must be valid, otherwise the behavior is undefined.
+    */
+    extern int iterator_distance(iterator_t* it_first, iterator_t* it_second);
 
 #ifdef __cplusplus
 }

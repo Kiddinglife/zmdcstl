@@ -431,3 +431,153 @@ void iterator_prev_n(random_access_iterator_t* it_iter, int n_step)
         break;
     }
 }
+
+bool iterator_less(random_access_iterator_t* it_first, random_access_iterator_t* it_second)
+{
+    assert(iterator_is_valid(it_first));
+    assert(iterator_is_valid(it_second));
+    assert(iterator_limit_type(it_first, _RANDOM_ACCESS_ITERATOR));
+    assert(iterator_limit_type(it_second, _RANDOM_ACCESS_ITERATOR));
+
+    switch (it_first->_t_containertype)
+    {
+    case _VECTOR_CONTAINER:
+        //return _vector_iterator_less(it_first, it_second);
+        break;
+    case _DEQUE_CONTAINER:
+        //return _deque_iterator_less(it_first, it_second);
+        break;
+    case _BASIC_STRING_CONTAINER:
+        //return _basic_string_iterator_less(it_first, it_second);
+        break;
+    default:
+        assert(false);
+        return false;
+        break;
+    }
+}
+
+bool iterator_less_equal(random_access_iterator_t* it_first, random_access_iterator_t* it_second)
+{
+    return iterator_less(it_first, it_second) || iterator_equal(it_first, it_second);
+}
+
+bool iterator_greater(random_access_iterator_t* it_first, random_access_iterator_t* it_second)
+{
+    return iterator_less(it_second, it_first);
+}
+
+bool iterator_greater_equal(random_access_iterator_t* it_first, random_access_iterator_t* it_second)
+{
+    return iterator_greater(it_first, it_second) || iterator_equal(it_first, it_second);
+}
+
+void* iterator_at(random_access_iterator_t* it_iter, int n_index)
+{
+    assert(iterator_is_valid(it_iter));
+    assert(iterator_limit_type(it_iter, _RANDOM_ACCESS_ITERATOR));
+
+    switch (it_iter->_t_containertype)
+    {
+    case _VECTOR_CONTAINER:
+        //return _vector_iterator_at(it_iter, n_index);
+        break;
+    case _DEQUE_CONTAINER:
+        // return _deque_iterator_at(it_iter, n_index);
+        break;
+    case _BASIC_STRING_CONTAINER:
+        //return _basic_string_iterator_at(it_iter, n_index);
+        break;
+    default:
+        assert(false);
+        return NULL;
+        break;
+    }
+}
+
+int iterator_minus(random_access_iterator_t* it_first, random_access_iterator_t* it_second)
+{
+    assert(iterator_is_valid(it_first));
+    assert(iterator_is_valid(it_second));
+    assert(iterator_limit_type(it_first, _RANDOM_ACCESS_ITERATOR));
+
+    switch (it_first->_t_containertype)
+    {
+    case _VECTOR_CONTAINER:
+        // return _vector_iterator_minus(it_first, it_second);
+        break;
+    case _DEQUE_CONTAINER:
+        //return _deque_iterator_minus(it_first, it_second);
+        break;
+    case _BASIC_STRING_CONTAINER:
+        //return _basic_string_iterator_minus(it_first, it_second);
+        break;
+    default:
+        assert(false);
+        return 0;
+        break;
+    }
+}
+
+void iterator_advance(forward_iterator_t* it_iter, size_t n_step)
+{
+    assert(iterator_is_valid(it_iter));
+    assert(iterator_limit_type(it_iter, _FORWARD_ITERATOR));
+    for (; n_step > 0; --n_step)
+        iterator_next(it_iter);
+}
+
+void iterator_disadvance(bidirectional_iterator_t* it_iter, size_t n_step)
+{
+    assert(iterator_is_valid(it_iter));
+    assert(iterator_limit_type(it_iter, _FORWARD_ITERATOR));
+    for (; n_step > 0; --n_step)
+        iterator_prev(it_iter);
+}
+
+int iterator_distance(iterator_t* it_first, iterator_t* it_second)
+{
+    assert(iterator_same_type(it_first, it_second));
+    switch (it_first->_t_containertype)
+    {
+    case _VECTOR_CONTAINER:
+    case _DEQUE_CONTAINER:
+    case _BASIC_STRING_CONTAINER:
+        return iterator_minus(it_second, it_first);
+        break;
+    case _LIST_CONTAINER:
+        //return _list_iterator_distance(it_first, it_second);
+        break;
+    case _SLIST_CONTAINER:
+        //return _slist_iterator_distance(it_first, it_second);
+        break;
+    case _SET_CONTAINER:
+        //return _set_iterator_distance(it_first, it_second);
+        break;
+    case _MULTISET_CONTAINER:
+        //return _multiset_iterator_distance(it_first, it_second);
+        break;
+    case _MAP_CONTAINER:
+        //return _map_iterator_distance(it_first, it_second);
+        break;
+    case _MULTIMAP_CONTAINER:
+        // return _multimap_iterator_distance(it_first, it_second);
+        break;
+    case _HASH_SET_CONTAINER:
+        // return _hash_set_iterator_distance(it_first, it_second);
+        break;
+    case _HASH_MULTISET_CONTAINER:
+        //return _hash_multiset_iterator_distance(it_first, it_second);
+        break;
+    case _HASH_MAP_CONTAINER:
+        //return _hash_map_iterator_distance(it_first, it_second);
+        break;
+    case _HASH_MULTIMAP_CONTAINER:
+        //return _hash_multimap_iterator_distance(it_first, it_second);
+        break;
+    default:
+        assert(false);
+        return 0;
+        break;
+    }
+}
