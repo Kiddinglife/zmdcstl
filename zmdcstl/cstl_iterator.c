@@ -33,8 +33,7 @@ bool iterator_before(iterator_t* it_first, iterator_t* it_second)
     switch (it_first->_t_containertype)
     {
     case _VECTOR_CONTAINER:
-        //return vector_iterator_before(it_first, it_second);
-        return false;
+        return vector_iterator_before(it_first, it_second);
         break;
         /* case _DEQUE_CONTAINER:
              return _deque_iterator_before(it_first, it_second);
@@ -107,10 +106,7 @@ const void* iterator_get_pointer_ignore_cstr(iterator_t* it_iter)
     switch (it_iter->_t_containertype)
     {
     case _VECTOR_CONTAINER:
-        //assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));
-        //assert(!_vector_iterator_equal(it_iter, vector_end(_VECTOR_ITERATOR_CONTAINER(it_iter))));
-        //return vector_iterator_get_pointer_ignore_cstr(it_iter);
-        return true;
+        return vector_iterator_get_pointer_ignore_cstr(it_iter);
         break;
         //  case _LIST_CONTAINER:
         //    return list_iterator_get_pointer_ignore_cstr(it_iter);
@@ -178,9 +174,9 @@ bool iterator_equal(iterator_t* it_first, iterator_t* it_second)
 
     switch (it_first->_t_containertype)
     {
-        //case _VECTOR_CONTAINER:
-        //    return _vector_iterator_equal(it_first, it_second);
-        //    break;
+    case _VECTOR_CONTAINER:
+        return vector_iterator_equal(it_first, it_second);
+        break;
         //case _LIST_CONTAINER:
         //    return _list_iterator_equal(it_first, it_second);
         //    break;
@@ -339,51 +335,51 @@ void iterator_prev(bidirectional_iterator_t* bidirectional_iterator)
     assert(iterator_is_valid(bidirectional_iterator));
     assert(iterator_limit_type(bidirectional_iterator, _BIDIRECTIONAL_ITERATOR));
     //@TODO
-    //switch (it_iter._t_containertype) {
-    //case _VECTOR_CONTAINER:
-    //    return _vector_iterator_next(it_iter);
-    //    break;
-    //case _LIST_CONTAINER:
-    //    return _list_iterator_next(it_iter);
-    //    break;
-    //case _DEQUE_CONTAINER:
-    //    return _deque_iterator_next(it_iter);
-    //    break;
-    //case _SLIST_CONTAINER:
-    //    return _slist_iterator_next(it_iter);
-    //    break;
-    //case _SET_CONTAINER:
-    //    return _set_iterator_next(it_iter);
-    //    break;
-    //case _MULTISET_CONTAINER:
-    //    return _multiset_iterator_next(it_iter);
-    //    break;
-    //case _MAP_CONTAINER:
-    //    return _map_iterator_next(it_iter);
-    //    break;
-    //case _MULTIMAP_CONTAINER:
-    //    return _multimap_iterator_next(it_iter);
-    //    break;
-    //case _HASH_SET_CONTAINER:
-    //    return _hash_set_iterator_next(it_iter);
-    //    break;
-    //case _HASH_MULTISET_CONTAINER:
-    //    return _hash_multiset_iterator_next(it_iter);
-    //    break;
-    //case _HASH_MAP_CONTAINER:
-    //    return _hash_map_iterator_next(it_iter);
-    //    break;
-    //case _HASH_MULTIMAP_CONTAINER:
-    //    return _hash_multimap_iterator_next(it_iter);
-    //    break;
-    //case _BASIC_STRING_CONTAINER:
-    //    return _basic_string_iterator_next(it_iter);
-    //    break;
-    //default:
-    //    assert(false);
-    //    return it_iter;
-    //    break;
-    //}
+    switch (bidirectional_iterator->_t_containertype)
+    {
+    case _VECTOR_CONTAINER:
+        return vector_iterator_prev(bidirectional_iterator);
+        break;
+    case _LIST_CONTAINER:
+        //return _list_iterator_next(it_iter);
+        break;
+    case _DEQUE_CONTAINER:
+        // return _deque_iterator_next(it_iter);
+        break;
+    case _SLIST_CONTAINER:
+        //return _slist_iterator_next(it_iter);
+        break;
+    case _SET_CONTAINER:
+        //return _set_iterator_next(it_iter);
+        break;
+    case _MULTISET_CONTAINER:
+        //return _multiset_iterator_next(it_iter);
+        break;
+    case _MAP_CONTAINER:
+        //return _map_iterator_next(it_iter);
+        break;
+    case _MULTIMAP_CONTAINER:
+        //return _multimap_iterator_next(it_iter);
+        break;
+    case _HASH_SET_CONTAINER:
+        // return _hash_set_iterator_next(it_iter);
+        break;
+    case _HASH_MULTISET_CONTAINER:
+        //return _hash_multiset_iterator_next(it_iter);
+        break;
+    case _HASH_MAP_CONTAINER:
+        //return _hash_map_iterator_next(it_iter);
+        break;
+    case _HASH_MULTIMAP_CONTAINER:
+        //return _hash_multimap_iterator_next(it_iter);
+        break;
+    case _BASIC_STRING_CONTAINER:
+        //return _basic_string_iterator_next(it_iter);
+        break;
+    default:
+        assert(false);
+        break;
+    }
 }
 
 void iterator_next_n(random_access_iterator_t* random_access_iterator, size_t n_step)
@@ -395,7 +391,7 @@ void iterator_next_n(random_access_iterator_t* random_access_iterator, size_t n_
     switch (random_access_iterator->_t_containertype)
     {
     case _VECTOR_CONTAINER:
-        //return _vector_iterator_next_n(it_iter, n_step);
+        return vector_iterator_next_n(random_access_iterator, n_step);
         break;
     case _DEQUE_CONTAINER:
         //return _deque_iterator_next_n(it_iter, n_step);
@@ -418,7 +414,7 @@ void iterator_prev_n(random_access_iterator_t* it_iter, int n_step)
     switch (it_iter->_t_containertype)
     {
     case _VECTOR_CONTAINER:
-        // return _vector_iterator_prev_n(it_iter, n_step);
+        return vector_iterator_prev_n(it_iter, n_step);
         break;
     case _DEQUE_CONTAINER:
         //return _deque_iterator_prev_n(it_iter, n_step);
@@ -442,7 +438,7 @@ bool iterator_less(random_access_iterator_t* it_first, random_access_iterator_t*
     switch (it_first->_t_containertype)
     {
     case _VECTOR_CONTAINER:
-        //return _vector_iterator_less(it_first, it_second);
+        return vector_iterator_less(it_first, it_second);
         break;
     case _DEQUE_CONTAINER:
         //return _deque_iterator_less(it_first, it_second);
@@ -480,7 +476,7 @@ void* iterator_at(random_access_iterator_t* it_iter, int n_index)
     switch (it_iter->_t_containertype)
     {
     case _VECTOR_CONTAINER:
-        //return _vector_iterator_at(it_iter, n_index);
+        return vector_iterator_at(it_iter, n_index);
         break;
     case _DEQUE_CONTAINER:
         // return _deque_iterator_at(it_iter, n_index);
@@ -504,7 +500,7 @@ int iterator_minus(random_access_iterator_t* it_first, random_access_iterator_t*
     switch (it_first->_t_containertype)
     {
     case _VECTOR_CONTAINER:
-        // return _vector_iterator_minus(it_first, it_second);
+        return vector_iterator_minus(it_first, it_second);
         break;
     case _DEQUE_CONTAINER:
         //return _deque_iterator_minus(it_first, it_second);
