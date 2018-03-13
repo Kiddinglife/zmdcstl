@@ -510,9 +510,10 @@ int iterator_minus(random_access_iterator_t* it_first, random_access_iterator_t*
         break;
     default:
         assert(false);
-        return 0;
+        return -1;
         break;
     }
+    return -1;
 }
 
 void iterator_advance(forward_iterator_t* it_iter, size_t n_step)

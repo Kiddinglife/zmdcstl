@@ -137,7 +137,7 @@ extern "C"
     * @return data pointer.
     * @remarks it_iter must be valid vector iterator, otherwise the behavior is undefined.
     */
-    extern const void* vector_iterator_get_pointer(vector_iterator_t* it_iter);
+    extern void* vector_iterator_get_pointer(vector_iterator_t* it_iter);
 
     /**
     * Get the pointer that point to the iterator reference data, but ignore char*.
@@ -145,7 +145,7 @@ extern "C"
     * @return data pointer.
     * @remarks it_iter must be valid vector iterator, otherwise the behavior is undefined.
     */
-    extern const void* vector_iterator_get_pointer_ignore_cstr(vector_iterator_t* it_iter);
+    extern void* vector_iterator_get_pointer_ignore_cstr(vector_iterator_t* it_iter);
 
     /**
     * Get the iterator that reference next data.

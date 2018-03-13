@@ -73,7 +73,7 @@ void vector_end(const vector_t* cpvec_vector, vector_iterator_t* it_end)
     assert(vector_is_inited(cpvec_vector));
     _VECTOR_ITERATOR_CONTAINER_TYPE(it_end) = _VECTOR_CONTAINER;
     _VECTOR_ITERATOR_ITERATOR_TYPE(it_end) = _RANDOM_ACCESS_ITERATOR;
-    _ITERATOR_CONTAINER(it_end) = cpvec_vector;
+    _ITERATOR_CONTAINER(it_end) = (vector_t*)cpvec_vector;
     _VECTOR_ITERATOR_COREPOS(it_end) = cpvec_vector->_pby_finish;
 }
 
@@ -132,7 +132,7 @@ void vector_iterator_set_value(vector_iterator_t* it_iter, const void* cpv_value
 
     assert(cpv_value != NULL);
     assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));
-    assert((void*)it_iter->_t_pos < _VECTOR_ITERATOR_CONTAINER(it_iter)->_pby_finish);
+    assert((_byte_t*)it_iter->_t_pos < _VECTOR_ITERATOR_CONTAINER(it_iter)->_pby_finish);
 
     /* char* */
     // @TODO
@@ -152,7 +152,6 @@ void vector_iterator_prev(vector_iterator_t* it_iter)
     assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));
     _VECTOR_ITERATOR_COREPOS(it_iter) -= _GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_iter));
     assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));
-    return it_iter;
 }
 
 void vector_iterator_next_n(vector_iterator_t* it_iter, size_t n_step)
@@ -160,7 +159,6 @@ void vector_iterator_next_n(vector_iterator_t* it_iter, size_t n_step)
     assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));
     _VECTOR_ITERATOR_COREPOS(it_iter) += _GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_iter)) * n_step;
     assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));
-    return it_iter;
 }
 
 void vector_iterator_prev_n(vector_iterator_t* it_iter, size_t n_step)
@@ -168,7 +166,6 @@ void vector_iterator_prev_n(vector_iterator_t* it_iter, size_t n_step)
     assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));
     _VECTOR_ITERATOR_COREPOS(it_iter) -= _GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_iter)) * n_step;
     assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));
-    return it_iter;
 }
 
 void* vector_iterator_at(vector_iterator_t* it_iter, size_t n_index)
@@ -177,10 +174,10 @@ void* vector_iterator_at(vector_iterator_t* it_iter, size_t n_index)
     return vector_iterator_get_pointer(it_iter);
 }
 
-const void* vector_iterator_get_pointer(vector_iterator_t* it_iter)
+void* vector_iterator_get_pointer(vector_iterator_t* it_iter)
 {
     assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));
-    assert((void*)it_iter->_t_pos < _VECTOR_ITERATOR_CONTAINER(it_iter)->_pby_finish);
+    assert((_byte_t*)it_iter->_t_pos < _VECTOR_ITERATOR_CONTAINER(it_iter)->_pby_finish);
 
     /* char* */
     // @TODO
@@ -190,10 +187,10 @@ const void* vector_iterator_get_pointer(vector_iterator_t* it_iter)
     return _VECTOR_ITERATOR_COREPOS(it_iter);
 }
 
-const void* vector_iterator_get_pointer_ignore_cstr(vector_iterator_t* it_iter)
+void* vector_iterator_get_pointer_ignore_cstr(vector_iterator_t* it_iter)
 {
     assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));
-    assert((void*)it_iter->_t_pos < _VECTOR_ITERATOR_CONTAINER(it_iter)->_pby_finish);
+    assert((_byte_t*)it_iter->_t_pos < _VECTOR_ITERATOR_CONTAINER(it_iter)->_pby_finish);
     return _VECTOR_ITERATOR_COREPOS(it_iter);
 }
 
