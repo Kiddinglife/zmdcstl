@@ -9,7 +9,47 @@
 #include "cstl_iterator.h"
 #include "cstl_types.h"
 
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4146)  // unary minus operator applied to unsigned type, result still unsigned
+#endif
+
 #define cstl_memcpy memcpy
+
+void* align(size_t alignment, size_t size, void** ptr, size_t* space)
+{
+    if (*space >= size)
+    {
+         char*  ptrAligned = (char*)(((size_t)(*ptr) + (alignment - 1)) & -alignment);
+        size_t offset = (size_t)(ptrAligned - (char*)(*ptr));
+        if ((*space - size) >= offset) // Have to implement this in terms of subtraction instead of addition in order to handle possible overflow.
+        {
+            *ptr = ptrAligned;
+            *space -= offset;
+            return ptrAligned;
+        }
+    }
+    return NULL;
+}
+
+void* align_advance(size_t alignment, size_t size, void* ptr, size_t space, void** ptrAdvanced /*=null*/, size_t* spaceReduced /*=null*/)
+{
+    if (space >= size)
+    {
+        char*  ptrAligned = (char*)(((size_t)ptr + (alignment - 1)) & -alignment);
+        size_t offset = (size_t)(ptrAligned - (char*)ptr);
+        if ((space - size) >= offset) // Have to implement this in terms of subtraction instead of addition in order to handle possible overflow.
+        {
+            if (ptrAdvanced)
+                *ptrAdvanced = (ptrAligned + size);
+            if (spaceReduced)
+                *spaceReduced = (space - (offset + size));
+            return ptrAligned;
+        }
+    }
+    return NULL;
+}
 
 void destruct_range(forward_iterator_t* first, forward_iterator_t* last)
 {
@@ -171,5 +211,8 @@ void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_iterator_
             assert(ret);
         }
     }
-
 }
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif

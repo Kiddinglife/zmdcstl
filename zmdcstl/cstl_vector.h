@@ -2,12 +2,12 @@
 // This file implements a vector (array-like container), much like the C++ std::vector.
 // The primary distinctions between this vector and std::vector are:
 //    - vector has a couple extension functions that increase performance.
-//    - vector can contain objects with alignment requirements. std::vector 
-//      cannot do so without a bit of tedious non-portable effort.
+//    - vector can contain objects with alignment requirements. 
+//      std::vector cannot do so without a bit of tedious non-portable effort.
 //    - vector supports debug memory naming natively.
 //    - vector is easier to read, debug, and visualize.
-//    - vector is savvy to an environment that doesn't have exception handling,
-//      as is sometimes the case with console or embedded environments.
+//    - vector doesn't have exception handling, as is sometimes the case 
+//       with console or embedded environments.
 //    - vector has less deeply nested function calls and allows the user to 
 //      enable forced inlining in debug builds in order to reduce bloat.
 //    - vector<bool> is a vector of boolean values and not a bit vector.
