@@ -21,7 +21,7 @@ void* align(size_t alignment, size_t size, void** ptr, size_t* space)
 {
     if (*space >= size)
     {
-         char*  ptrAligned = (char*)(((size_t)(*ptr) + (alignment - 1)) & -alignment);
+        char*  ptrAligned = (char*)(((size_t)(*ptr) + (alignment - 1)) & -alignment);
         size_t offset = (size_t)(ptrAligned - (char*)(*ptr));
         if ((*space - size) >= offset) // Have to implement this in terms of subtraction instead of addition in order to handle possible overflow.
         {
@@ -162,7 +162,7 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward
     if (first->_t_iteratortype == _RANDOM_ACCESS_ITERATOR && result->_t_iteratortype == _RANDOM_ACCESS_ITERATOR)
     {
         info = ((type_info_t*)(first->_pt_container));
-        if (info->_pt_type->_t_typeid == ctype)
+        if (info->_pt_type->_t_style == _TYPE_STYLE_POD)
         {
             int n_step = iterator_distance(first, last);
             cstl_memcpy(result->_t_pos, first->_t_pos,
@@ -192,7 +192,7 @@ void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_iterator_
     if (first->_t_iteratortype == _RANDOM_ACCESS_ITERATOR && result->_t_iteratortype == _RANDOM_ACCESS_ITERATOR)
     {
         info = ((type_info_t*)(first->_pt_container));
-        if (info->_pt_type->_t_typeid == ctype)
+        if (info->_pt_type->_t_style == _TYPE_STYLE_POD)
         {
             cstl_memcpy(result->_t_pos, first->_t_pos,
                 n_step * ((type_info_t*)(first->_pt_container))->_pt_type->_t_typesize);

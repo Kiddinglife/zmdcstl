@@ -7,8 +7,8 @@ bool vector_is_inited(const vector_t* cpvec_vector)
         return false;
     if (cpvec_vector->_t_typeinfo._pt_type == NULL)
         return false;
-    if (cpvec_vector->_t_typeinfo._pt_type->_t_style <= ctype
-        && cpvec_vector->_t_typeinfo._pt_type->_t_style >= invalidtype)
+    if (cpvec_vector->_t_typeinfo._pt_type->_t_style <= _TYPE_STYLE_POD
+        && cpvec_vector->_t_typeinfo._pt_type->_t_style >= _TYPE_STYLE_INVALID)
         return false;
     if (cpvec_vector->_pby_start == NULL && cpvec_vector->_pby_finish == NULL && cpvec_vector->_pby_endofstorage == NULL)
         return true;

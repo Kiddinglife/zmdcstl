@@ -9,7 +9,7 @@ static const char* g_buildin_type_str[TYPE_REGISTER_BUCKET_COUNT] = { "int8t", "
     NULL, NULL, NULL, NULL,
     NULL, NULL, NULL };
 
-static const char* g_type_style_str[] = { "ctype", "cstltype", "userdefined", "userdefined", "invalidtype", };
+static const char* g_type_style_str[] = { "_TYPE_STYLE_POD", "_TYPE_STYLE_CSTL", "_TYPE_STYLE_USER_DEFINED", "_TYPE_STYLE_USER_DEFINED", "_TYPE_STYLE_INVALID", };
 
 /* the pt_type, pt_node and t_pos must be defined before use those macro */
 #define register_type_start() type_t* pt_type
@@ -55,17 +55,17 @@ const char* get_type_names(typeid_t typeids[], size_t size)
 void init_types(void)
 {
     register_type_start();
-    register_type(char, char, ctype);
-    register_type(char, uchar, ctype);
-    register_type(short, short, ctype);
-    register_type(unsigned short, ushort, ctype);
-    register_type(int, int, ctype);
-    register_type(unsigned int, uint, ctype);
-    register_type(int64_t, long_long, ctype);
-    register_type(uint64_t, ulong_long, ctype);
-    register_type(float, float, ctype);
-    register_type(double, double, ctype);
-    register_type(void*, pointer, ctype);
+    register_type(char, char, _TYPE_STYLE_POD);
+    register_type(char, uchar, _TYPE_STYLE_POD);
+    register_type(short, short, _TYPE_STYLE_POD);
+    register_type(unsigned short, ushort, _TYPE_STYLE_POD);
+    register_type(int, int, _TYPE_STYLE_POD);
+    register_type(unsigned int, uint, _TYPE_STYLE_POD);
+    register_type(int64_t, long_long, _TYPE_STYLE_POD);
+    register_type(uint64_t, ulong_long, _TYPE_STYLE_POD);
+    register_type(float, float, _TYPE_STYLE_POD);
+    register_type(double, double, _TYPE_STYLE_POD);
+    register_type(void*, pointer, _TYPE_STYLE_POD);
     
     //@TODO register cstl types
 
