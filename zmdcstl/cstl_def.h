@@ -48,6 +48,7 @@ typedef unsigned char _byte_t;
 /** exported global variable declaration section **/
 
 /** exported function prototype section **/
+#define CSTL_NAME_ENABLED
 
 #ifdef __cplusplus
 }
