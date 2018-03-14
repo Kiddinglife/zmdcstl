@@ -1,36 +1,36 @@
 #include "cstl_alloc.h"
 
-static void* cstl_allocate_ex(const char* allocname, size_t n, size_t alignment, size_t offset, int flags /*= 0*/)
+void* cstl_alloc(const char* allocname, size_t n, int flags)
 {
-   return  _aligned_offset_malloc(n, alignment, offset);
+    return malloc(n);
 }
 
-static void* cstl_allocate(const char* allocname, size_t n, int flags /*= 0*/)
+void* cstl_align_alloc(const char* allocname, size_t n, size_t alignment, size_t alignmentOffset, int flags)
 {
-    return  malloc(n);
+    if (alignment < EA_PLATFORM_MIN_MALLOC_ALIGNMENT)
+        alignment = EA_PLATFORM_MIN_MALLOC_ALIGNMENT;
+
+    size_t adjustedAlignment = (alignment > EA_PLATFORM_PTR_SIZE) ? alignment : EA_PLATFORM_PTR_SIZE;
+    void* p = malloc(n + adjustedAlignment + EA_PLATFORM_PTR_SIZE);
+    void* pPlusPointerSize = (void*)((uintptr_t)p + EA_PLATFORM_PTR_SIZE);
+    void* pAligned = (void*)(((uintptr_t)pPlusPointerSize + adjustedAlignment - 1) & ~(adjustedAlignment - 1));
+    void** pStoredPtr = (void**)pAligned - 1;
+    assert(pStoredPtr >= p);
+    *(pStoredPtr) = p;
+
+    //  if (alignment <= EA_PLATFORM_MIN_MALLOC_ALIGNMENT)
+    // Ensure the result is correctly aligned.  An assertion likely indicates a mismatch between EASTL_ALLOCATOR_MIN_ALIGNMENT and the minimum alignment
+    // of EASTLAlloc.  If there is a mismatch it may be necessary to define EASTL_ALLOCATOR_MIN_ALIGNMENT to be the minimum alignment of EASTLAlloc, or
+    // to increase the alignment of EASTLAlloc to match EASTL_ALLOCATOR_MIN_ALIGNMENT.
+    //
+    // if (alignment > EA_PLATFORM_MIN_MALLOC_ALIGNMENT)
+    // Ensure the result is correctly aligned.  An assertion here may indicate a bug in the allocator.
+    assert(((size_t)(pAligned)& ~(alignment - 1)) == (size_t)(pAligned));
+
+    return pAligned;
 }
 
- void* cstl_allocate_memory(const char* allocname, size_t n, size_t alignment, size_t alignmentOffset, int flags)
+void  cstl_free(const char* allocname, void* p)
 {
-    void *result;
-    if (alignment <= EA_PLATFORM_MIN_MALLOC_ALIGNMENT)
-    {
-        result = cstl_allocate(allocname, n, flags);
-        // Ensure the result is correctly aligned.  An assertion likely indicates a mismatch between EASTL_ALLOCATOR_MIN_ALIGNMENT and the minimum alignment
-        // of EASTLAlloc.  If there is a mismatch it may be necessary to define EASTL_ALLOCATOR_MIN_ALIGNMENT to be the minimum alignment of EASTLAlloc, or
-        // to increase the alignment of EASTLAlloc to match EASTL_ALLOCATOR_MIN_ALIGNMENT.
-        assert(((size_t)(result)& ~(alignment - 1)) == (size_t)(result));
-    }
-    else
-    {
-        result = cstl_allocate_ex(allocname, n, alignment, alignmentOffset, flags);
-        // Ensure the result is correctly aligned.  An assertion here may indicate a bug in the allocator.
-        assert(((size_t)(result)& ~(alignment - 1)) == (size_t)(result));
-    }
-    return result;
+    free(*((void**)p - 1));
 }
-
-void  cstl_deallocate_memory(const char* allocname, void* p, size_t n)
- {
-    free(p);
- }
