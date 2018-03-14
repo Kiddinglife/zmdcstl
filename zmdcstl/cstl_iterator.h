@@ -203,7 +203,7 @@ extern "C"
     * @return pointer
     * @remakes it_iter must be valid and must be not end(), otherwise the behavior is undefined.
     */
-    extern const void* iterator_get_pointer_ignore_cstr(iterator_t* it_iter);
+extern const void* iterator_get_pointer_ignore_cstr(iterator_t* it_iter);
 
     /**
      * Get pointer that pointed by iterator, but ignore char*.
@@ -290,7 +290,7 @@ extern "C"
     * @return void
     * @remakes it_iter must be valid and pv_value != NULL, otherwise the behavior is undefined.
     */
-    extern void iterator_get_value(const input_iterator_t* it_iter, void* pv_value);
+    extern void iterator_get_value(input_iterator_t* it_iter, void* pv_value);
 
     /**
      * Move iterator to next position.
