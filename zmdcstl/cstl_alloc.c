@@ -1,11 +1,11 @@
 #include "cstl_alloc.h"
 
-void* cstl_alloc(const char* allocname, size_t n, int flags)
+void* cstl_alloc(const char* allocname, size_t n)
 {
     return malloc(n);
 }
 
-void* cstl_align_alloc(const char* allocname, size_t n, size_t alignment, size_t alignmentOffset, int flags)
+void* cstl_align_alloc(const char* allocname, size_t n, size_t alignment, size_t alignmentOffset)
 {
     if (alignment < EA_PLATFORM_MIN_MALLOC_ALIGNMENT)
         alignment = EA_PLATFORM_MIN_MALLOC_ALIGNMENT;
