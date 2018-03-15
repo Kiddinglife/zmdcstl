@@ -378,22 +378,22 @@ void iterator_prev(bidirectional_iterator_t* bidirectional_iterator)
     }
 }
 
-void iterator_next_n(random_access_iterator_t* random_access_iterator, size_t n_step)
+void iterator_next_n(forward_iterator_t* random_access_iterator, size_t n_step)
 {
     assert(iterator_is_valid(random_access_iterator));
-    assert(iterator_limit_type(random_access_iterator, _RANDOM_ACCESS_ITERATOR));
+    assert(iterator_limit_type(random_access_iterator, _FORWARD_ITERATOR));
     assert(n_step > 0);
     // @TODO
     switch (_ITERATOR_CONTAINER_TYPE(random_access_iterator))
     {
     case _VECTOR_CONTAINER:
-        return vector_iterator_next_n(random_access_iterator, n_step);
+        vector_iterator_next_n(random_access_iterator, n_step);
         break;
     case _DEQUE_CONTAINER:
-        //return _deque_iterator_next_n(it_iter, n_step);
+        // deque_iterator_next_n(it_iter, n_step);
         break;
     case _BASIC_STRING_CONTAINER:
-        //return _basic_string_iterator_next_n(it_iter, n_step);
+        // basic_string_iterator_next_n(it_iter, n_step);
         break;
     default:
         assert(false);

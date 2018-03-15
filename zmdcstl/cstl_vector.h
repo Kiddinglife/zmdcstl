@@ -169,6 +169,10 @@ extern "C"
     *          the container. if n_step == 0, iterator dose not move.
     */
     extern void vector_iterator_next_n(vector_iterator_t* it_iter, size_t n_step);
+//#define  vector_iterator_next_n(it_iter, n_step)\
+//    assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), it_iter));\
+//    _VECTOR_ITERATOR_COREPOS(it_iter) += _GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_iter)) * n_step;\
+//    assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_iter), (it_iter)));
 
     /**
     * Get the iterator that reference previous n data.

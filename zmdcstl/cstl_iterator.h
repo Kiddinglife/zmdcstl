@@ -312,7 +312,7 @@ extern const void* iterator_get_pointer_ignore_cstr(iterator_t* it_iter);
     * @return next n position.
     * @remakes it_iter must be valid and must be not end(), otherwise the behavior is undefined.
     */
-    extern void iterator_next_n(random_access_iterator_t* random_access_iterator, size_t n_step);
+    extern void iterator_next_n(forward_iterator_t* random_access_iterator, size_t n_step);
 
     /**
     * Move iterator to prev n position.
