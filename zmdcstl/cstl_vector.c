@@ -7,16 +7,16 @@ bool vector_is_inited(const vector_t* cpvec_vector)
 {
     if (cpvec_vector == NULL)
         return false;
-    if (cpvec_vector->_t_typeinfo._pt_type == NULL)
+    if (cpvec_vector->meta._t_typeinfo._pt_type == NULL)
         return false;
-    if (cpvec_vector->_t_typeinfo._pt_type->_t_style >= _TYPE_STYLE_INVALID)
+    if (cpvec_vector->meta._t_typeinfo._pt_type->_t_style >= _TYPE_STYLE_INVALID)
         return false;
     if (cpvec_vector->_pby_start == NULL && cpvec_vector->_pby_finish == NULL && cpvec_vector->_pby_endofstorage == NULL)
         return true;
     if (cpvec_vector->_pby_start != NULL && cpvec_vector->_pby_finish != NULL && cpvec_vector->_pby_endofstorage != NULL
-            && cpvec_vector->_pby_finish >= cpvec_vector->_pby_start
-            && cpvec_vector->_pby_endofstorage >= cpvec_vector->_pby_start
-            && cpvec_vector->_pby_endofstorage >= cpvec_vector->_pby_finish)
+        && cpvec_vector->_pby_finish >= cpvec_vector->_pby_start
+        && cpvec_vector->_pby_endofstorage >= cpvec_vector->_pby_start
+        && cpvec_vector->_pby_endofstorage >= cpvec_vector->_pby_finish)
         return true;
     return false;
 }
@@ -24,11 +24,11 @@ bool vector_is_inited(const vector_t* cpvec_vector)
 bool vector_iterator_valid(const vector_t* cpvec_vector, vector_iterator_t* it_iter)
 {
     if (vector_is_inited(cpvec_vector) &&
-    _VECTOR_ITERATOR_ITERATOR_TYPE(it_iter) == _RANDOM_ACCESS_ITERATOR &&
-    _VECTOR_ITERATOR_CONTAINER_TYPE(it_iter) == _VECTOR_CONTAINER &&
-    _VECTOR_ITERATOR_CONTAINER(it_iter) == cpvec_vector &&
-    _VECTOR_ITERATOR_COREPOS(it_iter) >= cpvec_vector->_pby_start &&
-    _VECTOR_ITERATOR_COREPOS(it_iter) <= cpvec_vector->_pby_finish)
+        _VECTOR_ITERATOR_ITERATOR_TYPE(it_iter) == _RANDOM_ACCESS_ITERATOR &&
+        _VECTOR_ITERATOR_CONTAINER_TYPE(it_iter) == _VECTOR_CONTAINER &&
+        _VECTOR_ITERATOR_CONTAINER(it_iter) == cpvec_vector &&
+        _VECTOR_ITERATOR_COREPOS(it_iter) >= cpvec_vector->_pby_start &&
+        _VECTOR_ITERATOR_COREPOS(it_iter) <= cpvec_vector->_pby_finish)
         return true;
     return false;
 }
@@ -49,7 +49,7 @@ void vector_end(const vector_t* cpvec_vector, vector_iterator_t* it_end)
     assert(vector_is_inited(cpvec_vector));
     _VECTOR_ITERATOR_CONTAINER_TYPE(it_end) = _VECTOR_CONTAINER;
     _VECTOR_ITERATOR_ITERATOR_TYPE(it_end) = _RANDOM_ACCESS_ITERATOR;
-    _ITERATOR_CONTAINER(it_end) = (vector_t*) cpvec_vector;
+    _ITERATOR_CONTAINER(it_end) = (vector_t*)cpvec_vector;
     _VECTOR_ITERATOR_COREPOS(it_end) = cpvec_vector->_pby_finish;
 }
 
@@ -57,8 +57,8 @@ void vector_end_again(vector_iterator_t* it_end)
 {
     assert(it_end != NULL);
     assert((vector_t*)it_end->_pt_container != NULL);
-    assert(vector_is_inited((vector_t* )it_end->_pt_container));
-    _VECTOR_ITERATOR_COREPOS(it_end) = ((vector_t*) it_end->_pt_container)->_pby_finish;
+    assert(vector_is_inited((vector_t*)it_end->_pt_container));
+    _VECTOR_ITERATOR_COREPOS(it_end) = ((vector_t*)it_end->_pt_container)->_pby_finish;
 }
 
 bool vector_iterator_equal(vector_iterator_t* it_first, vector_iterator_t* it_second)
@@ -84,7 +84,7 @@ void vector_iterator_get_value(vector_iterator_t* it_iter, void* pv_value)
     {
         size = _GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_iter));
         _GET_VECTOR_TYPE_COPY_FUNCTION(_VECTOR_ITERATOR_CONTAINER(it_iter))(pv_value, _VECTOR_ITERATOR_COREPOS(it_iter),
-                &size);
+            &size);
         assert(size);
     }
 }
@@ -120,7 +120,7 @@ void vector_iterator_set_value(vector_iterator_t* it_iter, const void* cpv_value
     //{
     b_result = _GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_iter));
     _GET_VECTOR_TYPE_COPY_FUNCTION(_VECTOR_ITERATOR_CONTAINER(it_iter))(_VECTOR_ITERATOR_COREPOS(it_iter), cpv_value,
-            &b_result);
+        &b_result);
     assert(b_result);
     //}
 }
@@ -179,7 +179,7 @@ size_t vector_iterator_minus(vector_iterator_t* it_first, vector_iterator_t* it_
     assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_first), it_first));
     assert(vector_iterator_valid(_VECTOR_ITERATOR_CONTAINER(it_second), it_second));
     return (_VECTOR_ITERATOR_COREPOS(it_first) - _VECTOR_ITERATOR_COREPOS(it_second))
-            / (int) _GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_first));
+        / (int)_GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_first));
 }
 
 void vector_ctor(vector_t* pvec_vector, size_t size, ...)
@@ -191,11 +191,11 @@ void vector_ctor(vector_t* pvec_vector, size_t size, ...)
     va_list args;
     va_start(args, size);
     for (int x = 0; x < size; x++)
-        pvec_vector->_t_typeinfo._t_typeids[x] = va_arg(args, int);
+        pvec_vector->meta._t_typeinfo._t_typeids[x] = va_arg(args, int);
     va_end(args);
 
-    pvec_vector->_t_typeinfo._t_typeidsize = size;
-    pvec_vector->_t_typeinfo._pt_type = _apt_bucket[pvec_vector->_t_typeinfo._t_typeids[0]];
+    pvec_vector->meta._t_typeinfo._t_typeidsize = size;
+    pvec_vector->meta._t_typeinfo._pt_type = _apt_bucket[pvec_vector->meta._t_typeinfo._t_typeids[0]];
     pvec_vector->_pby_finish = pvec_vector->_pby_start = pvec_vector->_pby_endofstorage = NULL;
 }
 void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
@@ -206,19 +206,19 @@ void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
     va_list args;
     va_start(args, size);
     for (int x = 0; x < size; x++)
-        pvec_vector->_t_typeinfo._t_typeids[x] = va_arg(args, int);
+        pvec_vector->meta._t_typeinfo._t_typeids[x] = va_arg(args, int);
     va_end(args);
 
-    pvec_vector->_t_typeinfo._t_typeidsize = size;
-    pvec_vector->_t_typeinfo._pt_type = _apt_bucket[pvec_vector->_t_typeinfo._t_typeids[0]];
-    pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(pvec_vector->_t_typeinfo._pt_type->_t_typesize,
-            pvec_vector->_t_typeinfo._pt_type->_t_typealign, elesize);
-    pvec_vector->_pby_endofstorage = pvec_vector->_pby_start + elesize * pvec_vector->_t_typeinfo._pt_type->_t_typesize;
+    pvec_vector->meta._t_typeinfo._t_typeidsize = size;
+    pvec_vector->meta._t_typeinfo._pt_type = _apt_bucket[pvec_vector->meta._t_typeinfo._t_typeids[0]];
+    pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(pvec_vector->meta._t_typeinfo._pt_type->_t_typesize,
+        pvec_vector->meta._t_typeinfo._pt_type->_t_typealign, elesize);
+    pvec_vector->_pby_endofstorage = pvec_vector->_pby_start + elesize * pvec_vector->meta._t_typeinfo._pt_type->_t_typesize;
 
     random_access_iterator_t itr;
+    _ITERATOR_CONTAINER(&itr) = (vector_t*)pvec_vector;
     _VECTOR_ITERATOR_CONTAINER_TYPE(&itr) = _VECTOR_CONTAINER;
     _VECTOR_ITERATOR_ITERATOR_TYPE(&itr) = _RANDOM_ACCESS_ITERATOR;
-    _ITERATOR_CONTAINER(&itr) = (vector_t*) pvec_vector;
     _VECTOR_ITERATOR_COREPOS(&itr) = pvec_vector->_pby_start;
     uninitialized_default_fill_n(&itr, elesize);
 }
@@ -231,19 +231,19 @@ void vector_ctor_n_v(vector_t* pvec_vector, size_t elesize, void* val, size_t si
     va_list args;
     va_start(args, size);
     for (int x = 0; x < size; x++)
-        pvec_vector->_t_typeinfo._t_typeids[x] = va_arg(args, int);
+        pvec_vector->meta._t_typeinfo._t_typeids[x] = va_arg(args, int);
     va_end(args);
 
-    pvec_vector->_t_typeinfo._t_typeidsize = size;
-    pvec_vector->_t_typeinfo._pt_type = _apt_bucket[pvec_vector->_t_typeinfo._t_typeids[0]];
-    pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(pvec_vector->_t_typeinfo._pt_type->_t_typesize,
-            pvec_vector->_t_typeinfo._pt_type->_t_typealign, elesize);
-    pvec_vector->_pby_endofstorage = pvec_vector->_pby_start + elesize * pvec_vector->_t_typeinfo._pt_type->_t_typesize;
+    pvec_vector->meta._t_typeinfo._t_typeidsize = size;
+    pvec_vector->meta._t_typeinfo._pt_type = _apt_bucket[pvec_vector->meta._t_typeinfo._t_typeids[0]];
+    pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(pvec_vector->meta._t_typeinfo._pt_type->_t_typesize,
+        pvec_vector->meta._t_typeinfo._pt_type->_t_typealign, elesize);
+    pvec_vector->_pby_endofstorage = pvec_vector->_pby_start + elesize * pvec_vector->meta._t_typeinfo._pt_type->_t_typesize;
 
     random_access_iterator_t itr;
+    _ITERATOR_CONTAINER(&itr) = (vector_t*)pvec_vector;
     _VECTOR_ITERATOR_CONTAINER_TYPE(&itr) = _VECTOR_CONTAINER;
     _VECTOR_ITERATOR_ITERATOR_TYPE(&itr) = _RANDOM_ACCESS_ITERATOR;
-    _ITERATOR_CONTAINER(&itr) = (vector_t*) pvec_vector;
     _VECTOR_ITERATOR_COREPOS(&itr) = pvec_vector->_pby_start;
     uninitialized_fill_n(&itr, val, elesize);
 }
@@ -252,53 +252,49 @@ void vector_ctor_range(vector_t* pvec_vector, forward_iterator_t* first, forward
     assert(iterator_limit_type(first, _FORWARD_ITERATOR) && iterator_limit_type(last, _FORWARD_ITERATOR));
     assert(iterator_same_elem_type(first, last));
     assert(iterator_same_type(first, last));
-
     init_types();
 
     int elesize = iterator_distance(first, last);
-
-    pvec_vector->_t_typeinfo = *((type_info_t*) first->_t_pos);
-    pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(pvec_vector->_t_typeinfo._pt_type->_t_typesize,
-            pvec_vector->_t_typeinfo._pt_type->_t_typealign, elesize);
-    pvec_vector->_pby_endofstorage = pvec_vector->_pby_start + elesize * pvec_vector->_t_typeinfo._pt_type->_t_typesize;
+    pvec_vector->meta = *_ITERATOR_META_TYPE(first);
+    pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(pvec_vector->meta._t_typeinfo._pt_type->_t_typesize,
+        pvec_vector->meta._t_typeinfo._pt_type->_t_typealign, elesize);
+    pvec_vector->_pby_endofstorage = pvec_vector->_pby_start + elesize * pvec_vector->meta._t_typeinfo._pt_type->_t_typesize;
 
     random_access_iterator_t itr;
+    _ITERATOR_CONTAINER(&itr) = (vector_t*)pvec_vector;
     _VECTOR_ITERATOR_CONTAINER_TYPE(&itr) = _VECTOR_CONTAINER;
     _VECTOR_ITERATOR_ITERATOR_TYPE(&itr) = _RANDOM_ACCESS_ITERATOR;
-    _ITERATOR_CONTAINER(&itr) = (vector_t*) pvec_vector;
     _VECTOR_ITERATOR_COREPOS(&itr) = pvec_vector->_pby_start;
     uninitialized_copy(first, last, &itr);
 }
 void vector_ctor_vector(vector_t* pvec_vector, const vector_t* x)
 {
     assert(vector_is_inited(x));
-
     init_types();
-    int elesize = x->_pby_finish - x->_pby_start;
 
-    pvec_vector->_t_typeinfo = x->_t_typeinfo;
-    pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(pvec_vector->_t_typeinfo._pt_type->_t_typesize,
-            pvec_vector->_t_typeinfo._pt_type->_t_typealign, elesize);
-    pvec_vector->_pby_endofstorage = pvec_vector->_pby_start + elesize * pvec_vector->_t_typeinfo._pt_type->_t_typesize;
+    int elesize = x->_pby_finish - x->_pby_start;
+    pvec_vector->meta = x->meta;
+    pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(pvec_vector->meta._t_typeinfo._pt_type->_t_typesize,
+        pvec_vector->meta._t_typeinfo._pt_type->_t_typealign, elesize);
+    pvec_vector->_pby_endofstorage = pvec_vector->_pby_start + elesize;
 
     random_access_iterator_t itr;
+    _ITERATOR_CONTAINER(&itr) = (vector_t*)pvec_vector;
     _VECTOR_ITERATOR_CONTAINER_TYPE(&itr) = _VECTOR_CONTAINER;
     _VECTOR_ITERATOR_ITERATOR_TYPE(&itr) = _RANDOM_ACCESS_ITERATOR;
-    _ITERATOR_CONTAINER(&itr) = (vector_t*) pvec_vector;
     _VECTOR_ITERATOR_COREPOS(&itr) = pvec_vector->_pby_start;
 
     random_access_iterator_t first;
+    _ITERATOR_CONTAINER(&itr) = (vector_t*)x;
     _VECTOR_ITERATOR_CONTAINER_TYPE(&itr) = _VECTOR_CONTAINER;
     _VECTOR_ITERATOR_ITERATOR_TYPE(&itr) = _RANDOM_ACCESS_ITERATOR;
-    _ITERATOR_CONTAINER(&itr) = (vector_t*) x;
     _VECTOR_ITERATOR_COREPOS(&itr) = pvec_vector->_pby_start;
 
-
-    uninitialized_copy_n(&first, elesize/pvec_vector->_t_typeinfo._pt_type->_t_typesize, &itr);
+    uninitialized_copy_n(&first, elesize / pvec_vector->meta._t_typeinfo._pt_type->_t_typesize, &itr);
 }
 void vector_dtor(vector_t* pvec_vector)
 {
-    if(pvec_vector->_pby_start)
+    if (pvec_vector->_pby_start)
         cstl_free(pvec_vector->_pby_start);
 }
 

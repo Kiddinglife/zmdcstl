@@ -71,8 +71,8 @@ extern "C"
     extern type_t* _apt_bucket[TYPE_REGISTER_BUCKET_COUNT];
     extern void show_registered_types();
     extern void init_types(void);
-extern const char* get_type_name(typeid_t typeid);
-extern const char* get_type_names(typeid_t typeids[], size_t size);
+    extern const char* get_type_name(typeid_t typeid);
+    extern const char* get_type_names(typeid_t typeids[], size_t size);
     extern bool type_info_is_same(const type_info_t* pt_first, const type_info_t* pt_second);
 
 #ifdef __cplusplus

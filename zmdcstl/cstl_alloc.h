@@ -23,21 +23,21 @@ extern "C"
 #endif
 #endif
 
+    // n is the toal size
 #ifndef NDEBUG
-#define cstl_alloc(type, n) cstl_alloc_(__FILE__,__LINE__,((size_t)(sizeof(type)*n)),CSTL_ALIGN_OF(type))
-#define cstl_alloc_ex(elesize,align,n) cstl_alloc_(__FILE__,__LINE__,((size_t)(elesize*n)),(align))
+#define cstl_alloc(type, n) cstl_alloc_(__FILE__,__LINE__,sizeof(type)*(n), CSTL_ALIGN_OF(type))
+#define cstl_alloc_ex(sizeoftype,align,n) cstl_alloc_(__FILE__,__LINE__,(n)*(sizeoftype),align)
 #else
-#define cstl_alloc(type, n) cstl_alloc_(0,0,((size_t)(n)),CSTL_ALIGN_OF(type))
-#define cstl_alloc_ex(elesize,align,n) cstl_alloc_(0,0,((size_t)(elesize*n)),(align))
+#define cstl_alloc(type, n) cstl_alloc_(0,0,sizeof(type)*(n), CSTL_ALIGN_OF(type))
+#define cstl_alloc_ex(sizeoftype,align,n) cstl_alloc_(0,0,(n)*(sizeoftype),align)
 #endif
 
 #define cstl_free(p) free(*((void**) p - 1))
 
-extern void* cstl_alloc_(const char* file, int line, size_t n, size_t alignment);
+    extern void* cstl_alloc_(const char* file, int line, size_t n, size_t alignment);
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif
 

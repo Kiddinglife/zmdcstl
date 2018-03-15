@@ -14,12 +14,13 @@ extern "C"
 #endif
 
 #include "cstl_def.h"
+#include "cstl_types.h"
 
     /* vector iterator handler */
 #define _VECTOR_ITERATOR_COREPOS(it_iter)               ((it_iter)->_t_pos)
 #define _VECTOR_ITERATOR_CONTAINER(it_iter)             ((vector_t*)((it_iter)->_pt_container))
-#define _VECTOR_ITERATOR_CONTAINER_TYPE(it_iter)        ((it_iter)->_t_containertype)
-#define _VECTOR_ITERATOR_ITERATOR_TYPE(it_iter)         ((it_iter)->_t_iteratortype)
+#define _VECTOR_ITERATOR_CONTAINER_TYPE(it_iter)     (((meta_t*)((it_iter)->_pt_container))->_t_containertype)
+#define _VECTOR_ITERATOR_ITERATOR_TYPE(it_iter)         (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype)
 /* list iterator handler */
 #define _LIST_ITERATOR_COREPOS(it_iter)                 ((it_iter)._t_pos._pby_corepos)
 #define _LIST_ITERATOR_CONTAINER(it_iter)               ((list_t*)((it_iter)._pt_container))
@@ -90,8 +91,9 @@ extern "C"
 #define _BASIC_STRING_ITERATOR_ITERATOR_TYPE(it_iter)   ((it_iter)._t_iteratortype)
 /* for all container iterator */
 #define _ITERATOR_CONTAINER(it_iter)                    ((it_iter)->_pt_container)
-#define _ITERATOR_CONTAINER_TYPE(it_iter)               ((it_iter)->_t_containertype)
-#define _ITERATOR_ITERATOR_TYPE(it_iter)                ((it_iter)->_t_iteratortype)
+#define _ITERATOR_META_TYPE(it_iter)                       ((meta_t*)((it_iter)->_pt_container))
+#define _ITERATOR_CONTAINER_TYPE(it_iter)             (((meta_t*)((it_iter)->_pt_container))->_t_containertype)
+#define _ITERATOR_ITERATOR_TYPE(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype)
 #define _STRING_CONTAINER        _BASIC_STRING_CONTAINER
 
     typedef enum _tagcontainertype
@@ -142,21 +144,19 @@ extern "C"
         isf_can_dereference = 0x04 /// The iterator is dereferencable, which means it is in the range of [begin, end). It may or may not be current.
     }iterator_status_flag;
 
-    typedef struct _tagiteratorhdr
-    {
-        void* _pt_container;
-        containertype_t _t_containertype;
-        iteratortype_t _t_iteratortype;
-    }iterator_fix_t;
-
     typedef struct _tagiterator
     {
         void* _pt_container;
-        unsigned char* _t_pos;
-        containertype_t _t_containertype;
-        iteratortype_t _t_iteratortype;
+        _byte_t* _t_pos;
         iterator_status_flag _t_iteratorstatusflag;
     } iterator_t;
+
+    typedef  struct _tagmeta
+    {
+        containertype_t _t_containertype;
+        iteratortype_t _t_iteratortype;
+        type_info_t _t_typeinfo;
+    }meta_t;
 
     typedef struct _tagrange
     {

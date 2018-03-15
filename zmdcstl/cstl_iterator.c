@@ -10,21 +10,24 @@
 
 bool iterator_is_valid(iterator_t* it_iter)
 {
-    return ((it_iter->_t_containertype >= _VECTOR_CONTAINER && it_iter->_t_containertype <= _BASIC_STRING_CONTAINER)
-            && (it_iter->_t_iteratortype >= _INPUT_ITERATOR && it_iter->_t_iteratortype <= _RANDOM_ACCESS_ITERATOR));
+    return ((_ITERATOR_CONTAINER_TYPE(it_iter) >= _VECTOR_CONTAINER &&
+        _ITERATOR_CONTAINER_TYPE(it_iter) <= _BASIC_STRING_CONTAINER) &&
+        (_ITERATOR_ITERATOR_TYPE(it_iter) >= _INPUT_ITERATOR &&
+            _ITERATOR_ITERATOR_TYPE(it_iter) <= _RANDOM_ACCESS_ITERATOR));
 }
 
 bool iterator_same_type(iterator_t* it_first, iterator_t* it_second)
 {
-    return (iterator_is_valid(it_first) && iterator_is_valid(it_second)
-            && (it_first->_t_containertype == it_second->_t_containertype)
-            && (it_first->_t_iteratortype == it_second->_t_iteratortype));
+    return (iterator_is_valid(it_first) &&
+        iterator_is_valid(it_second) &&
+        (_ITERATOR_CONTAINER_TYPE(it_first) == _ITERATOR_CONTAINER_TYPE(it_second)) &&
+        (_ITERATOR_ITERATOR_TYPE(it_first) == _ITERATOR_ITERATOR_TYPE(it_second)));
 }
 
 bool iterator_before(iterator_t* it_first, iterator_t* it_second)
 {
     assert(iterator_same_type(it_first, it_second));
-    switch (it_first->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(it_first))
     {
     case _VECTOR_CONTAINER:
         return vector_iterator_before(it_first, it_second);
@@ -77,15 +80,15 @@ bool iterator_limit_type(iterator_t* it_iter, iteratortype_t t_limittype)
     switch (t_limittype)
     {
     case _INPUT_ITERATOR:
-        return (it_iter->_t_iteratortype >= _INPUT_ITERATOR);
+        return (_ITERATOR_ITERATOR_TYPE(it_iter) >= _INPUT_ITERATOR);
     case _OUTPUT_ITERATOR:
-        return (it_iter->_t_iteratortype >= _OUTPUT_ITERATOR);
+        return (_ITERATOR_ITERATOR_TYPE(it_iter) >= _OUTPUT_ITERATOR);
     case _FORWARD_ITERATOR:
-        return (it_iter->_t_iteratortype >= _FORWARD_ITERATOR);
+        return (_ITERATOR_ITERATOR_TYPE(it_iter) >= _FORWARD_ITERATOR);
     case _BIDIRECTIONAL_ITERATOR:
-        return (it_iter->_t_iteratortype >= _BIDIRECTIONAL_ITERATOR);
+        return (_ITERATOR_ITERATOR_TYPE(it_iter) >= _BIDIRECTIONAL_ITERATOR);
     case _RANDOM_ACCESS_ITERATOR:
-        return (it_iter->_t_iteratortype >= _RANDOM_ACCESS_ITERATOR);
+        return (_ITERATOR_ITERATOR_TYPE(it_iter) >= _RANDOM_ACCESS_ITERATOR);
     default:
         assert(false);
     }
@@ -97,7 +100,7 @@ const void* iterator_get_pointer_ignore_cstr(iterator_t* it_iter)
     assert(iterator_is_valid(it_iter));
     assert(iterator_limit_type(it_iter, _INPUT_ITERATOR));
 
-    switch (it_iter->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(it_iter))
     {
     case _VECTOR_CONTAINER:
         return vector_iterator_get_pointer_ignore_cstr(it_iter);
@@ -164,9 +167,9 @@ bool iterator_equal(iterator_t* it_first, iterator_t* it_second)
     assert(iterator_limit_type(it_second, _INPUT_ITERATOR));
     assert(iterator_get_typeinfo(it_first));
     assert(iterator_get_typeinfo(it_second));
-    assert(it_first->_t_containertype != it_second->_t_containertype);
+    assert(_ITERATOR_CONTAINER_TYPE(it_first) != _ITERATOR_CONTAINER_TYPE(it_second));
 
-    switch (it_first->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(it_first))
     {
     case _VECTOR_CONTAINER:
         return vector_iterator_equal(it_first, it_second);
@@ -218,13 +221,13 @@ bool iterator_equal(iterator_t* it_first, iterator_t* it_second)
 bool iterator_valid_range(iterator_t* it_first, iterator_t* it_end, iteratortype_t t_type)
 {
     return (iterator_same_type(it_first, it_end) && iterator_limit_type(it_first, t_type)
-            && (iterator_equal(it_first, it_end) || iterator_before(it_first, it_end)));
+        && (iterator_equal(it_first, it_end) || iterator_before(it_first, it_end)));
 }
 
 void iterator_next(forward_iterator_t* it_iter)
 {
     assert(iterator_is_valid(it_iter));
-    switch (it_iter->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(it_iter))
     {
     case _VECTOR_CONTAINER:
         vector_iterator_next(it_iter);
@@ -276,10 +279,10 @@ void iterator_get_value(input_iterator_t* it_iter, void* pv_value)
     assert(pv_value != NULL);
     assert(iterator_is_valid(it_iter));
     assert(iterator_limit_type(it_iter, _INPUT_ITERATOR));
-    switch (it_iter->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(it_iter))
     {
     case _VECTOR_CONTAINER:
-        vector_iterator_get_value((input_iterator_t*) it_iter, pv_value);
+        vector_iterator_get_value((input_iterator_t*)it_iter, pv_value);
         break;
         /*case _LIST_CONTAINER:
          _list_iterator_get_value(it_iter, pv_value);
@@ -328,7 +331,7 @@ void iterator_prev(bidirectional_iterator_t* bidirectional_iterator)
     assert(iterator_is_valid(bidirectional_iterator));
     assert(iterator_limit_type(bidirectional_iterator, _BIDIRECTIONAL_ITERATOR));
     //@TODO
-    switch (bidirectional_iterator->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(bidirectional_iterator))
     {
     case _VECTOR_CONTAINER:
         return vector_iterator_prev(bidirectional_iterator);
@@ -381,7 +384,7 @@ void iterator_next_n(random_access_iterator_t* random_access_iterator, size_t n_
     assert(iterator_limit_type(random_access_iterator, _RANDOM_ACCESS_ITERATOR));
     assert(n_step > 0);
     // @TODO
-    switch (random_access_iterator->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(random_access_iterator))
     {
     case _VECTOR_CONTAINER:
         return vector_iterator_next_n(random_access_iterator, n_step);
@@ -404,7 +407,7 @@ void iterator_prev_n(random_access_iterator_t* it_iter, int n_step)
     assert(iterator_limit_type(it_iter, _RANDOM_ACCESS_ITERATOR));
     assert(n_step > 0);
     //@TODO
-    switch (it_iter->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(it_iter))
     {
     case _VECTOR_CONTAINER:
         return vector_iterator_prev_n(it_iter, n_step);
@@ -428,7 +431,7 @@ bool iterator_less(random_access_iterator_t* it_first, random_access_iterator_t*
     assert(iterator_limit_type(it_first, _RANDOM_ACCESS_ITERATOR));
     assert(iterator_limit_type(it_second, _RANDOM_ACCESS_ITERATOR));
 
-    switch (it_first->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(it_first))
     {
     case _VECTOR_CONTAINER:
         return vector_iterator_less(it_first, it_second);
@@ -467,7 +470,7 @@ void* iterator_at(random_access_iterator_t* it_iter, int n_index)
     assert(iterator_is_valid(it_iter));
     assert(iterator_limit_type(it_iter, _RANDOM_ACCESS_ITERATOR));
 
-    switch (it_iter->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(it_iter))
     {
     case _VECTOR_CONTAINER:
         return vector_iterator_at(it_iter, n_index);
@@ -492,7 +495,7 @@ int iterator_minus(random_access_iterator_t* it_first, random_access_iterator_t*
     assert(iterator_is_valid(it_second));
     assert(iterator_limit_type(it_first, _RANDOM_ACCESS_ITERATOR));
 
-    switch (it_first->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(it_first))
     {
     case _VECTOR_CONTAINER:
         return vector_iterator_minus(it_first, it_second);
@@ -515,10 +518,10 @@ void iterator_advance(forward_iterator_t* it_iter, size_t n_step)
 {
     assert(iterator_is_valid(it_iter));
     assert(iterator_limit_type(it_iter, _FORWARD_ITERATOR));
-    switch (it_iter->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(it_iter))
     {
     case _VECTOR_CONTAINER:
-        it_iter->_t_pos += ((type_info_t*) it_iter->_pt_container)->_pt_type->_t_typesize * n_step;
+        it_iter->_t_pos += ((type_info_t*)it_iter->_pt_container)->_pt_type->_t_typesize * n_step;
         assert(it_iter->_t_pos >= ((vector_t*)it_iter->_pt_container)->_pby_finish);
         break;
     case _DEQUE_CONTAINER: // DYNAMIC-GROWN ARRAY BASED
@@ -547,7 +550,7 @@ void iterator_disadvance(bidirectional_iterator_t* it_iter, size_t n_step)
 int iterator_distance(iterator_t* it_first, iterator_t* it_second)
 {
     assert(iterator_same_type(it_first, it_second));
-    switch (it_first->_t_containertype)
+    switch (_ITERATOR_CONTAINER_TYPE(it_first))
     {
     case _VECTOR_CONTAINER:
     case _DEQUE_CONTAINER:
