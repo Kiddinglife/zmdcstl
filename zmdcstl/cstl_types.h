@@ -38,7 +38,7 @@ extern "C"
     typedef enum
     {
         _TYPE_STYLE_POD = 0, _TYPE_STYLE_CSTL, _TYPE_STYLE_USER_DEFINED, _TYPE_STYLE_INVALID
-    } typestyle_t;
+    }typestyle_t;
 
     /*
      * Type definition of unary function and binary function.
@@ -52,6 +52,7 @@ extern "C"
     typedef struct
     {
         unsigned char _t_typeid;
+        unsigned char _t_typealign;
         unsigned short _t_typesize; /* type size */
         unsigned char _t_style; /* type style */
         bfun_t _t_typecopy; /* type copy function */
@@ -70,8 +71,8 @@ extern "C"
     extern type_t* _apt_bucket[TYPE_REGISTER_BUCKET_COUNT];
     extern void show_registered_types();
     extern void init_types(void);
-    extern const char* get_type_name(typeid_t typeid);
-    extern const char* get_type_names(typeid_t typeids[], size_t size);
+extern const char* get_type_name(typeid_t typeid);
+extern const char* get_type_names(typeid_t typeids[], size_t size);
     extern bool type_info_is_same(const type_info_t* pt_first, const type_info_t* pt_second);
 
 #ifdef __cplusplus

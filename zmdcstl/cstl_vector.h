@@ -61,7 +61,6 @@ extern "C"
     {
         /* element type information */
         type_info_t _t_typeinfo;
-        iterator_fix_t _t_iterator_fix;
         /* vector core struct pointer */
         _byte_t* _pby_start; /* the start of used space */
         _byte_t* _pby_finish; /* the end of used space */
@@ -75,11 +74,11 @@ extern "C"
     * @return new vector iterator.
     * @remarks the newly created vector iterator is not a valid iterator, it does not belong to any vector.
     */
-#define  create_vector_iterator(vector_iterator_ptr) \
-    _VECTOR_ITERATOR_COREPOS(it_iter) = NULL;\
-    _ITERATOR_CONTAINER(it_iter) = NULL;\
-    _VECTOR_ITERATOR_CONTAINER_TYPE(it_iter) = _VECTOR_CONTAINER;\
-    _VECTOR_ITERATOR_ITERATOR_TYPE(it_iter) = _RANDOM_ACCESS_ITERATOR;
+#define  create_vector_iterator(it_iter) \
+    _VECTOR_ITERATOR_COREPOS((it_iter)) = NULL;\
+    _ITERATOR_CONTAINER((it_iter)) = NULL;\
+    _VECTOR_ITERATOR_CONTAINER_TYPE((it_iter)) = _VECTOR_CONTAINER;\
+    _VECTOR_ITERATOR_ITERATOR_TYPE((it_iter)) = _RANDOM_ACCESS_ITERATOR;
 
     /**
     * Compare two iterators for equality.
@@ -210,6 +209,7 @@ extern "C"
 
 
 
+    //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR VALIDATION STARTS ////////////////////////////////////////
     /**
     * Test iterator referenced data is within the vector.
     * @param cpvec_vector point to vector container.
@@ -219,6 +219,25 @@ extern "C"
     *          must belong to vector, otherwist the behavior is undefined.
     */
     extern bool vector_iterator_valid(const vector_t* cpvec_vector, vector_iterator_t* it_iter);
+
+    /**
+     * Test vector is initialized by vector initialization functions.
+     * @param cpvec_vector  vector container.
+     * @return if vector is initialized by vector initialization functions, then return true, else return false.
+     * @remarks if cpvec_vector == NULL, then the behavior is undefined.
+     */
+    extern bool vector_is_inited(const vector_t* cpvec_vector);
+    //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR VALIDATION ENDS ////////////////////////////////////////
+
+
+
+    //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR STARTS ////////////////////////////////////////
+    extern void vector_ctor(vector_t* vec, size_t argsize, ...);
+    extern void vector_ctor_n(vector_t* vec, size_t elesize, size_t argsize, ...);
+    extern void vector_ctor_n_v(vector_t* vec, size_t elesize, void* val, size_t argsize, ...);
+    extern void vector_ctor_range(vector_t* vec,forward_iterator_t* first, forward_iterator_t* last);
+    extern void vector_ctor_vector(vector_t* vec,const vector_t* x);
+    extern void vector_dtor(vector_t* vec);
 
     /**
     * a iterator that points just beyond the end of vector container.
@@ -236,23 +255,7 @@ extern "C"
     * @remarks vector_end() has been called to init it_end
     */
     extern void vector_end_again(vector_iterator_t* it_end);
-
-    /**
-     * Test vector is initialized by vector initialization functions.
-     * @param cpvec_vector  vector container.
-     * @return if vector is initialized by vector initialization functions, then return true, else return false.
-     * @remarks if cpvec_vector == NULL, then the behavior is undefined.
-     */
-    extern bool vector_is_inited(const vector_t* cpvec_vector);
-
-    /**
-     * Create vector container.
-     * @param s_typename element type name.
-     * @return if create vector successfully, then return vector pointer, else return NULL.
-     * @remarks if s_typename == NULL, then the behavior is undefined. s_typename should be C builtin type name,
-     *          libcstl builtin typename or registed user defined type name, otherwise the function will return NULL.
-     */
-    extern vector_t* create_vector(int size, ...);
+    //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ENDS ////////////////////////////////////////
 
 #ifdef __cplusplus
 }

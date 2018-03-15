@@ -2,14 +2,29 @@
 #include "cstl_types_builtin.h"
 
 static const char* g_buildin_type_str[TYPE_REGISTER_BUCKET_COUNT] = { "int8t", "uint8t", "int16t", "uint16t", "int32t",
-    "uint32t", "int64t", "uint64t", "floatt", "doublet", "voidpointert", "vector_tt", "list_tt", "map_tt", "hash_tt",
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL };
+        "uint32t", "int64t", "uint64t", "floatt", "doublet", "voidpointert", "vector_tt", "list_tt", "map_tt",
+        "hash_tt",
+        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+        NULL,
+        NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+        NULL,
+        NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL };
 
-static const char* g_type_style_str[] = { "_TYPE_STYLE_POD", "_TYPE_STYLE_CSTL", "_TYPE_STYLE_USER_DEFINED", "_TYPE_STYLE_USER_DEFINED", "_TYPE_STYLE_INVALID", };
+static const char* g_type_style_str[] = { "_TYPE_STYLE_POD", "_TYPE_STYLE_CSTL", "_TYPE_STYLE_USER_DEFINED",
+        "_TYPE_STYLE_USER_DEFINED", "_TYPE_STYLE_INVALID", };
+
+#ifndef CSTL_ALIGN_OF
+#if   defined(_MSC_VER) && (_MSC_VER < 1700)
+// Workaround for this VS 2010 compiler bug: https://connect.microsoft.com/VisualStudio/feedback/details/682695
+#define CSTL_ALIGN_OF(...) ( (sizeof(__VA_ARGS__)*0) + (__alignof(__VA_ARGS__)) )
+#elif !defined(__GNUC__) || (__GNUC__ >= 3) // GCC 2.x doesn't do __alignof correctly all the time.
+#define CSTL_ALIGN_OF __alignof
+#else
+#define CSTL_ALIGN_OF(type) ((size_t)offsetof(struct{ char c; type m; }, m))
+#endif
+#endif
 
 /* the pt_type, pt_node and t_pos must be defined before use those macro */
 #define register_type_start() type_t* pt_type
@@ -17,6 +32,7 @@ static const char* g_type_style_str[] = { "_TYPE_STYLE_POD", "_TYPE_STYLE_CSTL",
     pt_type = (type_t*)malloc(sizeof(type_t));\
     pt_type->_t_typeid = _registered_type_count;\
     pt_type->_t_typesize = sizeof(realtype);\
+    pt_type->_t_typealign = CSTL_ALIGN_OF(realtype);\
     pt_type->_t_style = tstyle;\
     pt_type->_t_typeinit = _type_init_##type;\
     pt_type->_t_typecopy = _type_copy_##type;\
@@ -28,17 +44,17 @@ static const char* g_type_style_str[] = { "_TYPE_STYLE_POD", "_TYPE_STYLE_CSTL",
 /** local constant declaration and local macro section **/
 static bool _t_isinit = false; /* is initializate for c and cstl built in types */
 static unsigned char _registered_type_count = 0;
-extern type_t* _apt_bucket[TYPE_REGISTER_BUCKET_COUNT] = { 0 };
+type_t* _apt_bucket[TYPE_REGISTER_BUCKET_COUNT] = { 0 };
 
-const char* get_type_name(typeid_t typeid)
+const char* print_type_name(typeid_t typeid)
 {
     const char* str = g_buildin_type_str[typeid];
     assert(str != NULL);
     return str;
 }
-const char* get_type_names(typeid_t typeids[], size_t size)
+const char* print_type_names(typeid_t typeids[], size_t size)
 {
-    char buff[256];
+    static char buff[256];
     char* buf = buff;
     int n;
     int maxbsize = 256;
@@ -49,11 +65,14 @@ const char* get_type_names(typeid_t typeids[], size_t size)
         buf += n;
         maxbsize -= n;
     }
-    return buff;
+    return (const char*) buff;
 }
 
 void init_types(void)
 {
+    if (_t_isinit)
+        return;
+
     register_type_start();
     register_type(char, char, _TYPE_STYLE_POD);
     register_type(char, uchar, _TYPE_STYLE_POD);
@@ -66,7 +85,7 @@ void init_types(void)
     register_type(float, float, _TYPE_STYLE_POD);
     register_type(double, double, _TYPE_STYLE_POD);
     register_type(void*, pointer, _TYPE_STYLE_POD);
-    
+
     //@TODO register cstl types
 
     for (int i = _registered_type_count; i < TYPE_REGISTER_BUCKET_COUNT; i++)
@@ -85,7 +104,7 @@ void show_registered_types()
         if (_apt_bucket[i])
         {
             printf("type name: %s, type style:%s, type size: %d\n", g_buildin_type_str[_apt_bucket[i]->_t_typeid],
-                g_type_style_str[_apt_bucket[i]->_t_style], _apt_bucket[i]->_t_typesize);
+                    g_type_style_str[_apt_bucket[i]->_t_style], _apt_bucket[i]->_t_typesize);
         }
     }
 }

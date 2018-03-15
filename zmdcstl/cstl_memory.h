@@ -115,6 +115,7 @@ extern "C"
     /// return value: Iterator of dest type to the element past the last element copied.
     ///
     extern void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_iterator_t* result);
+    extern void uninitialized_copy_n_vector(_byte_t* first, int n_step, _byte_t* result);
 
 #ifdef __cplusplus
 }

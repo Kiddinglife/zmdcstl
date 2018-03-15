@@ -515,8 +515,25 @@ void iterator_advance(forward_iterator_t* it_iter, size_t n_step)
 {
     assert(iterator_is_valid(it_iter));
     assert(iterator_limit_type(it_iter, _FORWARD_ITERATOR));
-    for (; n_step > 0; --n_step)
-        iterator_next(it_iter);
+    switch (it_iter->_t_containertype)
+    {
+    case _VECTOR_CONTAINER:
+        it_iter->_t_pos += ((type_info_t*) it_iter->_pt_container)->_pt_type->_t_typesize * n_step;
+        assert(it_iter->_t_pos >= ((vector_t*)it_iter->_pt_container)->_pby_finish);
+        break;
+    case _DEQUE_CONTAINER: // DYNAMIC-GROWN ARRAY BASED
+        //it_iter->_t_pos += ((type_info_t*) it_iter->_pt_container)->_pt_type->_t_typesize * n_step;
+        //assert();     // @TODO
+        break;
+    case _BASIC_STRING_CONTAINER:
+        //it_iter->_t_pos += ((type_info_t*) it_iter->_pt_container)->_pt_type->_t_typesize * n_step;
+        //assert();     // @TODO
+        break;
+    default:
+        for (; n_step > 0; --n_step)
+            iterator_next(it_iter);
+        break;
+    }
 }
 
 void iterator_disadvance(bidirectional_iterator_t* it_iter, size_t n_step)
