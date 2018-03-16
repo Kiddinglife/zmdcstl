@@ -68,11 +68,14 @@ void destruct_n(forward_iterator_t* first, int n)
     assert(iterator_is_valid(first));
     assert(iterator_limit_type(first, _FORWARD_ITERATOR));
     bool ret = false;
-    for (; n > 0; n--)
+    if(_ITERATOR_TYPE_INFO(first)._pt_type->_t_style != _TYPE_STYLE_POD)
     {
-        _ITERATOR_TYPE_INFO(first)._pt_type->_t_typeinit(first->_t_pos, &ret);
-        iterator_next(first);
-        assert(ret);
+    	for (; n > 0; n--)
+        {
+            _ITERATOR_TYPE_INFO(first)._pt_type->_t_typedestroy(first->_t_pos, &ret);
+            iterator_next(first);
+            assert(ret);
+        }
     }
 }
 
