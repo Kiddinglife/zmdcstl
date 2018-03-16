@@ -94,6 +94,7 @@ extern "C"
 #define _ITERATOR_META_TYPE(it_iter)                       ((meta_t*)((it_iter)->_pt_container))
 #define _ITERATOR_CONTAINER_TYPE(it_iter)             (((meta_t*)((it_iter)->_pt_container))->_t_containertype)
 #define _ITERATOR_ITERATOR_TYPE(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype)
+#define _ITERATOR_TYPE_INFO(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_typeinfo)
 #define _STRING_CONTAINER        _BASIC_STRING_CONTAINER
 
     typedef enum _tagcontainertype
@@ -138,10 +139,18 @@ extern "C"
     ///
     typedef enum
     {
-        isf_none = 0x00, /// This is called none and not called invalid because it is not strictly the opposite of invalid.
-        isf_valid = 0x01, /// The iterator is valid, which means it is in the range of [begin, end].
-        isf_current = 0x02, /// The iterator is valid and points to the same element it did when created. For example, if an iterator points to vector::begin() but an element is inserted at the front, the iterator is valid but not current. Modification of elements in place do not make iterators non-current.
-        isf_can_dereference = 0x04 /// The iterator is dereferencable, which means it is in the range of [begin, end). It may or may not be current.
+        /// This is called none and not called invalid because it is not strictly the opposite of invalid.
+        isf_none = 0x00,
+        /// The iterator is valid, which means it is in the range of [begin, end].
+        isf_valid = 0x01,
+        /// The iterator is valid and points to the same element it did when created.
+        /// For example, if an iterator points to vector::begin() but an element is inserted
+        /// at the front, the iterator is valid but not current. Modification of elements
+        /// in place do not make iterators non-current
+        isf_current = 0x02,
+        /// The iterator is dereferencable, which means it is in the range of [begin, end).
+        ///  It may or may not be current
+        isf_can_dereference = 0x04
     }iterator_status_flag;
 
     typedef struct _tagiterator
