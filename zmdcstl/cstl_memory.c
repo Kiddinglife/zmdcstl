@@ -83,7 +83,6 @@ void destruct_at(input_iterator_t* destination)
 {
     assert(iterator_is_valid(destination));
     assert(iterator_limit_type(destination, _INPUT_ITERATOR));
-    type_info_t* info = ((type_info_t*) (destination->_pt_container));
     bool ret = false;
     _ITERATOR_TYPE_INFO(destination)._pt_type->_t_typedestroy(destination->_t_pos, &ret);
     assert(ret);
@@ -149,8 +148,8 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward
 
     bool ret = false;
 
-    if (_ITERATOR_CONTAINER_TYPE(first) == _RANDOM_ACCESS_ITERATOR
-            && _ITERATOR_CONTAINER_TYPE(last) == _RANDOM_ACCESS_ITERATOR)
+    if (_ITERATOR_ITERATOR_TYPE(first) == _RANDOM_ACCESS_ITERATOR
+            && _ITERATOR_ITERATOR_TYPE(last) == _RANDOM_ACCESS_ITERATOR)
     {
         if (_ITERATOR_TYPE_INFO(first)._pt_type->_t_style == _TYPE_STYLE_POD)
         {
@@ -176,8 +175,8 @@ void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_iterator_
     assert(iterator_is_valid(first) && iterator_is_valid(result));
     assert(iterator_limit_type(first, _INPUT_ITERATOR) && iterator_limit_type(result, _FORWARD_ITERATOR));
 
-    if (_ITERATOR_CONTAINER_TYPE(first) == _RANDOM_ACCESS_ITERATOR
-            && _ITERATOR_CONTAINER_TYPE(result) == _RANDOM_ACCESS_ITERATOR)
+    if (_ITERATOR_ITERATOR_TYPE(first) == _RANDOM_ACCESS_ITERATOR
+            && _ITERATOR_ITERATOR_TYPE(result) == _RANDOM_ACCESS_ITERATOR)
     {
         if (_ITERATOR_TYPE_INFO(first)._pt_type->_t_style == _TYPE_STYLE_POD)
         {

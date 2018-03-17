@@ -23,13 +23,13 @@ extern "C"
 #endif
 #endif
 
-    // n is the toal size
+// these two macros are the same except that first one receives type but second one receives value parameters
 #ifndef NDEBUG
-#define cstl_alloc(type, n) cstl_alloc_(__FILE__,__LINE__,sizeof(type)*(n), CSTL_ALIGN_OF(type))
-#define cstl_alloc_ex(sizeoftype,align,n) cstl_alloc_(__FILE__,__LINE__,(n)*(sizeoftype),align)
+#define cstl_alloc(type, n) ((type*)cstl_alloc_(__FILE__,__LINE__,sizeof(type)*(n), CSTL_ALIGN_OF(type)))
+#define cstl_alloc_ex(sizeoftype,align,n) ((type*)cstl_alloc_(__FILE__,__LINE__,(n)*(sizeoftype),align))
 #else
-#define cstl_alloc(type, n) cstl_alloc_(0,0,sizeof(type)*(n), CSTL_ALIGN_OF(type))
-#define cstl_alloc_ex(sizeoftype,align,n) cstl_alloc_(0,0,(n)*(sizeoftype),align)
+#define cstl_alloc(type, n) ((type*)cstl_alloc_(0,0,sizeof(type)*(n), CSTL_ALIGN_OF(type)))
+#define cstl_alloc_ex(sizeoftype,align,n) ((type*)cstl_alloc_(0,0,(n)*(sizeoftype),align))
 #endif
 
 #define cstl_free(p) free(*((void**) p - 1))

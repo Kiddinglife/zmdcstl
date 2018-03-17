@@ -1,4 +1,5 @@
 #include "cstl_types.h"
+#include "cstl_alloc.h"
 #include "cstl_types_builtin.h"
 
 static const char* g_buildin_type_str[TYPE_REGISTER_BUCKET_COUNT] = { "int8t", "uint8t", "int16t", "uint16t", "int32t",
@@ -28,9 +29,9 @@ static const char* g_type_style_str[] = { "_TYPE_STYLE_POD", "_TYPE_STYLE_CSTL",
 
 /* the pt_type, pt_node and t_pos must be defined before use those macro */
 #define register_type_start() type_t* pt_type
-#define register_type(realtype, type, tstyle)\
+#define register_type(realtype, type, tstyle,_t_typeinit, _t_typecopy)\
     pt_type = (type_t*)malloc(sizeof(type_t));\
-    pt_type->_t_typeid = _registered_type_count;\
+    pt_type->_t_typeid = _g_type_register._registered_size;\
     pt_type->_t_typesize = sizeof(realtype);\
     pt_type->_t_typealign = CSTL_ALIGN_OF(realtype);\
     pt_type->_t_style = tstyle;\
@@ -38,13 +39,27 @@ static const char* g_type_style_str[] = { "_TYPE_STYLE_POD", "_TYPE_STYLE_CSTL",
     pt_type->_t_typecopy = _type_copy_##type;\
     pt_type->_t_typeless = _type_less_##type;\
     pt_type->_t_typedestroy = _type_destroy_##type;\
-    _apt_bucket[_registered_type_count] = pt_type;\
-    _registered_type_count++
+    _g_type_register._ptr_types[_g_type_register._registered_size] = pt_type;\
+    _g_type_register._registered_size++
 
+typeid_t register_type(bfun_t type_init)
+{
+  type_t* pt_type;
+  pt_type = (type_t*)malloc(sizeof(type_t));
+  pt_type->_t_typeid = _g_type_register._registered_size;
+  pt_type->_t_typesize = sizeof(realtype);
+  pt_type->_t_typealign = CSTL_ALIGN_OF(realtype);
+  pt_type->_t_style = tstyle;
+  pt_type->_t_typeinit = _type_init_##type;
+  pt_type->_t_typecopy = _type_copy_##type;
+  pt_type->_t_typeless = _type_less_##type;
+  pt_type->_t_typedestroy = _type_destroy_##type;
+  _g_type_register._ptr_types[_g_type_register._registered_size] = pt_type;
+  _g_type_register._registered_size++;
+  return _(typeid_t)(_g_type_register._registered_size - 1);
+}
 /** local constant declaration and local macro section **/
-static bool _t_isinit = false; /* is initializate for c and cstl built in types */
-static unsigned char _registered_type_count = 0;
-type_t* _apt_bucket[TYPE_REGISTER_BUCKET_COUNT] = { 0 };
+type_register_t _g_type_register = {0};
 
 const char* print_type_name(typeid_t typeid)
 {
@@ -68,10 +83,14 @@ const char* print_type_names(typeid_t typeids[], size_t size)
     return (const char*) buff;
 }
 
-void init_types(void)
+void init_types(size_t usertypesize)
 {
-    if (_t_isinit)
+    if (_g_type_register._ptr_types)
         return;
+
+    _g_type_register._total_size = usertypesize + (size_t)default_types_size;
+    _g_type_register._ptr_types = cstl_alloc(type_t,  _g_type_register._total_size);
+
 
     register_type_start();
     register_type(char, char, _TYPE_STYLE_POD);
