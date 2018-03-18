@@ -37,11 +37,16 @@ extern "C"
     typedef iterator_t vector_iterator_t;
     typedef iterator_t vector_reverse_iterator_t;
 
-#define _GET_VECTOR_TYPE_SIZE(pvec_vector)             ((pvec_vector)->meta._t_typeinfo._pt_type->_t_typesize)
+#define _GET_VECTOR_TYPE_INFO(pvec_vector) (((meta_t*)pvec_vector)->_t_typeinfo)
+#define _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector)\
+  (_g_type_register._ptr_types[((meta_t*)pvec_vector)->_t_typeinfo.typeids_ptr[0]])
+#define _GET_VECTOR_TYPE_SIZE(pvec_vector)\
+  (_g_type_register._ptr_types[((meta_t*)pvec_vector)->_t_typeinfo.typeids_ptr[0]]->_t_typesize)
 #define _GET_VECTOR_TYPE_NAME(pvec_vector)             get_type_name((pvec_vector)->_t_typeinfo._pt_type->_t_typeid)
 #define _GET_VECTOR_TYPE_BASENAME(pvec_vector)         get_type_names((pvec_vector)->_t_typeinfo._t_typeids, (pvec_vector)->_t_typeinfo._t_typeidsize)
 #define _GET_VECTOR_TYPE_INIT_FUNCTION(pvec_vector)    ((pvec_vector)->_t_typeinfo._pt_type->_t_typeinit)
-#define _GET_VECTOR_TYPE_COPY_FUNCTION(pvec_vector)    ((pvec_vector)->meta._t_typeinfo._pt_type->_t_typecopy)
+#define _GET_VECTOR_TYPE_COPY_FUNCTION(pvec_vector) \
+    (_g_type_register._ptr_types[((meta_t*)pvec_vector)->_t_typeinfo.typeids_ptr[0]]->_t_typecopy)
 #define _GET_VECTOR_TYPE_LESS_FUNCTION(pvec_vector)    ((pvec_vector)->_t_typeinfo._pt_type->_t_typeless)
 #define _GET_VECTOR_TYPE_DESTROY_FUNCTION(pvec_vector) ((pvec_vector)->_t_typeinfo._pt_type->_t_typedestroy)
 #define _GET_VECTOR_TYPE_STYLE(pvec_vector)            ((pvec_vector)->_t_typeinfo._t_type->_t_style)
@@ -239,7 +244,7 @@ extern "C"
     extern void vector_ctor_n(vector_t* vec, size_t elesize, size_t argsize, ...);
     extern void vector_ctor_n_v(vector_t* vec, size_t elesize, void* val, size_t argsize, ...);
     extern void vector_ctor_range(vector_t* vec, forward_iterator_t* first, forward_iterator_t* last);
-    extern void vector_ctor_vector(vector_t* vec, const vector_t* x);
+    extern void vector_ctor_vector(vector_t* vec, vector_t* x);
     extern void vector_dtor(vector_t* vec);
 
     /**

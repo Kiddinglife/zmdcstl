@@ -9,9 +9,20 @@ extern "C"
 #include <stddef.h>
 #include "cstl_def.h"
 
+#ifndef CSTL_ALIGN_OF
+#if   defined(_MSC_VER) && (_MSC_VER < 1700)
+// Workaround for this VS 2010 compiler bug: https://connect.microsoft.com/VisualStudio/feedback/details/682695
+#define CSTL_ALIGN_OF(...) ( (sizeof(__VA_ARGS__)*0) + (__alignof(__VA_ARGS__)) )
+#elif !defined(__GNUC__) || (__GNUC__ >= 3) // GCC 2.x doesn't do __alignof correctly all the time.
+#define CSTL_ALIGN_OF __alignof
+#else
+#define CSTL_ALIGN_OF(type) ((size_t)offsetof(struct{ char c; type m; }, m))
+#endif
+#endif
+
 // user can override this
 #define TYPE_NAME_SIZE 255
-#define TYPE_REGISTER_BUCKET_COUNT  64
+#define TYPE_REGISTER_BUCKET_COUNT  128
 #define TYPE_ID_SIZE              (sizeof(unsigned char*))
 
 typedef enum
@@ -52,16 +63,15 @@ typedef void (*binary_function_t)(const void* in, const void* in_, void* out);
 typedef unary_function_t ufun_t;
 typedef binary_function_t bfun_t;
 
-typedef struct
+typedef struct _tagtype_t
 {
   unsigned char _t_typeid;
   unsigned char _t_typealign;
   unsigned short _t_typesize; /* type size */
-  unsigned char _t_style; /* type style */
   ufun_t _t_typeinit; /* if null, use bzero */
   ufun_t _t_typedestroy; /* if null, do nothing */
   bfun_t _t_typecopy; /* if null, use memcpy*/
-  bfun_t _t_typeless; /* if null, use memcmp*/
+  bfun_t _t_typeless; /* can never be null*/
 } type_t;
 
 #define TYPE_INFO_TYPE_ID_FIRST(type_info) ((type_info)._t_typeids[0])
@@ -71,24 +81,27 @@ typedef struct _tagtype_info_t
 {
   union
   {
-    unsigned char* ptr;
-    unsigned char buf[TYPE_ID_SIZE];
-  } _t_typeids;
+    unsigned char* typeids_ptr;
+    unsigned char typeids[TYPE_ID_SIZE];
+  };
   unsigned char _t_typeidsize;
 } type_info_t;
 
 typedef struct _tagtype_register_t
 {
-  type_t* _ptr_types;
+  type_t** _ptr_types;
   unsigned char _registered_size;
   unsigned char _total_size;
 } type_register_t;
 
+void print_type_names(typeid_t typeids[], size_t size);
+extern void print_registered_types();
+
 extern type_register_t _g_type_register;
-extern void show_registered_types();
-extern void init_types(void);
-extern const char* get_type_name(typeid_t typeid);
-extern const char* get_type_names(typeid_t typeids[], size_t size);
+extern void init_types(size_t usertypesize);
+extern void destroy_types();
+extern typeid_t register_type(size_t typesize, size_t typealign,
+    ufun_t type_init, bfun_t type_copy, ufun_t type_destroy, bfun_t type_less);
 extern bool type_info_is_same(const type_info_t* pt_first,
     const type_info_t* pt_second);
 

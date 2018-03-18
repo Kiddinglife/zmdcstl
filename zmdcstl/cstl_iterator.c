@@ -7,6 +7,7 @@
 
 #include "cstl_iterator.h"
 #include "cstl_vector.h"
+#include "cstl_types.h"
 
 bool iterator_is_valid(iterator_t* it_iter)
 {
@@ -521,7 +522,7 @@ void iterator_advance(forward_iterator_t* it_iter, size_t n_step)
     switch (_ITERATOR_CONTAINER_TYPE(it_iter))
     {
     case _VECTOR_CONTAINER:
-        it_iter->_t_pos += ((type_info_t*)it_iter->_pt_container)->_pt_type->_t_typesize * n_step;
+        it_iter->_t_pos += _ITERATOR_TYPE_INFO_TYPE(it_iter)->_t_typesize * n_step;
         assert(it_iter->_t_pos >= ((vector_t*)it_iter->_pt_container)->_pby_finish);
         break;
     case _DEQUE_CONTAINER: // DYNAMIC-GROWN ARRAY BASED

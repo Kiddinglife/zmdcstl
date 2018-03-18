@@ -25,10 +25,7 @@ extern void _type_destroy_default(const void* cpv_input, void* pv_output);
  */
 /* c builtin */
 /* char */
-extern void _type_init_char(const void* cpv_input, void* pv_output);
-extern void _type_copy_char(const void* cpv_first, const void* cpv_second, void* pv_output);
 extern void _type_less_char(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_char(const void* cpv_input, void* pv_output);
 /* unsigned char */
 extern void _type_init_uchar(const void* cpv_input, void* pv_output);
 extern void _type_copy_uchar(const void* cpv_first, const void* cpv_second, void* pv_output);
