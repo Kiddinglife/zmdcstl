@@ -225,7 +225,8 @@ void vector_ctor(vector_t* pvec_vector, size_t size, ...)
   va_start(args, size);
   for (int x = 0; x < size; x++)
   {
-    pvec_vector->meta._t_typeinfo.typeids_ptr[x] = ((unsigned char) va_arg(args,int));
+    pvec_vector->meta._t_typeinfo.typeids_ptr[x] = ((unsigned char) va_arg(args,
+        int));
   }
   va_end(args);
   pvec_vector->meta._t_containertype = _VECTOR_CONTAINER;
@@ -251,13 +252,11 @@ void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
   type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
   pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(
       type->_t_typesize, type->_t_typealign, elesize);
-  pvec_vector->_pby_endofstorage = pvec_vector->_pby_start
-      + elesize * type->_t_typesize;
+  size_t bytessize = elesize * type->_t_typesize;
+  pvec_vector->_pby_endofstorage = pvec_vector->_pby_start + bytessize;
 
-  random_access_iterator_t itr;
-  _ITERATOR_CONTAINER(&itr) = pvec_vector;
-  _VECTOR_ITERATOR_COREPOS(&itr) = pvec_vector->_pby_start;
-  uninitialized_default_fill_n(&itr, elesize);
+  // uninitialized default fill elesize elements
+  memset(pvec_vector->_pby_start, 0, bytessize);
 }
 
 void vector_ctor_n_v(vector_t* pvec_vector, size_t elesize, void* val,
@@ -331,7 +330,7 @@ void vector_ctor_vector(vector_t* pvec_vector, vector_t* x)
 }
 void vector_dtor(vector_t* pvec_vector)
 {
-  if(pvec_vector->meta._t_typeinfo.typeids_ptr)
+  if (pvec_vector->meta._t_typeinfo.typeids_ptr)
     cstl_free(pvec_vector->meta._t_typeinfo.typeids_ptr);
   if (pvec_vector->_pby_start)
     cstl_free(pvec_vector->_pby_start);
