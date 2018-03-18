@@ -103,9 +103,11 @@ void uninitialized_default_fill_n(forward_iterator_t* destination, size_t n)
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(destination);
   for (; n > 0; n--)
   {
-    type->_t_typeinit(destination->_t_pos, &ret);
+    if (type->_t_typeinit)
+      type->_t_typeinit(destination->_t_pos, &ret);
+    else
+      memset(destination->_t_pos, 0, type->_t_typesize);
     iterator_next(destination);
-    assert(ret);
   }
 }
 
@@ -120,8 +122,10 @@ void uninitialized_default_fill(forward_iterator_t* first,
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
   for (; !iterator_equal(first, last); iterator_next(first))
   {
-    type->_t_typeinit(first->_t_pos, &ret);
-    assert(ret);
+    if (type->_t_typeinit)
+      type->_t_typeinit(first->_t_pos, &ret);
+    else
+      memset(first->_t_pos, 0, type->_t_typesize);
   }
 }
 
@@ -151,7 +155,7 @@ void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last,
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
   for (; !iterator_equal(first, last); iterator_next(first))
   {
-    type->_t_typecopy(first->_t_pos, value,&ret);
+    type->_t_typecopy(first->_t_pos, value, &ret);
     assert(ret);
   }
 }
@@ -185,8 +189,7 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last,
   {
     for (; !iterator_equal(first, last); iterator_next(first))
     {
-      type->_t_typecopy(result->_t_pos,
-          first->_t_pos, &ret);
+      type->_t_typecopy(result->_t_pos, first->_t_pos, &ret);
       iterator_next(result);
       assert(ret);
     }
@@ -214,8 +217,7 @@ void uninitialized_copy_n(input_iterator_t* first, int n_step,
     bool ret = false;
     for (; n_step > 0; --n_step)
     {
-      type->_t_typecopy(result->_t_pos,
-          first->_t_pos, &ret);
+      type->_t_typecopy(result->_t_pos, first->_t_pos, &ret);
       iterator_next(result);
       iterator_next(first);
       assert(ret);

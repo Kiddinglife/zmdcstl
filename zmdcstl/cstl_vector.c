@@ -215,15 +215,19 @@ size_t vector_iterator_minus(vector_iterator_t* it_first,
       / (int) _GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_first));
 }
 
+#include <stdint.h>
 void vector_ctor(vector_t* pvec_vector, size_t size, ...)
 {
   // map_t<vector_t<int>, list<string>>
+  pvec_vector->meta._t_typeinfo.typeids_ptr = cstl_alloc(unsigned char, size);
+
   va_list args;
   va_start(args, size);
   for (int x = 0; x < size; x++)
-    pvec_vector->meta._t_typeinfo.typeids_ptr[x] = va_arg(args, unsigned char);
+  {
+    pvec_vector->meta._t_typeinfo.typeids_ptr[x] = ((unsigned char) va_arg(args,int));
+  }
   va_end(args);
-
   pvec_vector->meta._t_containertype = _VECTOR_CONTAINER;
   pvec_vector->meta._t_iteratortype = _RANDOM_ACCESS_ITERATOR;
   pvec_vector->meta._t_typeinfo._t_typeidsize = size;
@@ -233,6 +237,8 @@ void vector_ctor(vector_t* pvec_vector, size_t size, ...)
 }
 void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
 {
+  pvec_vector->meta._t_typeinfo.typeids_ptr = cstl_alloc(unsigned char, size);
+
   va_list args;
   va_start(args, size);
   for (int x = 0; x < size; x++)
@@ -257,6 +263,8 @@ void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
 void vector_ctor_n_v(vector_t* pvec_vector, size_t elesize, void* val,
     size_t size, ...)
 {
+  pvec_vector->meta._t_typeinfo.typeids_ptr = cstl_alloc(unsigned char, size);
+
   va_list args;
   va_start(args, size);
   for (int x = 0; x < size; x++)
@@ -287,6 +295,7 @@ void vector_ctor_range(vector_t* pvec_vector, forward_iterator_t* first,
   assert(iterator_same_type(first, last));
 
   int elesize = iterator_distance(first, last);
+  _ITERATOR_META_TYPE(first)->_t_typeinfo.typeids_ptr = NULL;
   pvec_vector->meta = *_ITERATOR_META_TYPE(first);
   type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
   pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(
@@ -322,6 +331,8 @@ void vector_ctor_vector(vector_t* pvec_vector, vector_t* x)
 }
 void vector_dtor(vector_t* pvec_vector)
 {
+  if(pvec_vector->meta._t_typeinfo.typeids_ptr)
+    cstl_free(pvec_vector->meta._t_typeinfo.typeids_ptr);
   if (pvec_vector->_pby_start)
     cstl_free(pvec_vector->_pby_start);
 }

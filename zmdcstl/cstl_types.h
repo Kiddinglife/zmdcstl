@@ -79,11 +79,7 @@ typedef struct _tagtype_t
 
 typedef struct _tagtype_info_t
 {
-  union
-  {
-    unsigned char* typeids_ptr;
-    unsigned char typeids[TYPE_ID_SIZE];
-  };
+  unsigned char* typeids_ptr;
   unsigned char _t_typeidsize;
 } type_info_t;
 

@@ -30,19 +30,18 @@ TEST test_vector_ctor_scalar_type(void)
 {
   vector_t pvec_vector;
   vector_ctor(&pvec_vector, 1, cstl_uint32);
-//  ASSERT_EQ(pvec_vector._pby_finish, NULL )
-//  ;
-//  ASSERT_EQ(pvec_vector._pby_start, NULL )
-//  ;
-//  ASSERT_EQ(pvec_vector._pby_endofstorage, NULL )
-//  ;
-//  ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER )
-//  ;
-//  ASSERT_EQ(pvec_vector.meta._t_iteratortype, _RANDOM_ACCESS_ITERATOR )
-//  ;
-//  ASSERT_EQ(_GET_VECTOR_TYPE_INFO(&pvec_vector).typeids_ptr[0], cstl_uint32);
-//  ASSERT_EQ(pvec_vector.meta._t_typeinfo._t_typeidsize, 1)
-//  ;
+  ASSERT_EQ(pvec_vector._pby_finish, NULL )
+  ;
+  ASSERT_EQ(pvec_vector._pby_start, NULL )
+  ;
+  ASSERT_EQ(pvec_vector._pby_endofstorage, NULL )
+  ;
+  ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER )
+  ;
+  ASSERT_EQ(pvec_vector.meta._t_iteratortype, _RANDOM_ACCESS_ITERATOR )
+  ;
+  ASSERT_EQ(_GET_VECTOR_TYPE_INFO(&pvec_vector).typeids_ptr[0], cstl_uint32);
+  ASSERT_EQ(pvec_vector.meta._t_typeinfo._t_typeidsize, 1);
   vector_dtor(&pvec_vector);
   PASS()
   ;
@@ -74,7 +73,7 @@ TEST test_vector_ctor_n_scalar_type(void)
 SUITE(test_vector)
 {
   RUN_TEST(test_vector_ctor_scalar_type);
-  //RUN_TEST(test_vector_ctor_n_scalar_type);
+  RUN_TEST(test_vector_ctor_n_scalar_type);
 }
 
 /* Add definitions that need to be in the test runner's main file. */
