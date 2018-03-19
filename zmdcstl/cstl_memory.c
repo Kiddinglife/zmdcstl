@@ -14,6 +14,9 @@
 #pragma warning(disable: 4146)  // unary minus operator applied to unsigned type, result still unsigned
 #endif
 
+//TODO call container-specific impl
+
+//todo use fast_memcpy
 #define cstl_memcpy memcpy
 
 void* align(size_t alignment, size_t size, void** ptr, size_t* space)
