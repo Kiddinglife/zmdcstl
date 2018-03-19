@@ -76,6 +76,8 @@ typedef struct _tagtype_t
 
 #define TYPE_INFO_TYPE_ID_FIRST(type_info) ((type_info)._t_typeids[0])
 #define TYPE_INFO_TYPE_ID_SIZE(type_info) ((type_info)._t_typeidsize)
+#define TYPE_INFO_TYPE_IDS(_t_typeinfo) \
+  (((_t_typeinfo)._t_typeidsize) > TYPE_ID_SIZE ? (_t_typeinfo).typeids_ptr : (unsigned char*)&(_t_typeinfo.typeids_ptr))
 
 typedef struct _tagtype_info_t
 {

@@ -96,7 +96,7 @@ extern "C"
 #define _ITERATOR_ITERATOR_TYPE(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype)
 #define _ITERATOR_TYPE_INFO(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_typeinfo)
 #define _ITERATOR_TYPE_INFO_TYPE(it_iter)\
-  (_g_type_register._ptr_types[((unsigned char*)((meta_t*)it_iter->_pt_container)->_t_typeinfo.typeids_ptr)[0]])
+    (_g_type_register._ptr_types[TYPE_INFO_TYPE_IDS(((meta_t*)(it_iter->_pt_container))->_t_typeinfo)[0]])
 #define _ITERATOR_TYPE_INFO_TYPE_IDS_PTR(it_iter) (((meta_t*)it_iter->_pt_container)->_t_typeinfo.typeids_ptr)
 #define _ITERATOR_TYPE_INFO_TYPE_IDS(it_iter) (((meta_t*)it_iter->_pt_container)->_t_typeinfo.typeids)
 #define _STRING_CONTAINER        _BASIC_STRING_CONTAINER

@@ -6,6 +6,8 @@ void* cstl_alloc_(const char* file, int line, size_t n, size_t alignment)
     assert((alignment & (alignment - 1)) == 0); // must be powers 2
     assert((n % alignment) == 0); // must be multiples of alignment
 
+    if(n == 0) return NULL;
+
     size_t adjustedAlignment = (alignment > EA_PLATFORM_PTR_SIZE) ? alignment : EA_PLATFORM_PTR_SIZE;
 
     // ptr offset plus alignment offset
