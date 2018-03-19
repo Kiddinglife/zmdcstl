@@ -22,17 +22,18 @@
 		<nature>org.eclipse.cdt.core.cnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
 	</natures>
 	<linkedResources>
 		<link>
 			<name>ut</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/ut</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/ut</locationURI>
 		</link>
 		<link>
 			<name>zmdcstl</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/zmdcstl</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/zmdcstl</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
