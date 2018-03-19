@@ -21,7 +21,7 @@ extern "C"
 #define _VECTOR_ITERATOR_COREPOS(it_iter)               ((it_iter)->_t_pos)
 #define _VECTOR_ITERATOR_CONTAINER(it_iter)             ((vector_t*)((it_iter)->_pt_container))
 #define _VECTOR_ITERATOR_CONTAINER_TYPE(it_iter)     (((meta_t*)((it_iter)->_pt_container))->_t_containertype)
-#define _VECTOR_ITERATOR_ITERATOR_TYPE(it_iter)         (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype)
+//#define _VECTOR_ITERATOR_ITERATOR_TYPE(it_iter)         (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype)
 /* list iterator handler */
 #define _LIST_ITERATOR_COREPOS(it_iter)                 ((it_iter)._t_pos._pby_corepos)
 #define _LIST_ITERATOR_CONTAINER(it_iter)               ((list_t*)((it_iter)._pt_container))
@@ -94,7 +94,7 @@ extern "C"
 #define _ITERATOR_CONTAINER(it_iter)                    ((it_iter)->_pt_container)
 #define _ITERATOR_META_TYPE(it_iter)                       ((meta_t*)((it_iter)->_pt_container))
 #define _ITERATOR_CONTAINER_TYPE(it_iter)             (((meta_t*)((it_iter)->_pt_container))->_t_containertype)
-#define _ITERATOR_ITERATOR_TYPE(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype)
+//#define _ITERATOR_ITERATOR_TYPE(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype)
 #define _ITERATOR_TYPE_INFO(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_typeinfo)
 #define _ITERATOR_TYPE_INFO_TYPE(it_iter)\
     (_g_type_register._ptr_types[TYPE_INFO_TYPE_IDS(((meta_t*)(it_iter->_pt_container))->_t_typeinfo)[0]])
@@ -168,7 +168,7 @@ extern "C"
     typedef  struct _tagmeta
     {
         containertype_t _t_containertype;
-        iteratortype_t _t_iteratortype;
+        //iteratortype_t _t_iteratortype;
         type_info_t _t_typeinfo;
     }meta_t;
 

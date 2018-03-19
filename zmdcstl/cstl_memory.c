@@ -191,75 +191,33 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last,
   assert(
       iterator_same_elem_type(first, last)
           && iterator_same_elem_type(first, result));
-//  switch (_ITERATOR_CONTAINER_TYPE(first))
-//  {
-//    case _VECTOR_CONTAINER:
-//      return vector_iterator_prev(bidirectional_iterator);
-//      break;
-//    case _LIST_CONTAINER:
-//      //return _list_iterator_next(it_iter);
-//      break;
-//    case _DEQUE_CONTAINER:
-//      // return _deque_iterator_next(it_iter);
-//      break;
-//    case _SLIST_CONTAINER:
-//      //return _slist_iterator_next(it_iter);
-//      break;
-//    case _SET_CONTAINER:
-//      //return _set_iterator_next(it_iter);
-//      break;
-//    case _MULTISET_CONTAINER:
-//      //return _multiset_iterator_next(it_iter);
-//      break;
-//    case _MAP_CONTAINER:
-//      //return _map_iterator_next(it_iter);
-//      break;
-//    case _MULTIMAP_CONTAINER:
-//      //return _multimap_iterator_next(it_iter);
-//      break;
-//    case _HASH_SET_CONTAINER:
-//      // return _hash_set_iterator_next(it_iter);
-//      break;
-//    case _HASH_MULTISET_CONTAINER:
-//      //return _hash_multiset_iterator_next(it_iter);
-//      break;
-//    case _HASH_MAP_CONTAINER:
-//      //return _hash_map_iterator_next(it_iter);
-//      break;
-//    case _HASH_MULTIMAP_CONTAINER:
-//      //return _hash_multimap_iterator_next(it_iter);
-//      break;
-//    case _BASIC_STRING_CONTAINER:
-//      //return _basic_string_iterator_next(it_iter);
-//      break;
-//    default:
-//      assert(false);
-//      break;
-//  }
 
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
-  if (_ITERATOR_ITERATOR_TYPE(first) == _RANDOM_ACCESS_ITERATOR&&
-  _ITERATOR_ITERATOR_TYPE(last) == _RANDOM_ACCESS_ITERATOR &&
-  type->_t_typecopy == NULL)
+  int n_step;
+  switch (_ITERATOR_CONTAINER_TYPE(first))
   {
-    int n_step = iterator_distance(first, last);
-    cstl_memcpy(result->_t_pos, first->_t_pos, n_step * type->_t_typesize);
-    iterator_advance(result, n_step);
-  } else
-  {
-    for (; !iterator_equal(first, last); iterator_next(first))
-    {
-      if (type->_t_typecopy)
+    case _VECTOR_CONTAINER:
+    case _DEQUE_CONTAINER:
+    case _BASIC_STRING_CONTAINER:
+      n_step = iterator_distance(first, last);
+      cstl_memcpy(result->_t_pos, first->_t_pos, n_step * type->_t_typesize);
+      iterator_advance(result, n_step);
+      break;
+    default:
+      for (; !iterator_equal(first, last); iterator_next(first))
       {
-        bool ret = false;
-        type->_t_typecopy(result->_t_pos, first->_t_pos, &ret);
-        iterator_next(result);
-        assert(ret);
-      } else
-      {
-        cstl_memcpy(result->_t_pos, first->_t_pos, type->_t_typesize);
+        if (type->_t_typecopy)
+        {
+          bool ret = false;
+          type->_t_typecopy(result->_t_pos, first->_t_pos, &ret);
+          iterator_next(result);
+          assert(ret);
+        } else
+        {
+          cstl_memcpy(result->_t_pos, first->_t_pos, type->_t_typesize);
+        }
       }
-    }
+      break;
   }
 }
 
@@ -270,25 +228,29 @@ void uninitialized_copy_n(input_iterator_t* first, int n_step,
   assert(
       iterator_limit_type(first, _INPUT_ITERATOR)
           && iterator_limit_type(result, _FORWARD_ITERATOR));
+
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
-  if (_ITERATOR_ITERATOR_TYPE(first) == _RANDOM_ACCESS_ITERATOR
-      && _ITERATOR_ITERATOR_TYPE(result) == _RANDOM_ACCESS_ITERATOR)
+  bool ret = false;
+  switch (_ITERATOR_CONTAINER_TYPE(first))
   {
-    if (type->_t_typecopy == NULL)
-    {
-      cstl_memcpy(result->_t_pos, first->_t_pos, n_step * type->_t_typesize);
-      iterator_advance(result, n_step);
-    }
-  } else
-  {
-    bool ret = false;
-    for (; n_step > 0; --n_step)
-    {
-      type->_t_typecopy(result->_t_pos, first->_t_pos, &ret);
-      iterator_next(result);
-      iterator_next(first);
-      assert(ret);
-    }
+    case _VECTOR_CONTAINER:
+    case _DEQUE_CONTAINER:
+    case _BASIC_STRING_CONTAINER:
+      if (type->_t_typecopy == NULL)
+      {
+        cstl_memcpy(result->_t_pos, first->_t_pos, n_step * type->_t_typesize);
+        iterator_advance(result, n_step);
+      }
+      break;
+    default:
+      for (; n_step > 0; --n_step)
+      {
+        type->_t_typecopy(result->_t_pos, first->_t_pos, &ret);
+        iterator_next(result);
+        iterator_next(first);
+        assert(ret);
+      }
+      break;
   }
 }
 

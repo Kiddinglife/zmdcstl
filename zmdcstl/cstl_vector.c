@@ -25,7 +25,6 @@ bool vector_iterator_valid(const vector_t* cpvec_vector,
     vector_iterator_t* it_iter)
 {
   bool b1 = vector_is_inited(cpvec_vector) &&
-  _VECTOR_ITERATOR_ITERATOR_TYPE(it_iter) == _RANDOM_ACCESS_ITERATOR &&
   _VECTOR_ITERATOR_CONTAINER_TYPE(it_iter) == _VECTOR_CONTAINER &&
   _VECTOR_ITERATOR_CONTAINER(it_iter) == cpvec_vector &&
   _VECTOR_ITERATOR_COREPOS(it_iter) >= cpvec_vector->_pby_start;
@@ -59,7 +58,7 @@ void vector_end(const vector_t* cpvec_vector, vector_iterator_t* it_end)
   assert(cpvec_vector != NULL);
   assert(vector_is_inited(cpvec_vector));
   _VECTOR_ITERATOR_CONTAINER_TYPE(it_end) = _VECTOR_CONTAINER;
-  _VECTOR_ITERATOR_ITERATOR_TYPE(it_end) = _RANDOM_ACCESS_ITERATOR;
+  //_VECTOR_ITERATOR_ITERATOR_TYPE(it_end) = _RANDOM_ACCESS_ITERATOR;
   _ITERATOR_CONTAINER(it_end) = (vector_t*) cpvec_vector;
   _VECTOR_ITERATOR_COREPOS(it_end) = cpvec_vector->_pby_finish;
 }
@@ -238,7 +237,7 @@ void vector_ctor(vector_t* pvec_vector, size_t size, ...)
   va_end(args);
 
   pvec_vector->meta._t_containertype = _VECTOR_CONTAINER;
-  pvec_vector->meta._t_iteratortype = _RANDOM_ACCESS_ITERATOR;
+  //pvec_vector->meta._t_iteratortype = _RANDOM_ACCESS_ITERATOR;
   pvec_vector->meta._t_typeinfo._t_typeidsize = size;
   pvec_vector->_pby_finish = pvec_vector->_pby_start =
       pvec_vector->_pby_endofstorage = NULL;
@@ -264,7 +263,7 @@ void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
   va_end(args);
 
   pvec_vector->meta._t_containertype = _VECTOR_CONTAINER;
-  pvec_vector->meta._t_iteratortype = _RANDOM_ACCESS_ITERATOR;
+  //pvec_vector->meta._t_iteratortype = _RANDOM_ACCESS_ITERATOR;
   pvec_vector->meta._t_typeinfo._t_typeidsize = size;
   type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
   pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(
@@ -298,7 +297,7 @@ void vector_ctor_n_v(vector_t* pvec_vector, size_t elesize, void* val,
   va_end(args);
 
   pvec_vector->meta._t_containertype = _VECTOR_CONTAINER;
-  pvec_vector->meta._t_iteratortype = _RANDOM_ACCESS_ITERATOR;
+  //pvec_vector->meta._t_iteratortype = _RANDOM_ACCESS_ITERATOR;
   pvec_vector->meta._t_typeinfo._t_typeidsize = size;
   type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
   pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex(
