@@ -15,6 +15,7 @@ extern "C"
 
 #include "cstl_def.h"
 #include "cstl_types.h"
+#include "cstl_alloc.h"
 
     /* vector iterator handler */
 #define _VECTOR_ITERATOR_COREPOS(it_iter)               ((it_iter)->_t_pos)

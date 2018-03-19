@@ -14,7 +14,7 @@ extern "C"
 
 #ifndef CSTL_ALIGN_OF
 #if   defined(_MSC_VER) && (_MSC_VER < 1700)
-    // Workaround for this VS 2010 compiler bug: https://connect.microsoft.com/VisualStudio/feedback/details/682695
+// Workaround for this VS 2010 compiler bug: https://connect.microsoft.com/VisualStudio/feedback/details/682695
 #define CSTL_ALIGN_OF(...) ( (sizeof(__VA_ARGS__)*0) + (__alignof(__VA_ARGS__)) )
 #elif !defined(__GNUC__) || (__GNUC__ >= 3) // GCC 2.x doesn't do __alignof correctly all the time.
 #define CSTL_ALIGN_OF __alignof
@@ -36,7 +36,18 @@ extern "C"
 
 #define cstl_free(p) free(*((void**) p - 1))
 
-    extern void* cstl_alloc_(const char* file, int line, size_t n, size_t alignment);
+extern void* cstl_alloc_(const char* file, int line, size_t n, size_t alignment);
+
+#if (defined(__GNUC__) || defined(_MSC_VER) || defined(__BORLANDC__) || defined(__WATCOMC__))
+#ifndef cstl_memcpy
+#define cstl_memcpy memcpy_fast
+#endif
+extern void* memcpy_fast(void *destination, const void *source, size_t size);
+#else
+#ifndef cstl_memcpy
+#define cstl_memcpy memcpy
+#endif
+#endif
 
 #ifdef __cplusplus
 }

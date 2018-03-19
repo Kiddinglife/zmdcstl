@@ -162,7 +162,7 @@ bool type_info_is_same(const type_info_t* pt_first,
     return false;
   for (int i = 0; i < pt_first->_t_typeidsize; i++)
   {
-    if (pt_first->typeids_ptr[i] != pt_second->typeids_ptr[i])
+    if (TYPE_INFO_TYPE_PTR_IDS(pt_first)[i] != TYPE_INFO_TYPE_PTR_IDS(pt_first)[i])
       return false;
   }
   return true;
