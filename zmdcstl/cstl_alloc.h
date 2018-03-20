@@ -27,11 +27,11 @@ extern "C"
 #ifndef NDEBUG
 #define cstl_alloc(type, n) ((type*)cstl_alloc_(__FILE__,__LINE__,sizeof(type)*(n), CSTL_ALIGN_OF(type)))
 #define cstl_alloc_ex(sizeoftype,align,n) cstl_alloc_(__FILE__,__LINE__,(n)*(sizeoftype),align)
-#define cstl_alloc_ex_totaln(sizeoftype,align,n) cstl_alloc_(__FILE__,__LINE__,(n),align)
+#define cstl_alloc_ex_totaln(align,n) cstl_alloc_(__FILE__,__LINE__,(n),align)
 #else
 #define cstl_alloc(type, n) ((type*)cstl_alloc_(0,0,sizeof(type)*(n), CSTL_ALIGN_OF(type)))
 #define cstl_alloc_ex(sizeoftype,align,n) ((type*)cstl_alloc_(0,0,(n)*(sizeoftype),align))
-#define cstl_alloc_ex_totaln(sizeoftype,align,n) cstl_alloc_(0,0,(n),align)
+#define cstl_alloc_ex_totaln(align,n) cstl_alloc_(0,0,(n),align)
 #endif
 
 #define cstl_free(p) free(*((void**) p - 1))
