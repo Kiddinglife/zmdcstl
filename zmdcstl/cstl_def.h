@@ -14,7 +14,7 @@ extern "C"
 #if  __STDC_VERSION__ < 201112L
 #error "your compiler does not support c99"
 #endif
-#else
+#elif !defined(__cplusplus)
 #error "your compiler does not support __STDC_VERSION__ "
 #endif
 

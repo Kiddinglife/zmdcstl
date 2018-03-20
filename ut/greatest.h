@@ -617,7 +617,7 @@ typedef enum greatest_test_res {
         if (greatest_RES != GREATEST_TEST_RES_PASS) {                   \
             return greatest_RES;                                        \
         }                                                               \
-    } while (0);                                                         \
+    } while (0);
 
 #if GREATEST_USE_TIME
 #define GREATEST_SET_TIME(NAME)                                         \

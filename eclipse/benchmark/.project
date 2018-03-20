@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>benchmark</name>
+	<name>zmdcstlbenchmark</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -24,4 +24,27 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>benchmark.cc</name>
+			<type>1</type>
+			<locationURI>copy_PARENT/ut/benchmark.cc</locationURI>
+		</link>
+		<link>
+			<name>greatest.h</name>
+			<type>1</type>
+			<locationURI>copy_PARENT/ut/greatest.h</locationURI>
+		</link>
+		<link>
+			<name>zmdcstl</name>
+			<type>2</type>
+			<locationURI>copy_PARENT/zmdcstl</locationURI>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-1-PROJECT_LOC%7D/zmdcstl</value>
+		</variable>
+	</variableList>
 </projectDescription>

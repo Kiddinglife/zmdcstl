@@ -48,10 +48,7 @@ typedef enum
 
 typedef enum
 {
-  _TYPE_STYLE_POD = 0,
-  _TYPE_STYLE_CSTL,
-  _TYPE_STYLE_USER_DEFINED,
-  _TYPE_STYLE_INVALID
+  _TYPE_STYLE_POD = 0, _TYPE_STYLE_CSTL, _TYPE_STYLE_USER_DEFINED, _TYPE_STYLE_INVALID
 } typestyle_t;
 
 /*
@@ -70,7 +67,12 @@ typedef struct _tagtype_t
   unsigned short _t_typesize; /* type size */
   ufun_t _t_typeinit; /* if null, use bzero */
   ufun_t _t_typedestroy; /* if null, do nothing */
-  bfun_t _t_typecopy; /* if null, use memcpy*/
+  /* if _t_typecopy is null, use memcpy
+   * @caution if val has malloc data and you did not provide copyfunc,
+   * when two vetors destroyed, it may free val twice this issue is
+   * not belong to cstl and it is user level design issue
+   */
+  bfun_t _t_typecopy;
   bfun_t _t_typeless; /* can never be null*/
 } type_t;
 
@@ -100,10 +102,9 @@ extern void print_registered_types();
 extern type_register_t _g_type_register;
 extern void init_types(size_t usertypesize);
 extern void destroy_types();
-extern typeid_t register_type(size_t typesize, size_t typealign,
-    ufun_t type_init, bfun_t type_copy, ufun_t type_destroy, bfun_t type_less);
-extern bool type_info_is_same(const type_info_t* pt_first,
-    const type_info_t* pt_second);
+extern typeid_t register_type(size_t typesize, size_t typealign, ufun_t type_init, bfun_t type_copy,
+    ufun_t type_destroy, bfun_t type_less);
+extern bool type_info_is_same(const type_info_t* pt_first, const type_info_t* pt_second);
 
 #ifdef __cplusplus
 }
