@@ -349,7 +349,7 @@ TEST test_vector_ctor_range_user_defined_pod(void)
   ASSERT_EQ(pvec_vector_.meta._t_typeinfo._t_typeidsize, 1);
   unsigned char* tmp = pvec_vector_._pby_start;
   user_defined_type_init0_destroy0_copy0_less* vptr;
-  for (; elesize > 0; elesize--)
+  for (; copysize > 0; copysize--)
   {
     vptr = (user_defined_type_init0_destroy0_copy0_less*) tmp;
     ASSERT_EQ_FMT(100, vptr->a, "%d");
@@ -392,7 +392,7 @@ TEST test_vector_ctor_range_user_defined_non_pod(void)
   ASSERT_EQ(pvec_vector_.meta._t_typeinfo._t_typeidsize, 1);
   unsigned char* tmp = pvec_vector_._pby_start;
   user_defined_type_init_destroy_copy_less* vptr;
-  for (; elesize > 0; elesize--)
+  for (; copysize > 0; copysize--)
   {
     vptr = (user_defined_type_init_destroy_copy_less*) tmp;
     ASSERT_EQ(vptr->a, 100);
