@@ -199,7 +199,10 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last,
     case _VECTOR_CONTAINER:
     case _DEQUE_CONTAINER:
     case _BASIC_STRING_CONTAINER:
-      n_step = iterator_distance(first, last);
+      // if result in [vec,deque,string], use memcpy for all element
+      // else if no copyfunc, use memcpy for each element
+      // else use copyfunc for each element
+      n_step = iterator_minus(first, last);
       cstl_memcpy(result->_t_pos, first->_t_pos, n_step * type->_t_typesize);
       iterator_advance(result, n_step);
       break;

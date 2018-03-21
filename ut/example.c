@@ -114,8 +114,9 @@ TEST test_vector_ctor_n_scalar_type()
 {
   vector_t pvec_vector;
   vector_ctor_n(&pvec_vector, 1, 1, cstl_uint32);
-  ASSERT_EQ(pvec_vector._pby_start, pvec_vector._pby_finish);
-  ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start, _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start,
+      _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
   ASSERT_FALSE(pvec_vector._pby_endofstorage == NULL);
   ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
   ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typeid, cstl_uint32);
@@ -127,7 +128,7 @@ TEST test_vector_ctor_n_user_defined_pod(void)
 {
   vector_t pvec_vector;
   vector_ctor_n(&pvec_vector, 10, 1, user_defined_pod_id);
-  ASSERT_EQ(pvec_vector._pby_start, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
   ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start, 10*_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
   ASSERT_FALSE(pvec_vector._pby_endofstorage == NULL);
   ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
@@ -140,9 +141,8 @@ TEST test_vector_ctor_n_user_defined_non_pod(void)
 {
   vector_t pvec_vector;
   vector_ctor_n(&pvec_vector, 10, 1, user_defined_non_pod_id);
-  ASSERT_EQ(pvec_vector._pby_start, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
   ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start, 10*_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
-  ASSERT_FALSE(pvec_vector._pby_endofstorage == NULL);
   ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
   ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typeid, user_defined_non_pod_id);
   ASSERT_EQ(pvec_vector.meta._t_typeinfo._t_typeidsize, 1);
@@ -155,9 +155,9 @@ TEST test_vector_ctor_n_v_scalar_type(void)
   unsigned int v = 100;
   size_t elesize = 100;
   vector_ctor_n_v(&pvec_vector, elesize, &v, 1, cstl_uint32);
-
-  ASSERT_EQ(pvec_vector._pby_start, pvec_vector._pby_finish);
-  ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start, elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start,
+      elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
   ASSERT_FALSE(pvec_vector._pby_endofstorage == NULL);
   ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
   ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typeid, cstl_uint32);
@@ -182,7 +182,7 @@ TEST test_vector_ctor_n_v_user_defined_pod(void)
   size_t elesize = 100;
   vector_ctor_n_v(&pvec_vector, elesize, &v, 1, user_defined_pod_id);
 
-  ASSERT_EQ(pvec_vector._pby_start, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
   ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start, elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
   ASSERT_FALSE(pvec_vector._pby_endofstorage == NULL);
   ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
@@ -213,7 +213,7 @@ TEST test_vector_ctor_n_v_user_defined_non_pod(void)
   CHECK_CALL(test_vector_ctor_n_user_defined_non_pod());
   vector_ctor_n_v(&pvec_vector, elesize, &v, 1, user_defined_non_pod_id);
 
-  ASSERT_EQ(pvec_vector._pby_start, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
   ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start, elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
   ASSERT_FALSE(pvec_vector._pby_endofstorage == NULL);
   ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
@@ -227,7 +227,7 @@ TEST test_vector_ctor_n_v_user_defined_non_pod(void)
     ASSERT_EQ(vptr->a, 100);
     ASSERT_FALSE(vptr->b == NULL);
     ASSERT_EQ(vptr->c[0], 100);
-    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+    tmp += _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize;
   }
 
   cstl_free(v.b);
@@ -272,13 +272,22 @@ TEST test_vector_ctor_vec_user_defined_pod()
   vector_t pvec_vector;
   vector_ctor_vector(&pvec_vector, &pvec_vector_);
 
-  // as nothing pushed to pvec_vector_ and so pvec_vector should be also empty
-  ASSERT_EQ(pvec_vector._pby_finish, NULL );
-  ASSERT_EQ(pvec_vector._pby_start, NULL );
-  ASSERT_EQ(pvec_vector._pby_endofstorage, NULL );
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start,
+      elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
   ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
   ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typeid, user_defined_pod_id);
   ASSERT_EQ(pvec_vector.meta._t_typeinfo._t_typeidsize, 1);
+  unsigned char* tmp = pvec_vector._pby_start;
+  user_defined_type_init0_destroy0_copy0_less* vptr;
+  for (; elesize > 0; elesize--)
+  {
+    vptr = (user_defined_type_init0_destroy0_copy0_less*) tmp;
+    ASSERT_EQ_FMT(100, vptr->a, "%d");
+    ASSERT_EQ(0, vptr->b);
+    ASSERT_EQ_FMT(100, vptr->c[0], "%d");
+    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  }
 
   vector_dtor(&pvec_vector);
   vector_dtor(&pvec_vector_);
@@ -297,12 +306,13 @@ TEST test_vector_ctor_range_scalar_type(void)
   first._pt_container = &pvec_vector;
   _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start;
   last._pt_container = &pvec_vector;
-  _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_start + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  pvec_vector._pby_finish = pvec_vector._pby_start + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_finish;
 
   vector_t pvec_vector_;
   vector_ctor_range(&pvec_vector_, &first, &last);
 
-  ASSERT_EQ(pvec_vector_._pby_start, pvec_vector_._pby_finish);
+  ASSERT_EQ(pvec_vector_._pby_endofstorage, pvec_vector_._pby_finish);
   ASSERT_EQ(pvec_vector_._pby_endofstorage - pvec_vector_._pby_start, copysize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector_)->_t_typesize);
   ASSERT_FALSE(pvec_vector_._pby_endofstorage == NULL);
   ASSERT_EQ(pvec_vector_.meta._t_containertype, _VECTOR_CONTAINER );
@@ -336,12 +346,13 @@ TEST test_vector_ctor_range_user_defined_pod(void)
   first._pt_container = &pvec_vector;
   _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start;
   last._pt_container = &pvec_vector;
-  _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_start + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  pvec_vector._pby_finish = pvec_vector._pby_start + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_finish;
 
   vector_t pvec_vector_;
   vector_ctor_range(&pvec_vector_, &first, &last);
 
-  ASSERT_EQ(pvec_vector_._pby_start, pvec_vector_._pby_finish);
+  ASSERT_EQ(pvec_vector_._pby_endofstorage, pvec_vector_._pby_finish);
   ASSERT_EQ(pvec_vector_._pby_endofstorage - pvec_vector_._pby_start, copysize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector_)->_t_typesize);
   ASSERT_FALSE(pvec_vector_._pby_endofstorage == NULL);
   ASSERT_EQ(pvec_vector_.meta._t_containertype, _VECTOR_CONTAINER );
@@ -377,14 +388,14 @@ TEST test_vector_ctor_range_user_defined_non_pod(void)
   random_access_iterator_t first;
   random_access_iterator_t last;
   first._pt_container = &pvec_vector;
-  _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start;
   last._pt_container = &pvec_vector;
+  _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start;
   _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_start + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
 
   vector_t pvec_vector_;
   vector_ctor_range(&pvec_vector_, &first, &last);
 
-  ASSERT_EQ(pvec_vector_._pby_start, pvec_vector_._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
   ASSERT_EQ(pvec_vector_._pby_endofstorage - pvec_vector_._pby_start, copysize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector_)->_t_typesize);
   ASSERT_FALSE(pvec_vector_._pby_endofstorage == NULL);
   ASSERT_EQ(pvec_vector_.meta._t_containertype, _VECTOR_CONTAINER );
