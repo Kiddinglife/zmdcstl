@@ -235,6 +235,7 @@ extern void vector_ctor(vector_t* vec, size_t argsize, ...);
 extern void vector_ctor_n(vector_t* vec, size_t elesize, size_t argsize, ...);
 extern void vector_ctor_n_v(vector_t* vec, size_t elesize, void* val, size_t argsize, ...);
 extern void vector_ctor_range(vector_t* vec, forward_iterator_t* first, forward_iterator_t* last);
+extern void vector_ctor_range_n(vector_t* pvec_vector, forward_iterator_t* first, size_t size);
 extern void vector_ctor_vector(vector_t* vec, vector_t* x);
 extern void vector_dtor(vector_t* vec);
 

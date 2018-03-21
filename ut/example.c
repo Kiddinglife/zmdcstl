@@ -10,7 +10,8 @@ typedef struct
   char c[32];
 } user_defined_type_init0_destroy0_copy0_less;
 static typeid_t user_defined_pod_id;
-static void func_less_user_defined_type_init0_destroy0_copy0_less(const void* in, const void* in_, void* out)
+static void func_less_user_defined_type_init0_destroy0_copy0_less(
+    const void* in, const void* in_, void* out)
 {
   *(bool*) out = ((user_defined_type_init0_destroy0_copy0_less*) in)->a
       < ((user_defined_type_init0_destroy0_copy0_less*) in_)->a;
@@ -24,28 +25,35 @@ typedef struct
   char c[32];
 } user_defined_type_init_destroy_copy_less;
 static typeid_t user_defined_non_pod_id;
-static void func_init_user_defined_type_init_destroy_copy_less(const void* in, void* out)
+static void func_init_user_defined_type_init_destroy_copy_less(const void* in,
+    void* out)
 {
   ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int, 32);
-  memset(((user_defined_type_init_destroy_copy_less*) in)->b, 0, 32 * sizeof(int));
+  memset(((user_defined_type_init_destroy_copy_less*) in)->b, 0,
+      32 * sizeof(int));
   ((user_defined_type_init_destroy_copy_less*) in)->a = 0;
   memset(((user_defined_type_init_destroy_copy_less*) in)->c, 0, 32);
 }
-static void func_copy_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
+static void func_copy_user_defined_type_init_destroy_copy_less(const void* in,
+    const void* in_, void* out)
 {
   ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int,
       ((user_defined_type_init_destroy_copy_less* ) in_)->a);
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->b, ((user_defined_type_init_destroy_copy_less*) in_)->b,
+  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->b,
+      ((user_defined_type_init_destroy_copy_less*) in_)->b,
       ((user_defined_type_init_destroy_copy_less*) in_)->a * sizeof(int));
-  ((user_defined_type_init_destroy_copy_less*) in)->a = ((user_defined_type_init_destroy_copy_less*) in_)->a;
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->c, ((user_defined_type_init_destroy_copy_less*) in_)->c,
-      32);
+  ((user_defined_type_init_destroy_copy_less*) in)->a =
+      ((user_defined_type_init_destroy_copy_less*) in_)->a;
+  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->c,
+      ((user_defined_type_init_destroy_copy_less*) in_)->c, 32);
 }
-static void func_destroy_user_defined_type_init_destroy_copy_less(const void* in, void* out)
+static void func_destroy_user_defined_type_init_destroy_copy_less(
+    const void* in, void* out)
 {
   cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
 }
-static void func_less_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
+static void func_less_user_defined_type_init_destroy_copy_less(const void* in,
+    const void* in_, void* out)
 {
   *(bool*) out = ((user_defined_type_init_destroy_copy_less*) in)->a
       < ((user_defined_type_init_destroy_copy_less*) in_)->a;
@@ -72,8 +80,7 @@ SUITE(test_cstl_alloc)
 
 TEST test_vector_ctor_scalar_type(void)
 {
-  vector_t pvec_vector =
-  { 0 };
+  vector_t pvec_vector = { 0 };
   vector_ctor(&pvec_vector, 1, cstl_uint32);
   ASSERT_EQ(pvec_vector._pby_finish, NULL );
   ASSERT_EQ(pvec_vector._pby_start, NULL );
@@ -346,7 +353,8 @@ TEST test_vector_ctor_range_user_defined_pod(void)
   first._pt_container = &pvec_vector;
   _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start;
   last._pt_container = &pvec_vector;
-  pvec_vector._pby_finish = pvec_vector._pby_start + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  pvec_vector._pby_finish = pvec_vector._pby_start
+      + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
   _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_finish;
 
   vector_t pvec_vector_;
@@ -390,7 +398,8 @@ TEST test_vector_ctor_range_user_defined_non_pod(void)
   first._pt_container = &pvec_vector;
   last._pt_container = &pvec_vector;
   _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start;
-  _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_start + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_start
+      + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
 
   vector_t pvec_vector_;
   vector_ctor_range(&pvec_vector_, &first, &last);
@@ -463,12 +472,16 @@ int main(int argc, char **argv)
 
   /* Tests can also be gathered into test suites. */
   init_types(0);
-  user_defined_pod_id = register_type(sizeof(user_defined_type_init0_destroy0_copy0_less),
-  CSTL_ALIGN_OF(user_defined_type_init0_destroy0_copy0_less), 0, 0, 0,
+  user_defined_pod_id = register_type(
+      sizeof(user_defined_type_init0_destroy0_copy0_less),
+      CSTL_ALIGN_OF(user_defined_type_init0_destroy0_copy0_less), 0, 0, 0,
       func_less_user_defined_type_init0_destroy0_copy0_less);
-  user_defined_non_pod_id = register_type(sizeof(user_defined_type_init_destroy_copy_less),
-  CSTL_ALIGN_OF(user_defined_type_init_destroy_copy_less), func_init_user_defined_type_init_destroy_copy_less,
-      func_copy_user_defined_type_init_destroy_copy_less, func_destroy_user_defined_type_init_destroy_copy_less,
+  user_defined_non_pod_id = register_type(
+      sizeof(user_defined_type_init_destroy_copy_less),
+      CSTL_ALIGN_OF(user_defined_type_init_destroy_copy_less),
+      func_init_user_defined_type_init_destroy_copy_less,
+      func_copy_user_defined_type_init_destroy_copy_less,
+      func_destroy_user_defined_type_init_destroy_copy_less,
       func_less_user_defined_type_init_destroy_copy_less);
 
   //printf("init user defined type, id=%d\n", typeid_user_defined_type_init_destroy_copy_less);
