@@ -255,6 +255,13 @@ extern void vector_end(const vector_t* cpvec_vector, vector_iterator_t* it_end);
  * @remarks vector_end() has been called to init it_end
  */
 extern void vector_end_again(vector_iterator_t* it_end);
+
+
+/**
+ * swap exchanges the contents of two containers.
+ * @param x  vector container.
+ */
+extern void swap(vector_t* x);
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ENDS ////////////////////////////////////////
 
 #ifdef __cplusplus

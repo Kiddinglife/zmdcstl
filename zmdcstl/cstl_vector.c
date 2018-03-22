@@ -280,6 +280,7 @@ void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
 void vector_ctor_n_v(vector_t* pvec_vector, size_t elesize, void* val,
     size_t size, ...)
 {
+  //printf("vector_ctor_n_v\n");
   if (size > TYPE_ID_SIZE)
   {
     pvec_vector->meta._t_typeinfo.typeids_ptr = cstl_alloc(unsigned char, size);
@@ -326,6 +327,7 @@ void vector_ctor_n_v(vector_t* pvec_vector, size_t elesize, void* val,
 void vector_ctor_range(vector_t* pvec_vector, forward_iterator_t* first,
     forward_iterator_t* last)
 {
+  //printf("vector_ctor_range\n");
   assert(
       iterator_limit_type(first, _FORWARD_ITERATOR)
           && iterator_limit_type(last, _FORWARD_ITERATOR));
@@ -333,7 +335,6 @@ void vector_ctor_range(vector_t* pvec_vector, forward_iterator_t* first,
   assert(iterator_same_type(first, last));
 
   pvec_vector->meta = *_ITERATOR_META_TYPE(first);
-  pvec_vector->meta._t_typeinfo = _ITERATOR_META_TYPE(first)->_t_typeinfo;
   // copy x's type info
   size_t size = pvec_vector->meta._t_typeinfo._t_typeidsize;
   if (size > TYPE_ID_SIZE)
@@ -366,9 +367,8 @@ void vector_ctor_range_n(vector_t* pvec_vector, forward_iterator_t* first,
   assert(iterator_limit_type(first, _FORWARD_ITERATOR));
 
   pvec_vector->meta = *_ITERATOR_META_TYPE(first);
-  pvec_vector->meta._t_typeinfo = _ITERATOR_META_TYPE(first)->_t_typeinfo;
   // copy x's type info
-  if (size > TYPE_ID_SIZE)
+  if (pvec_vector->meta._t_typeinfo._t_typeidsize > TYPE_ID_SIZE)
   {
     pvec_vector->meta._t_typeinfo.typeids_ptr = cstl_alloc(unsigned char,
         pvec_vector->meta._t_typeinfo._t_typeidsize);
@@ -512,4 +512,9 @@ static inline void do_insert_value_at_end_(vector_t* pvec_vector,
   pvec_vector->_pby_start = pNewData;
   pvec_vector->_pby_finish = pNewEnd;
   pvec_vector->_pby_endofstorage = pNewData + nNewSize;
+}
+
+void swap(vector_t* x)
+{
+
 }

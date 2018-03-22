@@ -21,8 +21,7 @@ void* align(size_t alignment, size_t size, void** ptr, size_t* space)
 {
   if (*space >= size)
   {
-    char* ptrAligned =
-        (char*) (((size_t) (*ptr) + (alignment - 1)) & -alignment);
+    char* ptrAligned = (char*) (((size_t) (*ptr) + (alignment - 1)) & -alignment);
     size_t offset = (size_t) (ptrAligned - (char*) (*ptr));
     if ((*space - size) >= offset) // Have to implement this in terms of subtraction instead of addition in order to handle possible overflow.
     {
@@ -34,8 +33,8 @@ void* align(size_t alignment, size_t size, void** ptr, size_t* space)
   return NULL;
 }
 
-void* align_advance(size_t alignment, size_t size, void* ptr, size_t space,
-    void** ptrAdvanced /*=null*/, size_t* spaceReduced /*=null*/)
+void* align_advance(size_t alignment, size_t size, void* ptr, size_t space, void** ptrAdvanced /*=null*/,
+    size_t* spaceReduced /*=null*/)
 {
   if (space >= size)
   {
@@ -56,9 +55,7 @@ void* align_advance(size_t alignment, size_t size, void* ptr, size_t space,
 void destruct_range(forward_iterator_t* first, forward_iterator_t* last)
 {
   assert(iterator_is_valid(first) && iterator_is_valid(last));
-  assert(
-      iterator_limit_type(first, _FORWARD_ITERATOR)
-          && iterator_limit_type(last, _FORWARD_ITERATOR));
+  assert(iterator_limit_type(first, _FORWARD_ITERATOR) && iterator_limit_type(last, _FORWARD_ITERATOR));
 
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
   if (type->_t_typedestroy != NULL)
@@ -118,13 +115,10 @@ void uninitialized_default_fill_n(forward_iterator_t* destination, size_t n)
   }
 }
 
-void uninitialized_default_fill(forward_iterator_t* first,
-    forward_iterator_t* last)
+void uninitialized_default_fill(forward_iterator_t* first, forward_iterator_t* last)
 {
   assert(iterator_is_valid(first) && iterator_is_valid(last));
-  assert(
-      iterator_limit_type(first, _FORWARD_ITERATOR)
-          && iterator_limit_type(last, _FORWARD_ITERATOR));
+  assert(iterator_limit_type(first, _FORWARD_ITERATOR) && iterator_limit_type(last, _FORWARD_ITERATOR));
   bool ret = false;
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
   for (; !iterator_equal(first, last); iterator_next(first))
@@ -136,8 +130,7 @@ void uninitialized_default_fill(forward_iterator_t* first,
   }
 }
 
-void uninitialized_fill_n(forward_iterator_t* destination, const void* value,
-    int n)
+void uninitialized_fill_n(forward_iterator_t* destination, const void* value, int n)
 {
   assert(iterator_is_valid(destination));
   assert(iterator_limit_type(destination, _FORWARD_ITERATOR));
@@ -149,7 +142,8 @@ void uninitialized_fill_n(forward_iterator_t* destination, const void* value,
       bool ret = false;
       type->_t_typecopy(destination->_t_pos, value, &ret);
       assert(ret);
-    } else
+    }
+    else
     {
       cstl_memcpy(destination->_t_pos, value, type->_t_typesize);
     }
@@ -157,13 +151,10 @@ void uninitialized_fill_n(forward_iterator_t* destination, const void* value,
   }
 }
 
-void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last,
-    const void* value)
+void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last, const void* value)
 {
   assert(iterator_is_valid(first) && iterator_is_valid(last));
-  assert(
-      iterator_limit_type(first, _FORWARD_ITERATOR)
-          && iterator_limit_type(last, _FORWARD_ITERATOR));
+  assert(iterator_limit_type(first, _FORWARD_ITERATOR) && iterator_limit_type(last, _FORWARD_ITERATOR));
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
   for (; !iterator_equal(first, last); iterator_next(first))
   {
@@ -172,7 +163,8 @@ void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last,
       bool ret = false;
       type->_t_typecopy(first->_t_pos, value, &ret);
       assert(ret);
-    } else
+    }
+    else
     {
       cstl_memcpy(first->_t_pos, value, type->_t_typesize);
     }
@@ -197,51 +189,62 @@ if (type->_t_typecopy)\
   }\
 }
 
-static inline void uninitialized_copy_from_continoues(_byte_t* from,
-    _byte_t* end, forward_iterator_t* result)
+static inline void uninitialized_copy_from_continoues(_byte_t* from, _byte_t* end, forward_iterator_t* result)
 {
-  // if result in [vec,deque,string], use memcpy for all element
-  // else if no copyfunc, use memcpy for each element
-  // else use copyfunc for each element
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(result);
   size_t tsize = type->_t_typesize;
   switch (_ITERATOR_CONTAINER_TYPE(result))
   {
-    case _VECTOR_CONTAINER:
-    case _DEQUE_CONTAINER:
-    case _BASIC_STRING_CONTAINER:
-      // if result in [vec,deque,string], use memcpy for all element
+  case _VECTOR_CONTAINER:
+  case _DEQUE_CONTAINER:
+  case _BASIC_STRING_CONTAINER:
+    if (type->_t_typecopy)
+    {
+      // this is the case uninitialized_copy_from_continoues_to_continoues,
+      // but _t_typecopy not null, so have to copy on by one
+      bool ret = false;
+      for (; from != end; from += tsize)
+      {
+        type->_t_typecopy(result->_t_pos, from, &ret);
+        result->_t_pos += tsize;
+      }
+    }
+    else
+    {
+      // this is the case uninitialized_copy_from_continoues_to_continoues
+      // and _t_typecopy null, so use memcpy
       cstl_memcpy(result->_t_pos, from, end - from);
       result->_t_pos += end - from;
-      break;
-    case _LIST_CONTAINER:
-      uninitialized_copy_from_vector_aux(/*list_iterator_next(result)*/)
-      ;
-      break;
-    case _SLIST_CONTAINER:
-      uninitialized_copy_from_vector_aux(/*slist_iterator_next(result)*/)
-      ;
-      break;
-    case _SET_CONTAINER:
-      uninitialized_copy_from_vector_aux(/*set_iterator_next(result)*/)
-      ;
-      break;
-    case _MULTISET_CONTAINER:
-      break;
-    case _MAP_CONTAINER:
-      break;
-    case _MULTIMAP_CONTAINER:
-      break;
-    case _HASH_SET_CONTAINER:
-      break;
-    case _HASH_MULTISET_CONTAINER:
-      break;
-    case _HASH_MAP_CONTAINER:
-      break;
-    case _HASH_MULTIMAP_CONTAINER:
-      break;
-    default:
-      break;
+    }
+    break;
+  case _LIST_CONTAINER:
+    uninitialized_copy_from_vector_aux(/*list_iterator_next(result)*/)
+    ;
+    break;
+  case _SLIST_CONTAINER:
+    uninitialized_copy_from_vector_aux(/*slist_iterator_next(result)*/)
+    ;
+    break;
+  case _SET_CONTAINER:
+    uninitialized_copy_from_vector_aux(/*set_iterator_next(result)*/)
+    ;
+    break;
+  case _MULTISET_CONTAINER:
+    break;
+  case _MAP_CONTAINER:
+    break;
+  case _MULTIMAP_CONTAINER:
+    break;
+  case _HASH_SET_CONTAINER:
+    break;
+  case _HASH_MULTISET_CONTAINER:
+    break;
+  case _HASH_MAP_CONTAINER:
+    break;
+  case _HASH_MULTIMAP_CONTAINER:
+    break;
+  default:
+    break;
   }
 }
 
@@ -263,8 +266,7 @@ if (type->_t_typecopy)\
   }\
 }
 
-static inline void uninitialized_copy_n_from_continoues(_byte_t* from,
-    size_t nstep, forward_iterator_t* result)
+static inline void uninitialized_copy_n_from_continoues(_byte_t* from, size_t nstep, forward_iterator_t* result)
 {
   // if result in [vec,deque,string], use memcpy for all element
   // else if no copyfunc, use memcpy for each element
@@ -273,127 +275,136 @@ static inline void uninitialized_copy_n_from_continoues(_byte_t* from,
   size_t tsize = type->_t_typesize;
   switch (_ITERATOR_CONTAINER_TYPE(result))
   {
-    case _VECTOR_CONTAINER:
-    case _DEQUE_CONTAINER:
-    case _BASIC_STRING_CONTAINER:
-      // if result in [vec,deque,string], use memcpy for all element
+  case _VECTOR_CONTAINER:
+  case _DEQUE_CONTAINER:
+  case _BASIC_STRING_CONTAINER:
+    // if result in [vec,deque,string], use memcpy for all element
+    if (type->_t_typecopy)
+    {
+      // this is the case uninitialized_copy_from_continoues_to_continoues,
+      // but _t_typecopy not null, so have to copy on by one
+      bool ret = false;
+      _byte_t* end = from + nstep * tsize;
+      for (; from != end; from += tsize)
+      {
+        type->_t_typecopy(result->_t_pos, from, &ret);
+        result->_t_pos += tsize;
+      }
+    }
+    else
+    {
+      // this is the case uninitialized_copy_from_continoues_to_continoues
+      // and _t_typecopy null, so use memcpy
+      nstep *= tsize;
       cstl_memcpy(result->_t_pos, from, nstep);
       result->_t_pos += nstep;
-      break;
-    case _LIST_CONTAINER:
-      uninitialized_copy_from_n_vector_aux(/*list_iterator_next(result)*/)
-      ;
-      break;
-    case _SLIST_CONTAINER:
-      uninitialized_copy_from_n_vector_aux(/*slist_iterator_next(result)*/)
-      ;
-      break;
-    case _SET_CONTAINER:
-      uninitialized_copy_from_n_vector_aux(/*set_iterator_next(result)*/)
-      ;
-      break;
-    case _MULTISET_CONTAINER:
-      break;
-    case _MAP_CONTAINER:
-      break;
-    case _MULTIMAP_CONTAINER:
-      break;
-    case _HASH_SET_CONTAINER:
-      break;
-    case _HASH_MULTISET_CONTAINER:
-      break;
-    case _HASH_MAP_CONTAINER:
-      break;
-    case _HASH_MULTIMAP_CONTAINER:
-      break;
-    default:
-      break;
+    }
+    break;
+  case _LIST_CONTAINER:
+    uninitialized_copy_from_n_vector_aux(/*list_iterator_next(result)*/)
+    ;
+    break;
+  case _SLIST_CONTAINER:
+    uninitialized_copy_from_n_vector_aux(/*slist_iterator_next(result)*/)
+    ;
+    break;
+  case _SET_CONTAINER:
+    uninitialized_copy_from_n_vector_aux(/*set_iterator_next(result)*/)
+    ;
+    break;
+  case _MULTISET_CONTAINER:
+    break;
+  case _MAP_CONTAINER:
+    break;
+  case _MULTIMAP_CONTAINER:
+    break;
+  case _HASH_SET_CONTAINER:
+    break;
+  case _HASH_MULTISET_CONTAINER:
+    break;
+  case _HASH_MAP_CONTAINER:
+    break;
+  case _HASH_MULTIMAP_CONTAINER:
+    break;
+  default:
+    break;
   }
 }
 
-void uninitialized_copy(input_iterator_t* first, input_iterator_t* last,
-    forward_iterator_t* result)
+void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward_iterator_t* result)
 {
+  assert(iterator_is_valid(first) && iterator_is_valid(last) && iterator_is_valid(result));
   assert(
-      iterator_is_valid(first) && iterator_is_valid(last)
-          && iterator_is_valid(result));
-  assert(
-      iterator_limit_type(first, _INPUT_ITERATOR)
-          && iterator_limit_type(last, _INPUT_ITERATOR)
+      iterator_limit_type(first, _INPUT_ITERATOR) && iterator_limit_type(last, _INPUT_ITERATOR)
           && iterator_limit_type(result, _FORWARD_ITERATOR));
-  assert(
-      iterator_same_elem_type(first, last)
-          && iterator_same_elem_type(first, result));
+  assert(iterator_same_elem_type(first, last) && iterator_same_elem_type(first, result));
 
   switch (_ITERATOR_CONTAINER_TYPE(first))
   {
-    case _VECTOR_CONTAINER:
-    case _DEQUE_CONTAINER:
-    case _BASIC_STRING_CONTAINER:
-      uninitialized_copy_from_continoues(first->_t_pos, last->_t_pos, result);
-      break;
-    case _LIST_CONTAINER:
-      break;
-    case _SLIST_CONTAINER:
-      break;
-    case _SET_CONTAINER:
-      break;
-    case _MULTISET_CONTAINER:
-      break;
-    case _MAP_CONTAINER:
-      break;
-    case _MULTIMAP_CONTAINER:
-      break;
-    case _HASH_SET_CONTAINER:
-      break;
-    case _HASH_MULTISET_CONTAINER:
-      break;
-    case _HASH_MAP_CONTAINER:
-      break;
-    case _HASH_MULTIMAP_CONTAINER:
-      break;
-    default:
-      break;
+  case _VECTOR_CONTAINER:
+  case _DEQUE_CONTAINER:
+  case _BASIC_STRING_CONTAINER:
+    uninitialized_copy_from_continoues(first->_t_pos, last->_t_pos, result);
+    break;
+  case _LIST_CONTAINER:
+    break;
+  case _SLIST_CONTAINER:
+    break;
+  case _SET_CONTAINER:
+    break;
+  case _MULTISET_CONTAINER:
+    break;
+  case _MAP_CONTAINER:
+    break;
+  case _MULTIMAP_CONTAINER:
+    break;
+  case _HASH_SET_CONTAINER:
+    break;
+  case _HASH_MULTISET_CONTAINER:
+    break;
+  case _HASH_MAP_CONTAINER:
+    break;
+  case _HASH_MULTIMAP_CONTAINER:
+    break;
+  default:
+    break;
   }
 }
 
-void uninitialized_copy_n(input_iterator_t* first, int n_step,
-    forward_iterator_t* result)
+void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_iterator_t* result)
 {
   assert(iterator_is_valid(first) && iterator_is_valid(result));
-  assert(
-      iterator_limit_type(first, _INPUT_ITERATOR)
-          && iterator_limit_type(result, _FORWARD_ITERATOR));
+  assert(iterator_limit_type(first, _INPUT_ITERATOR) && iterator_limit_type(result, _FORWARD_ITERATOR));
 
   switch (_ITERATOR_CONTAINER_TYPE(first))
   {
-    case _VECTOR_CONTAINER:
-    case _DEQUE_CONTAINER:
-    case _BASIC_STRING_CONTAINER:
-      uninitialized_copy_n_from_continoues(first->_t_pos, n_step, result);
-      break;
-    case _LIST_CONTAINER:
-      break;
-    case _SLIST_CONTAINER:
-      break;
-    case _SET_CONTAINER:
-      break;
-    case _MULTISET_CONTAINER:
-      break;
-    case _MAP_CONTAINER:
-      break;
-    case _MULTIMAP_CONTAINER:
-      break;
-    case _HASH_SET_CONTAINER:
-      break;
-    case _HASH_MULTISET_CONTAINER:
-      break;
-    case _HASH_MAP_CONTAINER:
-      break;
-    case _HASH_MULTIMAP_CONTAINER:
-      break;
-    default:
-      break;
+  case _VECTOR_CONTAINER:
+  case _DEQUE_CONTAINER:
+  case _BASIC_STRING_CONTAINER:
+    uninitialized_copy_n_from_continoues(first->_t_pos, n_step, result);
+    break;
+  case _LIST_CONTAINER:
+    break;
+  case _SLIST_CONTAINER:
+    break;
+  case _SET_CONTAINER:
+    break;
+  case _MULTISET_CONTAINER:
+    break;
+  case _MAP_CONTAINER:
+    break;
+  case _MULTIMAP_CONTAINER:
+    break;
+  case _HASH_SET_CONTAINER:
+    break;
+  case _HASH_MULTISET_CONTAINER:
+    break;
+  case _HASH_MAP_CONTAINER:
+    break;
+  case _HASH_MULTIMAP_CONTAINER:
+    break;
+  default:
+    break;
   }
 }
 

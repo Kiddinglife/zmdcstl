@@ -29,6 +29,7 @@ static void func_init_user_defined_type_init_destroy_copy_less(const void* in,
     void* out)
 {
   ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int, 32);
+  //printf("init alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
   memset(((user_defined_type_init_destroy_copy_less*) in)->b, 0,
       32 * sizeof(int));
   ((user_defined_type_init_destroy_copy_less*) in)->a = 0;
@@ -39,6 +40,7 @@ static void func_copy_user_defined_type_init_destroy_copy_less(const void* in,
 {
   ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int,
       ((user_defined_type_init_destroy_copy_less* ) in_)->a);
+  //printf("copy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
   cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->b,
       ((user_defined_type_init_destroy_copy_less*) in_)->b,
       ((user_defined_type_init_destroy_copy_less*) in_)->a * sizeof(int));
@@ -50,6 +52,7 @@ static void func_copy_user_defined_type_init_destroy_copy_less(const void* in,
 static void func_destroy_user_defined_type_init_destroy_copy_less(
     const void* in, void* out)
 {
+  //printf("destroy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
   cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
 }
 static void func_less_user_defined_type_init_destroy_copy_less(const void* in,
@@ -392,20 +395,20 @@ TEST test_vector_ctor_range_user_defined_non_pod(void)
   CHECK_CALL(test_vector_ctor_n_v_user_defined_pod());
   vector_ctor_n_v(&pvec_vector, elesize, &v, 1, user_defined_non_pod_id);
 
-  size_t copysize = 5;
+  size_t copysize = 50;
   random_access_iterator_t first;
   random_access_iterator_t last;
   first._pt_container = &pvec_vector;
   last._pt_container = &pvec_vector;
-  _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start;
+  _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start + 20 * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
   _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_start
-      + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+      + (copysize+20) * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
 
   vector_t pvec_vector_;
   vector_ctor_range(&pvec_vector_, &first, &last);
 
-  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
-  ASSERT_EQ(pvec_vector_._pby_endofstorage - pvec_vector_._pby_start, copysize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector_)->_t_typesize);
+  ASSERT_EQ(pvec_vector_._pby_endofstorage, pvec_vector_._pby_finish);
+  ASSERT_EQ(pvec_vector_._pby_endofstorage - pvec_vector_._pby_start, copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector_));
   ASSERT_FALSE(pvec_vector_._pby_endofstorage == NULL);
   ASSERT_EQ(pvec_vector_.meta._t_containertype, _VECTOR_CONTAINER );
   ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector_)->_t_typeid, user_defined_non_pod_id);
@@ -418,9 +421,51 @@ TEST test_vector_ctor_range_user_defined_non_pod(void)
     ASSERT_EQ(vptr->a, 100);
     ASSERT_FALSE(vptr->b == NULL);
     ASSERT_EQ(vptr->c[0], 100);
-    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector_);
   }
 
+  cstl_free(v.b);
+  vector_dtor(&pvec_vector);
+  vector_dtor(&pvec_vector_);
+  PASS();
+}
+TEST test_vector_ctor_range_n_user_defined_non_pod(void)
+{
+  vector_t pvec_vector;
+  user_defined_type_init_destroy_copy_less v;
+  v.a = 100;
+  v.b = cstl_alloc(int, v.a);
+  v.c[0] = 100;
+  size_t elesize = v.a;
+  CHECK_CALL(test_vector_ctor_n_v_user_defined_pod());
+  vector_ctor_n_v(&pvec_vector, elesize, &v, 1, user_defined_non_pod_id);
+
+  size_t copysize = 50;
+  random_access_iterator_t first;
+  first._pt_container = &pvec_vector;
+  _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start + 20 * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+
+  vector_t pvec_vector_;
+  vector_ctor_range_n(&pvec_vector_, &first, copysize);
+
+  ASSERT_EQ(pvec_vector_._pby_endofstorage, pvec_vector_._pby_finish);
+  ASSERT_EQ(pvec_vector_._pby_endofstorage - pvec_vector_._pby_start, copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector_));
+  ASSERT_FALSE(pvec_vector_._pby_endofstorage == NULL);
+  ASSERT_EQ(pvec_vector_.meta._t_containertype, _VECTOR_CONTAINER );
+  ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector_)->_t_typeid, user_defined_non_pod_id);
+  ASSERT_EQ(pvec_vector_.meta._t_typeinfo._t_typeidsize, 1);
+  unsigned char* tmp = pvec_vector_._pby_start;
+  user_defined_type_init_destroy_copy_less* vptr;
+  for (; copysize > 0; copysize--)
+  {
+    vptr = (user_defined_type_init_destroy_copy_less*) tmp;
+    ASSERT_EQ(vptr->a, 100);
+    ASSERT_FALSE(vptr->b == NULL);
+    ASSERT_EQ(vptr->c[0], 100);
+    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector_);
+  }
+
+  cstl_free(v.b);
   vector_dtor(&pvec_vector);
   vector_dtor(&pvec_vector_);
   PASS();
@@ -442,6 +487,7 @@ SUITE(test_vector)
   RUN_TEST(test_vector_ctor_n_user_defined_non_pod);
   RUN_TEST(test_vector_ctor_n_v_user_defined_non_pod);
   RUN_TEST(test_vector_ctor_range_user_defined_non_pod);
+  RUN_TEST(test_vector_ctor_range_n_user_defined_non_pod);
 }
 
 TEST test_union_ptr_as_buf(void)
@@ -455,6 +501,17 @@ TEST test_union_ptr_as_buf(void)
   {
     ASSERT_EQ(i,((unsigned char*) &ptr)[i]);
   }
+
+  unsigned char* ptrr = ptr; // this is sub ds typeid_ptr that broww from parent ds
+  for (int i = 0; i < TYPE_ID_SIZE; i++)
+  {
+    ptrr = &((unsigned char*) &ptrr)[i];
+    for (; i < TYPE_ID_SIZE; i++)
+    {
+      ASSERT_EQ(i,((unsigned char*) &ptrr)[i]);
+    }
+  }
+
   PASS();
 }
 
