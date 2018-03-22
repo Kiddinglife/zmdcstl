@@ -170,7 +170,6 @@ iterator_status_flag _t_iteratorstatusflag;
 typedef struct _tagmeta
 {
 containertype_t _t_containertype;
-//iteratortype_t _t_iteratortype;
 type_info_t _t_typeinfo;
 } meta_t;
 

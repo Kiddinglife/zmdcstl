@@ -63,11 +63,11 @@ typedef iterator_t vector_reverse_iterator_t;
  */
 typedef struct _tagvector
 {
-    meta_t meta;
-    /* vector core struct pointer */
-    _byte_t* _pby_start; /* the start of used space */
-    _byte_t* _pby_finish; /* the end of used space */
-    _byte_t* _pby_endofstorage; /* the end of capacity space */
+  meta_t meta;
+  /* vector core struct pointer */
+  _byte_t* _pby_start; /* the start of used space */
+  _byte_t* _pby_finish; /* the end of used space */
+  _byte_t* _pby_endofstorage; /* the end of capacity space */
 } vector_t;
 
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ITERATOR STARTS ////////////////////////////////////////
@@ -228,6 +228,16 @@ extern bool vector_iterator_valid(const vector_t* cpvec_vector, vector_iterator_
  * @remarks if cpvec_vector == NULL, then the behavior is undefined.
  */
 extern bool vector_is_inited(const vector_t* cpvec_vector);
+
+/**
+ * Test the type that saved in the vector container is same.
+ * @param cpvec_first first vector.
+ * @param cpvec_second second vector.
+ * @return if the type is same, return true, else return false.
+ * @remarks the two vector must have called vector_ctor_*(),
+ */
+extern bool vector_is_same_type(const vector_t* cpvec_first, const vector_t* cpvec_second);
+
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR VALIDATION ENDS ////////////////////////////////////////
 
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR STARTS ////////////////////////////////////////
@@ -238,6 +248,20 @@ extern void vector_ctor_range(vector_t* vec, forward_iterator_t* first, forward_
 extern void vector_ctor_range_n(vector_t* pvec_vector, forward_iterator_t* first, size_t size);
 extern void vector_ctor_vector(vector_t* vec, vector_t* x);
 extern void vector_dtor(vector_t* vec);
+
+size_t vector_size(vector_t* cpvec_vector);
+size_t vector_capacity(vector_t* cpvec_vector);
+
+/**
+ * Test the two vectors are equal.
+ * @param cpvec_first   first vector container.
+ * @param cpvec_second  second vector container.
+ * @return if first vector equal to second vector, then return true, else return false.
+ * @remarks the two vectors must be initialized, otherwise the behavior is undefined.
+ * if the two vectors are not same type, then return false.
+ * if cpvec_first == cpvec_second, then return true.
+ */
+extern bool vector_equal(vector_t* cpvec_first, vector_t* cpvec_second);
 
 /**
  * a iterator that points just beyond the end of vector container.
@@ -255,7 +279,6 @@ extern void vector_end(const vector_t* cpvec_vector, vector_iterator_t* it_end);
  * @remarks vector_end() has been called to init it_end
  */
 extern void vector_end_again(vector_iterator_t* it_end);
-
 
 /**
  * swap exchanges the contents of two containers.
