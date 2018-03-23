@@ -7,7 +7,9 @@ extern "C"
 
 #include "cstl_iterator.h"
 
-  bool equal(input_iterator_t* first1, input_iterator_t* last1, input_iterator_t* first2);
+// if all same f1=l1 else f1 points to unsame element fist2 also points to unsame element
+extern bool equal(input_iterator_t* first1, input_iterator_t* last1, input_iterator_t* first2);
+extern bool equal_from_continus(_byte_t* first1, _byte_t* last1, input_iterator_t* first2);
 
 #ifdef __cplusplus
 }

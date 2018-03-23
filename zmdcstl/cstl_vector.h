@@ -249,8 +249,9 @@ extern void vector_ctor_range_n(vector_t* pvec_vector, forward_iterator_t* first
 extern void vector_ctor_vector(vector_t* vec, vector_t* x);
 extern void vector_dtor(vector_t* vec);
 
-size_t vector_size(vector_t* cpvec_vector);
-size_t vector_capacity(vector_t* cpvec_vector);
+extern size_t vector_size(vector_t* cpvec_vector);
+extern size_t vector_capacity(vector_t* cpvec_vector);
+extern bool empty(vector_t* cpvec_vector);
 
 /**
  * Test the two vectors are equal.
@@ -263,6 +264,8 @@ size_t vector_capacity(vector_t* cpvec_vector);
  */
 extern bool vector_equal(vector_t* cpvec_first, vector_t* cpvec_second);
 
+extern void assign(vector_t* pvec,const void* v, size_t n);
+
 /**
  * a iterator that points just beyond the end of vector container.
  * @param cpvec_vector  vector container.
@@ -271,6 +274,7 @@ extern bool vector_equal(vector_t* cpvec_first, vector_t* cpvec_second);
  *          is undefined.
  */
 extern void vector_end(const vector_t* cpvec_vector, vector_iterator_t* it_end);
+extern void vector_begin(const vector_t* cpvec_vector, vector_iterator_t* begin);
 
 /**
  * a  iterator that points just beyond the end of vector container.
