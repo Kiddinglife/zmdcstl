@@ -549,13 +549,15 @@ void assign(vector_t* pvec, const void* val, size_t elesize)
   type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec);
   size_t totalbytes = elesize * (type->_t_typesize);
   size_t tsize = type->_t_typesize;
-  _byte_t* s = pvec->_pby_start;
-  _byte_t* e = pvec->_pby_finish;
-  _byte_t* ss = s;
   bool ret;
 
   if (totalbytes > pvec->_pby_endofstorage - pvec->_pby_start)
   {
+    // elesize > vector_capacity
+    _byte_t* s = pvec->_pby_start;
+    _byte_t* e = pvec->_pby_finish;
+    _byte_t* ss = s;
+
     pvec->_pby_start = pvec->_pby_finish = cstl_alloc_ex_totaln(type->_t_typealign, totalbytes);
     if (type->_t_typecopy)
     {
@@ -588,6 +590,10 @@ void assign(vector_t* pvec, const void* val, size_t elesize)
   }
   else if (totalbytes > pvec->_pby_finish - pvec->_pby_start)
   {
+    // elesize > vector_size
+    _byte_t* s = pvec->_pby_start;
+    _byte_t* e = pvec->_pby_finish;
+
     if (type->_t_typecopy)
     {
       for (; elesize > 0; elesize--)
@@ -620,5 +626,38 @@ void assign(vector_t* pvec, const void* val, size_t elesize)
     ritr._t_pos = pvec->_pby_finish;
     uninitialized_fill_n(&ritr, val, (pvec->_pby_finish - pvec->_pby_start) / tsize);
     pvec->_pby_finish = ritr._t_pos;
+  }
+  else
+  {
+    //0 <= elesize <= vector_size
+    _byte_t* s = pvec->_pby_start;
+    _byte_t* e = pvec->_pby_finish;
+
+    if (type->_t_typecopy)
+    {
+      for (; elesize > 0; elesize--)
+      {
+        type->_t_typecopy(s, val, &ret);
+        pvec->_pby_finish += tsize;
+        if (type->_t_typedestroy && s != e)
+        {
+          type->_t_typedestroy(s, &ret);
+          s += tsize;
+        }
+      }
+    }
+    else
+    {
+      for (; elesize > 0; elesize--)
+      {
+        cstl_memcpy(s, val, tsize);
+        pvec->_pby_finish += tsize;
+        if (type->_t_typedestroy && s != e)
+        {
+          type->_t_typedestroy(s, &ret);
+          s += tsize;
+        }
+      }
+    }
   }
 }

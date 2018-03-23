@@ -264,6 +264,17 @@ extern bool empty(vector_t* cpvec_vector);
  */
 extern bool vector_equal(vector_t* cpvec_first, vector_t* cpvec_second);
 
+/**
+ * Assigns new contents to the vector, replacing its current contents,
+ * and modifying its size accordingly.
+ * @remarks
+ * a vector filled with some data and you call an assign on it, this will:
+ * destroy all the elements of the vector (their destructor is called) like a call to clear()
+ * fill the now-empty vector with n copies of the given object, which must have a copy constructor.
+ * So if your class allocates some memory you have to:
+ * take care of this in your copy constructor
+ * free it in the destructor
+ */
 extern void assign(vector_t* pvec,const void* v, size_t n);
 
 /**
