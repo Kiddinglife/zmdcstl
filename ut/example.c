@@ -87,8 +87,7 @@ SUITE(test_cstl_alloc)
 
 TEST test_vector_ctor_scalar_type()
 {
-  vector_t pvec_vector =
-  { 0 };
+  vector_t pvec_vector = { 0 };
   vector_ctor(&pvec_vector, 1, cstl_uint32);
   ASSERT_EQ(pvec_vector._pby_finish, NULL );
   ASSERT_EQ(pvec_vector._pby_start, NULL );
@@ -501,14 +500,14 @@ TEST test_vector_equal()
 
   // size not equal
   vector_ctor_n(&pvec_vector, 10, 1, user_defined_pod_id);
-  vector_ctor(&pvec_vector1, 1,user_defined_pod_id);
+  vector_ctor(&pvec_vector1, 1, user_defined_pod_id);
   ret = vector_equal(&pvec_vector, &pvec_vector1);
   ASSERT_EQ(ret, false);
   vector_dtor(&pvec_vector);
   vector_dtor(&pvec_vector1);
 
   // same elements
-  vector_ctor_n(&pvec_vector, 100, 1,user_defined_pod_id);
+  vector_ctor_n(&pvec_vector, 100, 1, user_defined_pod_id);
   vector_ctor_n(&pvec_vector1, 100, 1, user_defined_pod_id);
   ASSERT_EQ(vector_equal(&pvec_vector, &pvec_vector1), true);
   vector_dtor(&pvec_vector);
@@ -526,6 +525,134 @@ TEST test_vector_equal()
   ASSERT_EQ(vector_equal(&pvec_vector, &pvec_vector1), false);
   vector_dtor(&pvec_vector);
   vector_dtor(&pvec_vector1);
+
+  PASS();
+}
+TEST test_vector_assign_n_v()
+{
+  size_t elesize = 100;
+  vector_t pvec_vector;
+  user_defined_type_init0_destroy0_copy0_less v;
+  v.a = 100;
+  v.b = 0;
+  v.c[0] = 100;
+
+  // branch test: elesize > vector_capacity and no memeory allocated
+  vector_ctor(&pvec_vector, 1, user_defined_pod_id);
+  vector_assign_n_v(&pvec_vector, &v, elesize);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start,
+      elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
+  ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
+  ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typeid, user_defined_pod_id);
+  ASSERT_EQ(pvec_vector.meta._t_typeinfo._t_typeidsize, 1);
+  unsigned char* tmp = pvec_vector._pby_start;
+  user_defined_type_init0_destroy0_copy0_less* vptr;
+  for (; elesize > 0; elesize--)
+  {
+    vptr = (user_defined_type_init0_destroy0_copy0_less*) tmp;
+    ASSERT_EQ_FMT(100, vptr->a, "%d");
+    ASSERT_EQ(0, vptr->b);
+    ASSERT_EQ_FMT(100, vptr->c[0], "%d");
+    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  }
+  vector_dtor(&pvec_vector);
+
+  // branch test: elesize > vector_capacity and memeory allocated and need to destrcut old elements
+  elesize = 100;
+  vector_ctor_n(&pvec_vector, elesize - 1, 1, user_defined_pod_id);
+  vector_assign_n_v(&pvec_vector, &v, elesize);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start,
+      elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
+  ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
+  ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typeid, user_defined_pod_id);
+  ASSERT_EQ(pvec_vector.meta._t_typeinfo._t_typeidsize, 1);
+  tmp = pvec_vector._pby_start;
+  for (; elesize > 0; elesize--)
+  {
+    vptr = (user_defined_type_init0_destroy0_copy0_less*) tmp;
+    ASSERT_EQ_FMT(100, vptr->a, "%d");
+    ASSERT_EQ(0, vptr->b);
+    ASSERT_EQ_FMT(100, vptr->c[0], "%d");
+    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  }
+  vector_dtor(&pvec_vector);
+
+  // branch test: elesize > vector_size @TODO TEST THIS ONLY AFTER FINISH PUSH
+
+  // branch test:  0 = elesize
+  elesize = 100;
+  vector_ctor_n(&pvec_vector, elesize, 1, user_defined_pod_id);
+  vector_assign_n_v(&pvec_vector, &v, 0);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start,
+      elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
+  ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
+  ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typeid, user_defined_pod_id);
+  ASSERT_EQ(pvec_vector.meta._t_typeinfo._t_typeidsize, 1);
+  tmp = pvec_vector._pby_start;
+  for (; elesize > 0; elesize--)
+  {
+    vptr = (user_defined_type_init0_destroy0_copy0_less*) tmp;
+    ASSERT_EQ_FMT(0, vptr->a, "%d");
+    ASSERT_EQ(0, vptr->b);
+    ASSERT_EQ_FMT(0, vptr->c[0], "%d");
+    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  }
+  vector_dtor(&pvec_vector);
+
+  // branch test: elesize = vector_size
+  elesize = 100;
+  vector_ctor_n(&pvec_vector, elesize, 1, user_defined_pod_id);
+  size_t vecsize = vector_size(&pvec_vector);
+  vector_assign_n_v(&pvec_vector, &v, vecsize);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start,
+      elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
+  ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
+  ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typeid, user_defined_pod_id);
+  ASSERT_EQ(pvec_vector.meta._t_typeinfo._t_typeidsize, 1);
+  tmp = pvec_vector._pby_start;
+  for (; elesize > 0; elesize--)
+  {
+    vptr = (user_defined_type_init0_destroy0_copy0_less*) tmp;
+    ASSERT_EQ_FMT(100, vptr->a, "%d");
+    ASSERT_EQ(0, vptr->b);
+    ASSERT_EQ_FMT(100, vptr->c[0], "%d");
+    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  }
+  vector_dtor(&pvec_vector);
+
+  //branch test: 0 < elesize < vector_size
+  elesize = 100;
+  vector_ctor_n(&pvec_vector, elesize, 1, user_defined_pod_id);
+  vector_assign_n_v(&pvec_vector, &v, elesize / 2);
+  ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_start,
+      elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
+  ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER );
+  ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typeid, user_defined_pod_id);
+  ASSERT_EQ(pvec_vector.meta._t_typeinfo._t_typeidsize, 1);
+  tmp = pvec_vector._pby_start;
+  size_t newelesize;
+  for (newelesize = 0; newelesize < elesize / 2; newelesize++)
+  {
+    vptr = (user_defined_type_init0_destroy0_copy0_less*) tmp;
+    ASSERT_EQ_FMT(100, vptr->a, "%d");
+    ASSERT_EQ(0, vptr->b);
+    ASSERT_EQ_FMT(100, vptr->c[0], "%d");
+    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  }
+  for (; newelesize < elesize; newelesize++)
+  {
+    vptr = (user_defined_type_init0_destroy0_copy0_less*) tmp;
+    ASSERT_EQ_FMT(0, vptr->a, "%d");
+    ASSERT_EQ(0, vptr->b);
+    ASSERT_EQ_FMT(0, vptr->c[0], "%d");
+    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  }
+  vector_dtor(&pvec_vector);
 
   PASS();
 }
@@ -548,6 +675,7 @@ SUITE(test_vector)
   RUN_TEST(test_vector_ctor_range_n_user_defined_non_pod);
   RUN_TEST(test_vector_size);
   RUN_TEST(test_vector_equal);
+  RUN_TEST(test_vector_assign_n_v);
 }
 
 TEST test_union_ptr_as_buf(void)
