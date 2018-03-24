@@ -263,7 +263,7 @@ extern bool iterator_valid_range(iterator_t* it_first, iterator_t* it_end,
  * @return typeinfo pointer of iterator.
  * @remarks iterator must be valid, otherwise behavior is undefined.
  */
-#define iterator_get_typeinfo(it_iter) ((type_info_t*)((it_iter)->_pt_container))
+#define iterator_get_typeinfo(it_iter) (&(((meta_t*)((it_first)->_pt_container))->_t_typeinfo))
 
 /**
  * Get type style of iterator.

@@ -155,8 +155,7 @@ bool iterator_same_elem_type(iterator_t* it_first, iterator_t* it_second)
   assert(iterator_limit_type(it_second, _INPUT_ITERATOR));
   assert(iterator_get_typeinfo(it_first));
   assert(iterator_get_typeinfo(it_second));
-  return type_info_is_same(iterator_get_typeinfo(it_first),
-      iterator_get_typeinfo(it_second));
+  return type_info_is_same(iterator_get_typeinfo(it_first),  iterator_get_typeinfo(it_second));
 }
 
 bool iterator_equal(iterator_t* it_first, iterator_t* it_second)
