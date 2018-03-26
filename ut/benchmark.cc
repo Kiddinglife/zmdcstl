@@ -116,23 +116,23 @@ static void func_less_user_defined_type_init_destroy_copy_less(const void* in, c
     std::cout << #id << ":" << elapsed##id.count() << "ns, "
 #define profile_ratio(id1,id2)   std::cout << "ratio: " << elapsed##id1/elapsed##id2 << "\n"
 
-size_t size = 100000;
+size_t size = 5000000;
 
 TEST benchmark_vector_ctor(void)
 {
   profile_start(stdvec);
   std::vector<user_defined_type_init_destroy_copy_less> stdvec;
-  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
+  //stdvec.~vector();// cannot explicately call dtor because when excute ends, it will call dtor automatically
   profile_end_ns(stdvec);
 
   profile_start(zmdcstlvec);
   vector_t zmdcstlvec;
   vector_ctor(&zmdcstlvec, 1, user_defined_non_pod_id);
+  //vector_dtor(&zmdcstlvec);
   profile_end_ns(zmdcstlvec);
+  vector_dtor(&zmdcstlvec);
 
   profile_ratio(zmdcstlvec, stdvec);
-
-  vector_dtor(&zmdcstlvec);
 
   PASS();
 }
@@ -140,17 +140,17 @@ TEST benchmark_vector_ctor_n(void)
 {
   profile_start(stdvec);
   std::vector<user_defined_type_init_destroy_copy_less> stdvec(size);
-  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
+  //stdvec.~vector();// linux stl cannot explicately call dtor because when excute ends, it will call dtor automatically
   profile_end_ms(stdvec);
 
   profile_start(zmdcstlvec);
   vector_t zmdcstlvec;
   vector_ctor_n(&zmdcstlvec, size, 1, user_defined_non_pod_id);
+  //vector_dtor(&zmdcstlvec);
   profile_end_ms(zmdcstlvec);
+  vector_dtor(&zmdcstlvec);
 
   profile_ratio(zmdcstlvec, stdvec);
-
-  vector_dtor(&zmdcstlvec);
 
   PASS();
 }
@@ -160,17 +160,18 @@ TEST benchmark_vector_ctor_n_v(void)
 
   profile_start(stdvec);
   std::vector<user_defined_type_init_destroy_copy_less> stdvec(size, v);
-  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
+  //stdvec.~vector(); //cannot explicately call dtor because when excute ends, it will call dtor automatically
   profile_end_ms(stdvec);
 
   profile_start(zmdcstlvec);
   vector_t zmdcstlvec;
   vector_ctor_n_v(&zmdcstlvec, size, &v, 1, user_defined_non_pod_id);
+  //vector_dtor(&zmdcstlvec);
   profile_end_ms(zmdcstlvec);
+  vector_dtor(&zmdcstlvec);
 
   profile_ratio(zmdcstlvec, stdvec);
 
-  vector_dtor(&zmdcstlvec);
 
   PASS();
 }
@@ -181,7 +182,7 @@ TEST benchmark_vector_ctor_vector(void)
 
   profile_start(stdvec);
   std::vector<user_defined_type_init_destroy_copy_less> stdvec(stdvec_);
-  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
+ // stdvec.~vector(); //cannot explicately call dtor because when excute ends, it will call dtor automatically
   profile_end_ms(stdvec);
 
   vector_t zmdcstlvec_;
@@ -189,12 +190,13 @@ TEST benchmark_vector_ctor_vector(void)
   profile_start(zmdcstlvec);
   vector_t zmdcstlvec;
   vector_ctor_vector(&zmdcstlvec, &zmdcstlvec_);
+  //vector_dtor(&zmdcstlvec);
   profile_end_ms(zmdcstlvec);
+  vector_dtor(&zmdcstlvec);
 
   profile_ratio(zmdcstlvec, stdvec);
 
   vector_dtor(&zmdcstlvec_);
-  vector_dtor(&zmdcstlvec);
 
   PASS();
 }
@@ -205,7 +207,7 @@ TEST benchmark_vector_ctor_range(void)
 
   profile_start(stdvec);
   std::vector<user_defined_type_init_destroy_copy_less> stdvec(stdvec_.begin(), stdvec_.end());
-  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
+  //stdvec.~vector();// cannot explicately call dtor because when excute ends, it will call dtor automatically
   profile_end_ms(stdvec);
 
   vector_t zmdcstlvec_;
@@ -220,12 +222,13 @@ TEST benchmark_vector_ctor_range(void)
   profile_start(zmdcstlvec);
   vector_t zmdcstlvec;
   vector_ctor_range(&zmdcstlvec, &first, &last);
+  //vector_dtor(&zmdcstlvec);
   profile_end_ms(zmdcstlvec);
+  vector_dtor(&zmdcstlvec);
 
   profile_ratio(zmdcstlvec, stdvec);
 
   vector_dtor(&zmdcstlvec_);
-  vector_dtor(&zmdcstlvec);
 
   PASS();
 }
@@ -236,7 +239,7 @@ TEST benchmark_vector_ctor_range_n(void)
 
   profile_start(stdvec);
   std::vector<user_defined_type_init_destroy_copy_less> stdvec(stdvec_.begin(), stdvec_.end());
-  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
+  //stdvec.~vector(); //cannot explicately call dtor because when excute ends, it will call dtor automatically
   profile_end_ms(stdvec);
 
   vector_t zmdcstlvec_;
@@ -251,12 +254,13 @@ TEST benchmark_vector_ctor_range_n(void)
   profile_start(zmdcstlvec);
   vector_t zmdcstlvec;
   vector_ctor_range(&zmdcstlvec, &first, &last);
+  //vector_dtor(&zmdcstlvec);
   profile_end_ms(zmdcstlvec);
+  vector_dtor(&zmdcstlvec);
 
   profile_ratio(zmdcstlvec, stdvec);
 
   vector_dtor(&zmdcstlvec_);
-  vector_dtor(&zmdcstlvec);
 
   PASS();
 }

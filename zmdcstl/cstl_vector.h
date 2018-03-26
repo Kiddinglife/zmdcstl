@@ -276,6 +276,8 @@ extern bool vector_equal(vector_t* cpvec_first, vector_t* cpvec_second);
  * free it in the destructor
  */
 extern void vector_assign_n_v(vector_t* pvec,const void* v, size_t n);
+extern void vector_assign_range(input_iterator_t* first, input_iterator_t* last);
+extern void vector_assign_range_n(input_iterator_t* first, size_t n);
 
 /**
  * a iterator that points just beyond the end of vector container.
@@ -289,7 +291,7 @@ extern void vector_begin(const vector_t* cpvec_vector, vector_iterator_t* begin)
 
 /**
  * a  iterator that points just beyond the end of vector container.
- * will resiign end position internally
+ * will update end position internally
  * @param cpvec_vector  vector container.
  * @remarks vector_end() has been called to init it_end
  */
@@ -299,7 +301,16 @@ extern void vector_end_again(vector_iterator_t* it_end);
  * swap exchanges the contents of two containers.
  * @param x  vector container.
  */
-extern void swap(vector_t* x);
+extern void vector_swap(vector_t* pvec_first, vector_t* pvec_second);
+
+extern void erase(random_access_iterator_t* position);
+extern void erase_unsort(random_access_iterator_t* position);
+extern void erase_range(random_access_iterator_t* first, random_access_iterator_t* last);
+extern void erase_range_unsort(random_access_iterator_t* first, random_access_iterator_t* last);
+extern void erase_range_n(random_access_iterator_t* first, size_t n);
+extern void erase_range__n_unsort(random_access_iterator_t* first, size_t n);
+
+
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ENDS ////////////////////////////////////////
 
 #ifdef __cplusplus
