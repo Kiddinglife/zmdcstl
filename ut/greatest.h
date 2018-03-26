@@ -18,43 +18,47 @@
 #define GREATEST_H
 
 #if defined(__cplusplus) && !defined(GREATEST_NO_EXTERN_CPLUSPLUS)
-extern "C" {
+extern "C"
+{
 #endif
 
-/* 1.4.0 */
+  /* 1.4.0 */
 #define GREATEST_VERSION_MAJOR 1
 #define GREATEST_VERSION_MINOR 4
 #define GREATEST_VERSION_PATCH 0
 
-/* A unit testing system for C, contained in 1 file.
- * It doesn't use dynamic allocation or depend on anything
- * beyond ANSI C89.
- *
- * An up-to-date version can be found at:
- *     https://github.com/silentbicycle/greatest/
- */
+  /* A unit testing system for C, contained in 1 file.
+   * It doesn't use dynamic allocation or depend on anything
+   * beyond ANSI C89.
+   *
+   * An up-to-date version can be found at:
+   *     https://github.com/silentbicycle/greatest/
+   */
 
-
-/*********************************************************************
- * Minimal test runner template
- *********************************************************************/
+  /*********************************************************************
+   * Minimal test runner template
+   *********************************************************************/
 #if 0
 
 #include "greatest.h"
 
-TEST foo_should_foo(void) {
+  TEST foo_should_foo(void)
+  {
     PASS();
-}
+  }
 
-static void setup_cb(void *data) {
+  static void setup_cb(void *data)
+  {
     printf("setup callback for each test case\n");
-}
+  }
 
-static void teardown_cb(void *data) {
+  static void teardown_cb(void *data)
+  {
     printf("teardown callback for each test case\n");
-}
+  }
 
-SUITE(suite) {
+  SUITE(suite)
+  {
     /* Optional setup/teardown callbacks which will be run before/after
      * every test case. If using a test suite, they will be cleared when
      * the suite finishes. */
@@ -62,68 +66,69 @@ SUITE(suite) {
     SET_TEARDOWN(teardown_cb, voidp_to_callback_data);
 
     RUN_TEST(foo_should_foo);
-}
+  }
 
-/* Add definitions that need to be in the test runner's main file. */
-GREATEST_MAIN_DEFS();
+  /* Add definitions that need to be in the test runner's main file. */
+  GREATEST_MAIN_DEFS();
 
-/* Set up, run suite(s) of tests, report pass/fail/skip stats. */
-int run_tests(void) {
-    GREATEST_INIT();            /* init. greatest internals */
+  /* Set up, run suite(s) of tests, report pass/fail/skip stats. */
+  int run_tests(void)
+  {
+    GREATEST_INIT(); /* init. greatest internals */
     /* List of suites to run (if any). */
     RUN_SUITE(suite);
 
     /* Tests can also be run directly, without using test suites. */
     RUN_TEST(foo_should_foo);
 
-    GREATEST_PRINT_REPORT();          /* display results */
+    GREATEST_PRINT_REPORT(); /* display results */
     return greatest_all_passed();
-}
+  }
 
-/* main(), for a standalone command-line test runner.
- * This replaces run_tests above, and adds command line option
- * handling and exiting with a pass/fail status. */
-int main(int argc, char **argv) {
-    GREATEST_MAIN_BEGIN();      /* init & parse command-line args */
+  /* main(), for a standalone command-line test runner.
+   * This replaces run_tests above, and adds command line option
+   * handling and exiting with a pass/fail status. */
+  int main(int argc, char **argv)
+  {
+    GREATEST_MAIN_BEGIN(); /* init & parse command-line args */
     RUN_SUITE(suite);
-    GREATEST_MAIN_END();        /* display results */
-}
+    GREATEST_MAIN_END(); /* display results */
+  }
 
 #endif
-/*********************************************************************/
-
+  /*********************************************************************/
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 
-/***********
- * Options *
- ***********/
+  /***********
+   * Options *
+   ***********/
 
-/* Default column width for non-verbose output. */
+  /* Default column width for non-verbose output. */
 #ifndef GREATEST_DEFAULT_WIDTH
 #define GREATEST_DEFAULT_WIDTH 72
 #endif
 
-/* FILE *, for test logging. */
+  /* FILE *, for test logging. */
 #ifndef GREATEST_STDOUT
 #define GREATEST_STDOUT stdout
 #endif
 
-/* Remove GREATEST_ prefix from most commonly used symbols? */
+  /* Remove GREATEST_ prefix from most commonly used symbols? */
 #ifndef GREATEST_USE_ABBREVS
 #define GREATEST_USE_ABBREVS 1
 #endif
 
-/* Set to 0 to disable all use of setjmp/longjmp. */
+  /* Set to 0 to disable all use of setjmp/longjmp. */
 #ifndef GREATEST_USE_LONGJMP
 #define GREATEST_USE_LONGJMP 1
 #endif
 
-/* Make it possible to replace fprintf with another
- * function with the same interface. */
+  /* Make it possible to replace fprintf with another
+   * function with the same interface. */
 #ifndef GREATEST_FPRINTF
 #define GREATEST_FPRINTF fprintf
 #endif
@@ -132,7 +137,7 @@ int main(int argc, char **argv) {
 #include <setjmp.h>
 #endif
 
-/* Set to 0 to disable all use of time.h / clock(). */
+  /* Set to 0 to disable all use of time.h / clock(). */
 #ifndef GREATEST_USE_TIME
 #define GREATEST_USE_TIME 1
 #endif
@@ -141,228 +146,227 @@ int main(int argc, char **argv) {
 #include <time.h>
 #endif
 
-/* Floating point type, for ASSERT_IN_RANGE. */
+  /* Floating point type, for ASSERT_IN_RANGE. */
 #ifndef GREATEST_FLOAT
 #define GREATEST_FLOAT double
 #define GREATEST_FLOAT_FMT "%g"
 #endif
 
-/* Size of buffer for test name + optional '_' separator and suffix */
+  /* Size of buffer for test name + optional '_' separator and suffix */
 #ifndef GREATEST_TESTNAME_BUF_SIZE
 #define GREATEST_TESTNAME_BUF_SIZE 128
 #endif
 
+  /*********
+   * Types *
+   *********/
 
-/*********
- * Types *
- *********/
-
-/* Info for the current running suite. */
-typedef struct greatest_suite_info {
-    unsigned int tests_run;
-    unsigned int passed;
-    unsigned int failed;
-    unsigned int skipped;
+  /* Info for the current running suite. */
+  typedef struct greatest_suite_info
+  {
+      unsigned int tests_run;
+      unsigned int passed;
+      unsigned int failed;
+      unsigned int skipped;
 
 #if GREATEST_USE_TIME
-    /* timers, pre/post running suite and individual tests */
-    clock_t pre_suite;
-    clock_t post_suite;
-    clock_t pre_test;
-    clock_t post_test;
+      /* timers, pre/post running suite and individual tests */
+      clock_t pre_suite;
+      clock_t post_suite;
+      clock_t pre_test;
+      clock_t post_test;
 #endif
-} greatest_suite_info;
+  } greatest_suite_info;
 
-/* Type for a suite function. */
-typedef void greatest_suite_cb(void);
+  /* Type for a suite function. */
+  typedef void greatest_suite_cb(void);
 
-/* Types for setup/teardown callbacks. If non-NULL, these will be run
- * and passed the pointer to their additional data. */
-typedef void greatest_setup_cb(void *udata);
-typedef void greatest_teardown_cb(void *udata);
+  /* Types for setup/teardown callbacks. If non-NULL, these will be run
+   * and passed the pointer to their additional data. */
+  typedef void greatest_setup_cb(void *udata);
+  typedef void greatest_teardown_cb(void *udata);
 
-/* Type for an equality comparison between two pointers of the same type.
- * Should return non-0 if equal, otherwise 0.
- * UDATA is a closure value, passed through from ASSERT_EQUAL_T[m]. */
-typedef int greatest_equal_cb(const void *exp, const void *got, void *udata);
+  /* Type for an equality comparison between two pointers of the same type.
+   * Should return non-0 if equal, otherwise 0.
+   * UDATA is a closure value, passed through from ASSERT_EQUAL_T[m]. */
+  typedef int greatest_equal_cb(const void *exp, const void *got, void *udata);
 
-/* Type for a callback that prints a value pointed to by T.
- * Return value has the same meaning as printf's.
- * UDATA is a closure value, passed through from ASSERT_EQUAL_T[m]. */
-typedef int greatest_printf_cb(const void *t, void *udata);
+  /* Type for a callback that prints a value pointed to by T.
+   * Return value has the same meaning as printf's.
+   * UDATA is a closure value, passed through from ASSERT_EQUAL_T[m]. */
+  typedef int greatest_printf_cb(const void *t, void *udata);
 
-/* Callbacks for an arbitrary type; needed for type-specific
- * comparisons via GREATEST_ASSERT_EQUAL_T[m].*/
-typedef struct greatest_type_info {
-    greatest_equal_cb *equal;
-    greatest_printf_cb *print;
-} greatest_type_info;
+  /* Callbacks for an arbitrary type; needed for type-specific
+   * comparisons via GREATEST_ASSERT_EQUAL_T[m].*/
+  typedef struct greatest_type_info
+  {
+      greatest_equal_cb *equal;
+      greatest_printf_cb *print;
+  } greatest_type_info;
 
-typedef struct greatest_memory_cmp_env {
-    const unsigned char *exp;
-    const unsigned char *got;
-    size_t size;
-} greatest_memory_cmp_env;
+  typedef struct greatest_memory_cmp_env
+  {
+      const unsigned char *exp;
+      const unsigned char *got;
+      size_t size;
+  } greatest_memory_cmp_env;
 
-/* Callbacks for string and raw memory types. */
-extern greatest_type_info greatest_type_info_string;
-extern greatest_type_info greatest_type_info_memory;
+  /* Callbacks for string and raw memory types. */
+  extern greatest_type_info greatest_type_info_string;
+  extern greatest_type_info greatest_type_info_memory;
 
-typedef enum {
-    GREATEST_FLAG_FIRST_FAIL = 0x01,
-    GREATEST_FLAG_LIST_ONLY = 0x02,
-    GREATEST_FLAG_ABORT_ON_FAIL = 0x04
-} greatest_flag_t;
+  typedef enum
+  {
+    GREATEST_FLAG_FIRST_FAIL = 0x01, GREATEST_FLAG_LIST_ONLY = 0x02, GREATEST_FLAG_ABORT_ON_FAIL = 0x04
+  } greatest_flag_t;
 
-/* Internal state for a PRNG, used to shuffle test order. */
-struct greatest_prng {
-    unsigned char random_order; /* use random ordering? */
-    unsigned char initialized;  /* is random ordering initialized? */
-    unsigned char pad_0[6];
-    unsigned long state;        /* PRNG state */
-    unsigned long count;        /* how many tests, this pass */
-    unsigned long count_ceil;   /* total number of tests */
-    unsigned long count_run;    /* total tests run */
-    unsigned long mod;          /* power-of-2 ceiling of count_ceil */
-    unsigned long a;            /* LCG multiplier */
-    unsigned long c;            /* LCG increment */
-};
+  /* Internal state for a PRNG, used to shuffle test order. */
+  struct greatest_prng
+  {
+      unsigned char random_order; /* use random ordering? */
+      unsigned char initialized; /* is random ordering initialized? */
+      unsigned char pad_0[6];
+      unsigned long state; /* PRNG state */
+      unsigned long count; /* how many tests, this pass */
+      unsigned long count_ceil; /* total number of tests */
+      unsigned long count_run; /* total tests run */
+      unsigned long mod; /* power-of-2 ceiling of count_ceil */
+      unsigned long a; /* LCG multiplier */
+      unsigned long c; /* LCG increment */
+  };
 
-/* Struct containing all test runner state. */
-typedef struct greatest_run_info {
-    unsigned char flags;
-    unsigned char verbosity;
-    unsigned char pad_0[2];
+  /* Struct containing all test runner state. */
+  typedef struct greatest_run_info
+  {
+      unsigned char flags;
+      unsigned char verbosity;
+      unsigned char pad_0[2];
 
-    unsigned int tests_run;     /* total test count */
+      unsigned int tests_run; /* total test count */
 
-    /* currently running test suite */
-    greatest_suite_info suite;
+      /* currently running test suite */
+      greatest_suite_info suite;
 
-    /* overall pass/fail/skip counts */
-    unsigned int passed;
-    unsigned int failed;
-    unsigned int skipped;
-    unsigned int assertions;
+      /* overall pass/fail/skip counts */
+      unsigned int passed;
+      unsigned int failed;
+      unsigned int skipped;
+      unsigned int assertions;
 
-    /* info to print about the most recent failure */
-    unsigned int fail_line;
-    unsigned int pad_1;
-    const char *fail_file;
-    const char *msg;
+      /* info to print about the most recent failure */
+      unsigned int fail_line;
+      unsigned int pad_1;
+      const char *fail_file;
+      const char *msg;
 
-    /* current setup/teardown hooks and userdata */
-    greatest_setup_cb *setup;
-    void *setup_udata;
-    greatest_teardown_cb *teardown;
-    void *teardown_udata;
+      /* current setup/teardown hooks and userdata */
+      greatest_setup_cb *setup;
+      void *setup_udata;
+      greatest_teardown_cb *teardown;
+      void *teardown_udata;
 
-    /* formatting info for ".....s...F"-style output */
-    unsigned int col;
-    unsigned int width;
+      /* formatting info for ".....s...F"-style output */
+      unsigned int col;
+      unsigned int width;
 
-    /* only run a specific suite or test */
-    const char *suite_filter;
-    const char *test_filter;
-    const char *test_exclude;
-    const char *name_suffix;    /* print suffix with test name */
-    char name_buf[GREATEST_TESTNAME_BUF_SIZE];
+      /* only run a specific suite or test */
+      const char *suite_filter;
+      const char *test_filter;
+      const char *test_exclude;
+      const char *name_suffix; /* print suffix with test name */
+      char name_buf[GREATEST_TESTNAME_BUF_SIZE];
 
-    struct greatest_prng prng[2]; /* 0: suites, 1: tests */
+      struct greatest_prng prng[2]; /* 0: suites, 1: tests */
 
 #if GREATEST_USE_TIME
-    /* overall timers */
-    clock_t begin;
-    clock_t end;
+      /* overall timers */
+      clock_t begin;
+      clock_t end;
 #endif
 
 #if GREATEST_USE_LONGJMP
-    int pad_jmp_buf;
-    unsigned char pad_2[4];
-    jmp_buf jump_dest;
+      int pad_jmp_buf;
+      unsigned char pad_2[4];
+      jmp_buf jump_dest;
 #endif
-} greatest_run_info;
+  } greatest_run_info;
 
-struct greatest_report_t {
-    /* overall pass/fail/skip counts */
-    unsigned int passed;
-    unsigned int failed;
-    unsigned int skipped;
-    unsigned int assertions;
-};
+  struct greatest_report_t
+  {
+      /* overall pass/fail/skip counts */
+      unsigned int passed;
+      unsigned int failed;
+      unsigned int skipped;
+      unsigned int assertions;
+  };
 
-/* Global var for the current testing context.
- * Initialized by GREATEST_MAIN_DEFS(). */
-extern greatest_run_info greatest_info;
+  /* Global var for the current testing context.
+   * Initialized by GREATEST_MAIN_DEFS(). */
+  extern greatest_run_info greatest_info;
 
-/* Type for ASSERT_ENUM_EQ's ENUM_STR argument. */
-typedef const char *greatest_enum_str_fun(int value);
+  /* Type for ASSERT_ENUM_EQ's ENUM_STR argument. */
+  typedef const char *greatest_enum_str_fun(int value);
 
+  /**********************
+   * Exported functions *
+   **********************/
 
-/**********************
- * Exported functions *
- **********************/
+  /* These are used internally by greatest macros. */
+  int greatest_test_pre(const char *name);
+  void greatest_test_post(int res);
+  int greatest_do_assert_equal_t(const void *exp, const void *got, greatest_type_info *type_info, void *udata);
+  void greatest_prng_init_first_pass(int id);
+  int greatest_prng_init_second_pass(int id, unsigned long seed);
+  void greatest_prng_step(int id);
 
-/* These are used internally by greatest macros. */
-int greatest_test_pre(const char *name);
-void greatest_test_post(int res);
-int greatest_do_assert_equal_t(const void *exp, const void *got,
-    greatest_type_info *type_info, void *udata);
-void greatest_prng_init_first_pass(int id);
-int greatest_prng_init_second_pass(int id, unsigned long seed);
-void greatest_prng_step(int id);
+  /* These are part of the public greatest API. */
+  void GREATEST_SET_SETUP_CB(greatest_setup_cb *cb, void *udata);
+  void GREATEST_SET_TEARDOWN_CB(greatest_teardown_cb *cb, void *udata);
+  void GREATEST_INIT(void);
+  void GREATEST_PRINT_REPORT(void);
+  int greatest_all_passed(void);
+  void greatest_set_suite_filter(const char *filter);
+  void greatest_set_test_filter(const char *filter);
+  void greatest_set_test_exclude(const char *filter);
+  void greatest_stop_at_first_fail(void);
+  void greatest_abort_on_fail(void);
+  void greatest_list_only(void);
+  void greatest_get_report(struct greatest_report_t *report);
+  unsigned int greatest_get_verbosity(void);
+  void greatest_set_verbosity(unsigned int verbosity);
+  void greatest_set_flag(greatest_flag_t flag);
+  void greatest_set_test_suffix(const char *suffix);
 
-/* These are part of the public greatest API. */
-void GREATEST_SET_SETUP_CB(greatest_setup_cb *cb, void *udata);
-void GREATEST_SET_TEARDOWN_CB(greatest_teardown_cb *cb, void *udata);
-void GREATEST_INIT(void);
-void GREATEST_PRINT_REPORT(void);
-int greatest_all_passed(void);
-void greatest_set_suite_filter(const char *filter);
-void greatest_set_test_filter(const char *filter);
-void greatest_set_test_exclude(const char *filter);
-void greatest_stop_at_first_fail(void);
-void greatest_abort_on_fail(void);
-void greatest_list_only(void);
-void greatest_get_report(struct greatest_report_t *report);
-unsigned int greatest_get_verbosity(void);
-void greatest_set_verbosity(unsigned int verbosity);
-void greatest_set_flag(greatest_flag_t flag);
-void greatest_set_test_suffix(const char *suffix);
+  /********************
+   * Language Support *
+   ********************/
 
-
-/********************
-* Language Support *
-********************/
-
-/* If __VA_ARGS__ (C99) is supported, allow parametric testing
-* without needing to manually manage the argument struct. */
+  /* If __VA_ARGS__ (C99) is supported, allow parametric testing
+   * without needing to manually manage the argument struct. */
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 19901L) ||        \
     (defined(_MSC_VER) && _MSC_VER >= 1800)
 #define GREATEST_VA_ARGS
 #endif
 
+  /**********
+   * Macros *
+   **********/
 
-/**********
- * Macros *
- **********/
-
-/* Define a suite. */
+  /* Define a suite. */
 #define GREATEST_SUITE(NAME) void NAME(void); void NAME(void)
 
-/* Declare a suite, provided by another compilation unit. */
+  /* Declare a suite, provided by another compilation unit. */
 #define GREATEST_SUITE_EXTERN(NAME) void NAME(void)
 
-/* Start defining a test function.
- * The arguments are not included, to allow parametric testing. */
+  /* Start defining a test function.
+   * The arguments are not included, to allow parametric testing. */
 #define GREATEST_TEST static enum greatest_test_res
 
-/* PASS/FAIL/SKIP result from a test. Used internally. */
-typedef enum greatest_test_res {
-    GREATEST_TEST_RES_PASS = 0,
-    GREATEST_TEST_RES_FAIL = -1,
-    GREATEST_TEST_RES_SKIP = 1
-} greatest_test_res;
+  /* PASS/FAIL/SKIP result from a test. Used internally. */
+  typedef enum greatest_test_res
+  {
+    GREATEST_TEST_RES_PASS = 0, GREATEST_TEST_RES_FAIL = -1, GREATEST_TEST_RES_SKIP = 1
+  } greatest_test_res;
 
 /* Run a suite. */
 #define GREATEST_RUN_SUITE(S_NAME) greatest_run_suite(S_NAME, #S_NAME)
@@ -407,7 +411,6 @@ typedef enum greatest_test_res {
         }                                                               \
     } while (0);
 #endif
-
 
 /* Check if the test runner is in verbose mode. */
 #define GREATEST_IS_VERBOSE() ((greatest_info.verbosity) > 0)
@@ -576,14 +579,14 @@ typedef enum greatest_test_res {
 
 /* Pass. */
 #define GREATEST_PASSm(MSG)                                             \
-    ; do {                                                                \
+    ; do {                                                              \
         greatest_info.msg = MSG;                                        \
         return GREATEST_TEST_RES_PASS;                                  \
     } while (0);
 
 /* Fail. */
 #define GREATEST_FAILm(MSG)                                             \
-    ; do {                                                                \
+    ; do {                                                              \
         greatest_info.fail_file = __FILE__;                             \
         greatest_info.fail_line = __LINE__;                             \
         greatest_info.msg = MSG;                                        \
@@ -595,7 +598,7 @@ typedef enum greatest_test_res {
 #if GREATEST_USE_LONGJMP
 #define GREATEST_FAIL_WITH_LONGJMP() GREATEST_FAIL_WITH_LONGJMPm(NULL)
 #define GREATEST_FAIL_WITH_LONGJMPm(MSG)                                \
-    ; do {                                                                \
+    ; do {                                                              \
         greatest_info.fail_file = __FILE__;                             \
         greatest_info.fail_line = __LINE__;                             \
         greatest_info.msg = MSG;                                        \
@@ -605,14 +608,14 @@ typedef enum greatest_test_res {
 
 /* Skip the current test. */
 #define GREATEST_SKIPm(MSG)                                             \
-    ; do {                                                                \
+    ; do {                                                              \
         greatest_info.msg = MSG;                                        \
         return GREATEST_TEST_RES_SKIP;                                  \
     } while (0);
 
 /* Check the result of a subfunction using ASSERT, etc. */
 #define GREATEST_CHECK_CALL(RES)                                        \
-    ; do {                                                                \
+    ; do {                                                              \
         enum greatest_test_res greatest_RES = RES;                      \
         if (greatest_RES != GREATEST_TEST_RES_PASS) {                   \
             return greatest_RES;                                        \
@@ -663,10 +666,10 @@ typedef enum greatest_test_res {
 #define GREATEST_SHUFFLE_SUITES(SD, BODY) GREATEST_SHUFFLE(0, SD, BODY)
 #define GREATEST_SHUFFLE_TESTS(SD, BODY) GREATEST_SHUFFLE(1, SD, BODY)
 #define GREATEST_SHUFFLE(ID, SD, BODY)                                  \
-    ; do {                                                                \
+    ; do {                                                              \
         struct greatest_prng *prng = &greatest_info.prng[ID];           \
         greatest_prng_init_first_pass(ID);                              \
-        ; do {                                                            \
+        ; do {                                                          \
             prng->count = 0;                                            \
             if (prng->initialized) { greatest_prng_step(ID); }          \
             BODY;                                                       \
@@ -1148,19 +1151,18 @@ greatest_type_info greatest_type_info_memory = {                        \
     greatest_memory_equal_cb,                                           \
     greatest_memory_printf_cb,                                          \
 };                                                                      \
-                                                                        \
-greatest_run_info greatest_info
+greatest_run_info greatest_info;
 
 /* Handle command-line arguments, etc. */
 #define GREATEST_MAIN_BEGIN()                                           \
-    ; do {                                                                \
+    ; do {                                                              \
         GREATEST_INIT();                                                \
         greatest_parse_options(argc, argv);                             \
     } while (0);
 
 /* Report results, exit with exit status based on results. */
 #define GREATEST_MAIN_END()                                             \
-    ; do {                                                                \
+    ; do {                                                              \
         GREATEST_PRINT_REPORT();                                        \
         return (greatest_all_passed() ? EXIT_SUCCESS : EXIT_FAILURE);   \
     } while (0);

@@ -5,15 +5,15 @@
 /** local constant declaration and local macro section **/
 type_register_t _g_type_register = { 0 };
 
-static inline const char* gettypename(typeid_t tid)
+inline static const char* gettypename(typeid_t tid)
 {
     switch (tid)
     {
-    case cstl_int8t:
-        return "cstl_int8t";
+    case cstl_int8:
+        return "cstl_int8";
         break;
     case cstl_uint8:
-        return "cstl_uint8t";
+        return "cstl_uint8";
         break;
     case cstl_int16:
         return "cstl_int16";

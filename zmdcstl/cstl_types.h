@@ -27,7 +27,7 @@ extern "C"
 
 typedef enum
 {
-  cstl_int8t = 0,
+  cstl_int8 = 0,
   cstl_uint8,
   cstl_int16,
   cstl_uint16,
