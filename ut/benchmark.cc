@@ -229,6 +229,37 @@ TEST benchmark_vector_ctor_range(void)
 
   PASS();
 }
+TEST benchmark_vector_ctor_range_n(void)
+{
+  user_defined_type_init_destroy_copy_less v;
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec_(size, v);
+
+  profile_start(stdvec);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(stdvec_.begin(), stdvec_.end());
+  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
+  profile_end_ms(stdvec);
+
+  vector_t zmdcstlvec_;
+  vector_ctor_n_v(&zmdcstlvec_, size, &v, 1, user_defined_non_pod_id);
+
+  random_access_iterator_t first;
+  vector_begin(&zmdcstlvec_, &first);
+
+  random_access_iterator_t last;
+  vector_end(&zmdcstlvec_, &last);
+
+  profile_start(zmdcstlvec);
+  vector_t zmdcstlvec;
+  vector_ctor_range(&zmdcstlvec, &first, &last);
+  profile_end_ms(zmdcstlvec);
+
+  profile_ratio(zmdcstlvec, stdvec);
+
+  vector_dtor(&zmdcstlvec_);
+  vector_dtor(&zmdcstlvec);
+
+  PASS();
+}
 SUITE(benchmark_vector)
 {
   RUN_TEST(benchmark_vector_ctor);
@@ -236,6 +267,7 @@ SUITE(benchmark_vector)
   RUN_TEST(benchmark_vector_ctor_n_v);
   RUN_TEST(benchmark_vector_ctor_vector);
   RUN_TEST(benchmark_vector_ctor_range);
+  RUN_TEST(benchmark_vector_ctor_range_n);
 }
 
 int main(int argc, char **argv)
