@@ -309,16 +309,16 @@ TEST test_vector_ctor_range_scalar_type()
   vector_t pvec_vector;
   unsigned int v = 100;
   size_t elesize = 100;
+  size_t copysize = 5;
+
   vector_ctor_n_v(&pvec_vector, elesize, &v, 1, cstl_uint32);
 
-  size_t copysize = 5;
+  // first = index50 last = index55
   random_access_iterator_t first;
-  random_access_iterator_t last;
-  first._pt_container = &pvec_vector;
-  _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start;
-  last._pt_container = &pvec_vector;
-  pvec_vector._pby_finish = pvec_vector._pby_start + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
-  _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_finish;
+  vector_begin(&pvec_vector, &first);
+  vector_iterator_next_n(&first, elesize/2);
+  random_access_iterator_t last = first;
+  vector_iterator_next_n(&last, copysize);
 
   vector_t pvec_vector_;
   vector_ctor_range(&pvec_vector_, &first, &last);
@@ -352,13 +352,13 @@ TEST test_vector_ctor_range_user_defined_pod()
   vector_ctor_n_v(&pvec_vector, elesize, &v, 1, user_defined_pod_id);
 
   size_t copysize = 5;
+  // first = index50 last = index55
   random_access_iterator_t first;
-  random_access_iterator_t last;
-  first._pt_container = &pvec_vector;
-  _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start;
-  last._pt_container = &pvec_vector;
-  pvec_vector._pby_finish = pvec_vector._pby_start + copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
-  _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_finish;
+  vector_begin(&pvec_vector, &first);
+  vector_iterator_next_n(&first, elesize/2);
+  random_access_iterator_t last = first;
+  vector_iterator_next_n(&last, copysize);
+
 
   vector_t pvec_vector_;
   vector_ctor_range(&pvec_vector_, &first, &last);
@@ -396,12 +396,12 @@ TEST test_vector_ctor_range_user_defined_non_pod()
   vector_ctor_n_v(&pvec_vector, elesize, &v, 1, user_defined_non_pod_id);
 
   size_t copysize = 50;
+  // first = index50 last = index55
   random_access_iterator_t first;
-  random_access_iterator_t last;
-  first._pt_container = &pvec_vector;
-  last._pt_container = &pvec_vector;
-  _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start + 20 * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
-  _VECTOR_ITERATOR_COREPOS(&last) = pvec_vector._pby_start + (copysize + 20) * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  vector_begin(&pvec_vector, &first);
+  vector_iterator_next_n(&first, elesize/2);
+  random_access_iterator_t last = first;
+  vector_iterator_next_n(&last, copysize);
 
   vector_t pvec_vector_;
   vector_ctor_range(&pvec_vector_, &first, &last);

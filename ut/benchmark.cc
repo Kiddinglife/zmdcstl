@@ -7,13 +7,25 @@
 /* Add definitions that need to be in the test runner's main file. */
 GREATEST_MAIN_DEFS()
 
-typedef struct
+struct user_defined_type_init0_destroy0_copy0_less
 {
     int a;
     // no deep copy and so copy function cam be NULL
     void* b;
     char c[32];
-} user_defined_type_init0_destroy0_copy0_less;
+    user_defined_type_init0_destroy0_copy0_less()
+    {
+      a = 0;
+      b = 0;
+      memset(c, 0, 32);
+    }
+    user_defined_type_init0_destroy0_copy0_less(const user_defined_type_init0_destroy0_copy0_less& x)
+    {
+      a = x.a;
+      b = x.b;
+      cstl_memcpy(c, x.c, 32 * sizeof(int));
+    }
+};
 static typeid_t user_defined_pod_id;
 static void func_less_user_defined_type_init0_destroy0_copy0_less(const void* in, const void* in_, void* out)
 {
@@ -27,13 +39,36 @@ static void func_less_user_defined_type_init0_destroy0_copy0_less(const void* in
     *(char*) out = 0;
 }
 
-typedef struct
+struct user_defined_type_init_destroy_copy_less
 {
     int a;
     // no deep copy and so copy function cam be NULL
     int* b;
     char c[32];
-} user_defined_type_init_destroy_copy_less;
+    user_defined_type_init_destroy_copy_less()
+    {
+      a = 100;
+      b = cstl_alloc(int, a);
+      //b = (int*) malloc(a * sizeof(int));
+      memset(b, 0, a * sizeof(int));
+      //printf("default ctor called, b=%p\n", b);
+      memset(c, 0, 32);
+      c[0] = 100;
+    }
+    user_defined_type_init_destroy_copy_less(const user_defined_type_init_destroy_copy_less& x)
+    {
+      a = x.a;
+      b = cstl_alloc(int, a);
+      //printf("cpy ctor called, x.a=%d,x.b=%p,x.c[0]=%d, this->b=%p\n", x.a, x.b, x.c[0], b);
+      cstl_memcpy(b, x.b, a * sizeof(int));
+      cstl_memcpy(c, x.c, 32);
+    }
+    ~user_defined_type_init_destroy_copy_less()
+    {
+      //printf("dtor called, b=%p\n", b);
+      cstl_free(b);
+    }
+};
 static typeid_t user_defined_non_pod_id;
 static void func_init_user_defined_type_init_destroy_copy_less(const void* in, void* out)
 {
@@ -82,57 +117,117 @@ static void func_less_user_defined_type_init_destroy_copy_less(const void* in, c
     std::cout << #id << ":" << elapsed##id.count() << "ns, "
 #define profile_ratio(id1,id2)   std::cout << "ratio: " << elapsed##id1/elapsed##id2 << "\n"
 
+size_t size = 100000;
+
 TEST benchmark_vector_ctor(void)
 {
   profile_start(stdvec);
-  std::vector<int> stdvec;
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec;
+  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
   profile_end_ns(stdvec);
 
-  vector_t zmdcstlvec;
   profile_start(zmdcstlvec);
-  vector_ctor(&zmdcstlvec, 1, cstl_uint32);
+  vector_t zmdcstlvec;
+  vector_ctor(&zmdcstlvec, 1, user_defined_non_pod_id);
   profile_end_ns(zmdcstlvec);
 
   profile_ratio(zmdcstlvec, stdvec);
 
   vector_dtor(&zmdcstlvec);
+
   PASS();
 }
 TEST benchmark_vector_ctor_n(void)
 {
-  size_t size = 10000000;
-
   profile_start(stdvec);
-  std::vector<int> stdvec(size);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(size);
+  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
   profile_end_ms(stdvec);
 
-  vector_t zmdcstlvec;
   profile_start(zmdcstlvec);
-  vector_ctor_n(&zmdcstlvec, size, 1, cstl_int32);
+  vector_t zmdcstlvec;
+  vector_ctor_n(&zmdcstlvec, size, 1, user_defined_non_pod_id);
   profile_end_ms(zmdcstlvec);
 
   profile_ratio(zmdcstlvec, stdvec);
 
   vector_dtor(&zmdcstlvec);
+
   PASS();
 }
 TEST benchmark_vector_ctor_n_v(void)
 {
-  size_t size = 10000000;
-  int v = 100;
+  user_defined_type_init_destroy_copy_less v;
 
   profile_start(stdvec);
-  std::vector<int> stdvec(size, v);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(size, v);
+  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
   profile_end_ms(stdvec);
 
-  vector_t zmdcstlvec;
   profile_start(zmdcstlvec);
-  vector_ctor_n_v(&zmdcstlvec, size, &v, 1, cstl_int32);
+  vector_t zmdcstlvec;
+  vector_ctor_n_v(&zmdcstlvec, size, &v, 1, user_defined_non_pod_id);
   profile_end_ms(zmdcstlvec);
 
   profile_ratio(zmdcstlvec, stdvec);
 
   vector_dtor(&zmdcstlvec);
+
+  PASS();
+}
+TEST benchmark_vector_ctor_vector(void)
+{
+  user_defined_type_init_destroy_copy_less v;
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec_(size, v);
+
+  profile_start(stdvec);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(stdvec_);
+  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
+  profile_end_ms(stdvec);
+
+  vector_t zmdcstlvec_;
+  vector_ctor_n_v(&zmdcstlvec_, size, &v, 1, user_defined_non_pod_id);
+  profile_start(zmdcstlvec);
+  vector_t zmdcstlvec;
+  vector_ctor_vector(&zmdcstlvec, &zmdcstlvec_);
+  profile_end_ms(zmdcstlvec);
+
+  profile_ratio(zmdcstlvec, stdvec);
+
+  vector_dtor(&zmdcstlvec_);
+  vector_dtor(&zmdcstlvec);
+
+  PASS();
+}
+TEST benchmark_vector_ctor_range(void)
+{
+  user_defined_type_init_destroy_copy_less v;
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec_(size, v);
+
+  profile_start(stdvec);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(stdvec_.begin(), stdvec_.end());
+  //stdvec.~vector(); cannot explicately call dtor because when excute ends, it will call dtor automatically
+  profile_end_ms(stdvec);
+
+  vector_t zmdcstlvec_;
+  vector_ctor_n_v(&zmdcstlvec_, size, &v, 1, user_defined_non_pod_id);
+
+  random_access_iterator_t first;
+  vector_begin(&zmdcstlvec_, &first);
+
+  random_access_iterator_t last;
+  vector_end(&zmdcstlvec_, &last);
+
+  profile_start(zmdcstlvec);
+  vector_t zmdcstlvec;
+  vector_ctor_range(&zmdcstlvec, &first, &last);
+  profile_end_ms(zmdcstlvec);
+
+  profile_ratio(zmdcstlvec, stdvec);
+
+  vector_dtor(&zmdcstlvec_);
+  vector_dtor(&zmdcstlvec);
+
   PASS();
 }
 SUITE(benchmark_vector)
@@ -140,6 +235,8 @@ SUITE(benchmark_vector)
   RUN_TEST(benchmark_vector_ctor);
   RUN_TEST(benchmark_vector_ctor_n);
   RUN_TEST(benchmark_vector_ctor_n_v);
+  RUN_TEST(benchmark_vector_ctor_vector);
+  RUN_TEST(benchmark_vector_ctor_range);
 }
 
 int main(int argc, char **argv)

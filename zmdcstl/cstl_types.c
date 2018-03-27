@@ -99,6 +99,7 @@ void destroy_types()
                 cstl_free(_g_type_register._ptr_types[i]);
         }
         cstl_free(_g_type_register._ptr_types);
+        _g_type_register._ptr_types = 0;
     }
 }
 void init_types(size_t usertypesize)
@@ -132,6 +133,8 @@ void init_types(size_t usertypesize)
         _type_less_float);
     register_type(sizeof(double), CSTL_ALIGN_OF(double), NULL, NULL, NULL,
         _type_less_double);
+    register_type(sizeof(void*), CSTL_ALIGN_OF(void*), NULL, NULL, NULL,
+        _type_less_pointer);
 
     //@TODO register cstl types
 
