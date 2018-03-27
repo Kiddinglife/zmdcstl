@@ -49,7 +49,6 @@ struct user_defined_type_init_destroy_copy_less
     {
       a = 100;
       b = cstl_alloc(int, a);
-      //b = (int*) malloc(a * sizeof(int));
       memset(b, 0, a * sizeof(int));
       //printf("default ctor called, b=%p\n", b);
       memset(c, 0, 32);
