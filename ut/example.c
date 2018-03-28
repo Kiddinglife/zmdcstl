@@ -678,7 +678,13 @@ TEST test_vector_erase()
   // erase first ele
   vector_begin(&pvec_vector, &position);
   ASSERT_EQ(position._t_pos, pvec_vector._pby_start);
-
+  random_access_iterator_t second = position;
+  vector_iterator_next(&second);
+  ((user_defined_type_init_destroy_copy_less*)second._t_pos)->a -= 1;
+  user_defined_type_init_destroy_copy_less secondval = *((user_defined_type_init_destroy_copy_less*)second._t_pos);
+  vector_erase(&position);
+  ASSERT_EQ(vector_size(&pvec_vector), elesize-2);
+  ASSERT_EQ(((user_defined_type_init_destroy_copy_less*)position._t_pos)->a,secondval.a);
 
   vector_dtor(&pvec_vector);
   PASS();
