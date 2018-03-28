@@ -69,9 +69,6 @@ bool equal_from_continus(_byte_t* first1, _byte_t* last1, input_iterator_t* firs
 bool equal(input_iterator_t* first1, input_iterator_t* last1, input_iterator_t* first2)
 {
   assert(iterator_is_valid(first1) && iterator_is_valid(last1) && iterator_is_valid(first2));
-  assert(
-      iterator_limit_type(first1, _INPUT_ITERATOR) && iterator_limit_type(last1, _INPUT_ITERATOR)
-          && iterator_limit_type(first2, _FORWARD_ITERATOR));
   assert(iterator_same_elem_type(first1, last1) && iterator_same_elem_type(first1, first2));
 
   switch (_ITERATOR_CONTAINER_TYPE(first1))

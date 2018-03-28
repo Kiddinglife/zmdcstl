@@ -316,7 +316,7 @@ TEST test_vector_ctor_range_scalar_type()
   // first = index50 last = index55
   random_access_iterator_t first;
   vector_begin(&pvec_vector, &first);
-  vector_iterator_next_n(&first, elesize/2);
+  vector_iterator_next_n(&first, elesize / 2);
   random_access_iterator_t last = first;
   vector_iterator_next_n(&last, copysize);
 
@@ -355,10 +355,9 @@ TEST test_vector_ctor_range_user_defined_pod()
   // first = index50 last = index55
   random_access_iterator_t first;
   vector_begin(&pvec_vector, &first);
-  vector_iterator_next_n(&first, elesize/2);
+  vector_iterator_next_n(&first, elesize / 2);
   random_access_iterator_t last = first;
   vector_iterator_next_n(&last, copysize);
-
 
   vector_t pvec_vector_;
   vector_ctor_range(&pvec_vector_, &first, &last);
@@ -399,7 +398,7 @@ TEST test_vector_ctor_range_user_defined_non_pod()
   // first = index50 last = index55
   random_access_iterator_t first;
   vector_begin(&pvec_vector, &first);
-  vector_iterator_next_n(&first, elesize/2);
+  vector_iterator_next_n(&first, elesize / 2);
   random_access_iterator_t last = first;
   vector_iterator_next_n(&last, copysize);
 
@@ -653,6 +652,37 @@ TEST test_vector_assign_n_v()
 
   PASS();
 }
+TEST test_vector_erase()
+{
+  size_t elesize = 100;
+
+  vector_t pvec_vector;
+  vector_ctor_n(&pvec_vector, elesize, 1, user_defined_non_pod_id);
+
+  // erase last ele
+  random_access_iterator_t position;
+  vector_end(&pvec_vector, &position);
+  ASSERT_EQ(position._t_pos, pvec_vector._pby_finish);
+  random_access_iterator_t pre_end = position;
+  ASSERT_EQ(pre_end._t_pos,pvec_vector._pby_finish);
+  vector_iterator_prev(&position);
+  ASSERT_EQ(position._t_pos, pvec_vector._pby_finish-_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
+  vector_erase(&position);
+  ASSERT_EQ(vector_size(&pvec_vector), elesize-1);
+  ASSERT_EQ(pvec_vector._pby_finish, position._t_pos);
+  ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_finish,
+      _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
+  vector_end(&pvec_vector, &position);
+  ASSERT_EQ(1,iterator_continue_minus(&position, &pre_end));
+
+  // erase first ele
+  vector_begin(&pvec_vector, &position);
+  ASSERT_EQ(position._t_pos, pvec_vector._pby_start);
+
+
+  vector_dtor(&pvec_vector);
+  PASS();
+}
 SUITE(test_vector)
 {
   RUN_TEST(test_vector_ctor_scalar_type);
@@ -673,6 +703,7 @@ SUITE(test_vector)
   RUN_TEST(test_vector_size);
   RUN_TEST(test_vector_equal);
   RUN_TEST(test_vector_assign_n_v);
+  RUN_TEST(test_vector_erase);
 }
 
 TEST test_union_ptr_as_buf(void)

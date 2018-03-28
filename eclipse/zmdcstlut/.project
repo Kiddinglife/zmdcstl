@@ -25,9 +25,14 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>ut</name>
-			<type>2</type>
-			<locationURI>PARENT-2-PROJECT_LOC/ut</locationURI>
+			<name>example.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/ut/example.c</locationURI>
+		</link>
+		<link>
+			<name>greatest.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/ut/greatest.h</locationURI>
 		</link>
 		<link>
 			<name>zmdcstl</name>

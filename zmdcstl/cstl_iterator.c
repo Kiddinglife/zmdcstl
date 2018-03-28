@@ -72,32 +72,9 @@ bool iterator_before(iterator_t* it_first, iterator_t* it_second)
   }
 }
 
-bool iterator_limit_type(iterator_t* it_iter, iteratortype_t t_limittype)
-{
-//    assert(iterator_is_valid(it_iter));
-//    switch (t_limittype)
-//    {
-//    case _INPUT_ITERATOR:
-//        return (_ITERATOR_ITERATOR_TYPE(it_iter) >= _INPUT_ITERATOR);
-//    case _OUTPUT_ITERATOR:
-//        return (_ITERATOR_ITERATOR_TYPE(it_iter) >= _OUTPUT_ITERATOR);
-//    case _FORWARD_ITERATOR:
-//        return (_ITERATOR_ITERATOR_TYPE(it_iter) >= _FORWARD_ITERATOR);
-//    case _BIDIRECTIONAL_ITERATOR:
-//        return (_ITERATOR_ITERATOR_TYPE(it_iter) >= _BIDIRECTIONAL_ITERATOR);
-//    case _RANDOM_ACCESS_ITERATOR:
-//        return (_ITERATOR_ITERATOR_TYPE(it_iter) >= _RANDOM_ACCESS_ITERATOR);
-//    default:
-//        assert(false);
-//    }
-//    return false;
-  return true;
-}
-
 const void* iterator_get_pointer_ignore_cstr(iterator_t* it_iter)
 {
   assert(iterator_is_valid(it_iter));
-  assert(iterator_limit_type(it_iter, _INPUT_ITERATOR));
 
   switch (_ITERATOR_CONTAINER_TYPE(it_iter))
   {
@@ -151,8 +128,6 @@ bool iterator_same_elem_type(iterator_t* it_first, iterator_t* it_second)
 {
   assert(iterator_is_valid(it_first));
   assert(iterator_is_valid(it_second));
-  assert(iterator_limit_type(it_first, _INPUT_ITERATOR));
-  assert(iterator_limit_type(it_second, _INPUT_ITERATOR));
   assert(iterator_get_typeinfo(it_first));
   assert(iterator_get_typeinfo(it_second));
   return type_info_is_same(iterator_get_typeinfo(it_first),  iterator_get_typeinfo(it_second));
@@ -162,8 +137,6 @@ bool iterator_equal(iterator_t* it_first, iterator_t* it_second)
 {
   assert(iterator_is_valid(it_first));
   assert(iterator_is_valid(it_second));
-  assert(iterator_limit_type(it_first, _INPUT_ITERATOR));
-  assert(iterator_limit_type(it_second, _INPUT_ITERATOR));
   assert(iterator_get_typeinfo(it_first));
   assert(iterator_get_typeinfo(it_second));
   assert(
@@ -222,7 +195,6 @@ bool iterator_valid_range(iterator_t* it_first, iterator_t* it_end,
     iteratortype_t t_type)
 {
   return (iterator_same_type(it_first, it_end)
-      && iterator_limit_type(it_first, t_type)
       && (iterator_equal(it_first, it_end) || iterator_before(it_first, it_end)));
 }
 
@@ -280,7 +252,6 @@ void iterator_get_value(input_iterator_t* it_iter, void* pv_value)
 {
   assert(pv_value != NULL);
   assert(iterator_is_valid(it_iter));
-  assert(iterator_limit_type(it_iter, _INPUT_ITERATOR));
   switch (_ITERATOR_CONTAINER_TYPE(it_iter))
   {
     case _VECTOR_CONTAINER:
@@ -331,7 +302,6 @@ void iterator_get_value(input_iterator_t* it_iter, void* pv_value)
 void iterator_prev(bidirectional_iterator_t* bidirectional_iterator)
 {
   assert(iterator_is_valid(bidirectional_iterator));
-  assert(iterator_limit_type(bidirectional_iterator, _BIDIRECTIONAL_ITERATOR));
   //@TODO
   switch (_ITERATOR_CONTAINER_TYPE(bidirectional_iterator))
   {
@@ -383,7 +353,6 @@ void iterator_prev(bidirectional_iterator_t* bidirectional_iterator)
 void iterator_next_n(forward_iterator_t* random_access_iterator, size_t n_step)
 {
   assert(iterator_is_valid(random_access_iterator));
-  assert(iterator_limit_type(random_access_iterator, _FORWARD_ITERATOR));
   assert(n_step > 0);
   // @TODO
   switch (_ITERATOR_CONTAINER_TYPE(random_access_iterator))
@@ -406,7 +375,6 @@ void iterator_next_n(forward_iterator_t* random_access_iterator, size_t n_step)
 void iterator_prev_n(random_access_iterator_t* it_iter, int n_step)
 {
   assert(iterator_is_valid(it_iter));
-  assert(iterator_limit_type(it_iter, _RANDOM_ACCESS_ITERATOR));
   assert(n_step > 0);
   //@TODO
   switch (_ITERATOR_CONTAINER_TYPE(it_iter))
@@ -431,8 +399,6 @@ bool iterator_less(random_access_iterator_t* it_first,
 {
   assert(iterator_is_valid(it_first));
   assert(iterator_is_valid(it_second));
-  assert(iterator_limit_type(it_first, _RANDOM_ACCESS_ITERATOR));
-  assert(iterator_limit_type(it_second, _RANDOM_ACCESS_ITERATOR));
 
   switch (_ITERATOR_CONTAINER_TYPE(it_first))
   {
@@ -476,7 +442,6 @@ bool iterator_greater_equal(random_access_iterator_t* it_first,
 void* iterator_at(random_access_iterator_t* it_iter, int n_index)
 {
   assert(iterator_is_valid(it_iter));
-  assert(iterator_limit_type(it_iter, _RANDOM_ACCESS_ITERATOR));
 
   switch (_ITERATOR_CONTAINER_TYPE(it_iter))
   {
@@ -497,12 +462,11 @@ void* iterator_at(random_access_iterator_t* it_iter, int n_index)
   return NULL;
 }
 
-int iterator_minus(random_access_iterator_t* it_first,
+int iterator_continue_minus(random_access_iterator_t* it_first,
     random_access_iterator_t* it_second)
 {
   assert(iterator_is_valid(it_first));
   assert(iterator_is_valid(it_second));
-  assert(iterator_limit_type(it_first, _RANDOM_ACCESS_ITERATOR));
 
   switch (_ITERATOR_CONTAINER_TYPE(it_first))
   {
@@ -526,7 +490,6 @@ int iterator_minus(random_access_iterator_t* it_first,
 void iterator_advance(forward_iterator_t* it_iter, size_t n_step)
 {
   assert(iterator_is_valid(it_iter));
-  assert(iterator_limit_type(it_iter, _FORWARD_ITERATOR));
   switch (_ITERATOR_CONTAINER_TYPE(it_iter))
   {
     case _VECTOR_CONTAINER:
@@ -553,7 +516,6 @@ void iterator_advance(forward_iterator_t* it_iter, size_t n_step)
 void iterator_disadvance(bidirectional_iterator_t* it_iter, size_t n_step)
 {
   assert(iterator_is_valid(it_iter));
-  assert(iterator_limit_type(it_iter, _FORWARD_ITERATOR));
   for (; n_step > 0; --n_step)
     iterator_prev(it_iter);
 }
@@ -566,7 +528,7 @@ int iterator_distance(iterator_t* it_first, iterator_t* it_second)
     case _VECTOR_CONTAINER:
     case _DEQUE_CONTAINER:
     case _BASIC_STRING_CONTAINER:
-      return iterator_minus(it_second, it_first);
+      return iterator_continue_minus(it_first, it_second);
       break;
     case _LIST_CONTAINER:
       //return _list_iterator_distance(it_first, it_second);

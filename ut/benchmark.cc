@@ -256,7 +256,7 @@ TEST benchmark_vector_ctor_range_n(void)
   vector_ctor_range(&zmdcstlvec, &first, &last);
   //vector_dtor(&zmdcstlvec);
   profile_end_ms(zmdcstlvec);
-  vector_dtor(&zmdcstlvec);
+  vector_dtor(&zmdcstlvec);bool vector_iterator_valid_end(const vector_t* cpvec_vector, vector_iterator_t* it_iter)
 
   profile_ratio(zmdcstlvec, stdvec);
 

@@ -55,7 +55,6 @@ void* align_advance(size_t alignment, size_t size, void* ptr, size_t space, void
 void destruct_range(forward_iterator_t* first, forward_iterator_t* last)
 {
   assert(iterator_is_valid(first) && iterator_is_valid(last));
-  assert(iterator_limit_type(first, _FORWARD_ITERATOR) && iterator_limit_type(last, _FORWARD_ITERATOR));
 
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
   if (type->_t_typedestroy != NULL)
@@ -72,7 +71,6 @@ void destruct_range(forward_iterator_t* first, forward_iterator_t* last)
 void destruct_n(forward_iterator_t* first, int n)
 {
   assert(iterator_is_valid(first));
-  assert(iterator_limit_type(first, _FORWARD_ITERATOR));
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
   if (type->_t_typedestroy)
   {
@@ -89,7 +87,6 @@ void destruct_n(forward_iterator_t* first, int n)
 void destruct_at(input_iterator_t* destination)
 {
   assert(iterator_is_valid(destination));
-  assert(iterator_limit_type(destination, _INPUT_ITERATOR));
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(destination);
   if (type->_t_typedestroy)
   {
@@ -102,7 +99,6 @@ void destruct_at(input_iterator_t* destination)
 void uninitialized_default_fill_n(forward_iterator_t* destination, size_t n)
 {
   assert(iterator_is_valid(destination));
-  assert(iterator_limit_type(destination, _FORWARD_ITERATOR));
   bool ret = false;
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(destination);
   for (; n > 0; n--)
@@ -118,7 +114,6 @@ void uninitialized_default_fill_n(forward_iterator_t* destination, size_t n)
 void uninitialized_default_fill(forward_iterator_t* first, forward_iterator_t* last)
 {
   assert(iterator_is_valid(first) && iterator_is_valid(last));
-  assert(iterator_limit_type(first, _FORWARD_ITERATOR) && iterator_limit_type(last, _FORWARD_ITERATOR));
   bool ret = false;
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
   for (; !iterator_equal(first, last); iterator_next(first))
@@ -133,7 +128,6 @@ void uninitialized_default_fill(forward_iterator_t* first, forward_iterator_t* l
 void uninitialized_fill_n(forward_iterator_t* destination, const void* value, int n)
 {
   assert(iterator_is_valid(destination));
-  assert(iterator_limit_type(destination, _FORWARD_ITERATOR));
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(destination);
   for (; n > 0; n--)
   {
@@ -154,7 +148,6 @@ void uninitialized_fill_n(forward_iterator_t* destination, const void* value, in
 void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last, const void* value)
 {
   assert(iterator_is_valid(first) && iterator_is_valid(last));
-  assert(iterator_limit_type(first, _FORWARD_ITERATOR) && iterator_limit_type(last, _FORWARD_ITERATOR));
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
   for (; !iterator_equal(first, last); iterator_next(first))
   {
@@ -334,9 +327,6 @@ static inline void uninitialized_copy_n_from_continoues(_byte_t* from, size_t ns
 void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward_iterator_t* result)
 {
   assert(iterator_is_valid(first) && iterator_is_valid(last) && iterator_is_valid(result));
-  assert(
-      iterator_limit_type(first, _INPUT_ITERATOR) && iterator_limit_type(last, _INPUT_ITERATOR)
-          && iterator_limit_type(result, _FORWARD_ITERATOR));
   assert(iterator_same_elem_type(first, last) && iterator_same_elem_type(first, result));
 
   switch (_ITERATOR_CONTAINER_TYPE(first))
@@ -374,7 +364,6 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward
 void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_iterator_t* result)
 {
   assert(iterator_is_valid(first) && iterator_is_valid(result));
-  assert(iterator_limit_type(first, _INPUT_ITERATOR) && iterator_limit_type(result, _FORWARD_ITERATOR));
 
   switch (_ITERATOR_CONTAINER_TYPE(first))
   {

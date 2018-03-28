@@ -105,8 +105,9 @@ extern "C"
 typedef enum _tagcontainertype
 {
   _VECTOR_CONTAINER,
-  _LIST_CONTAINER,
   _DEQUE_CONTAINER,
+  _BASIC_STRING_CONTAINER,
+  _LIST_CONTAINER,
   _SLIST_CONTAINER,
   _MAP_CONTAINER,
   _MULTIMAP_CONTAINER,
@@ -116,7 +117,6 @@ typedef enum _tagcontainertype
   _HASH_MULTISET_CONTAINER,
   _HASH_MAP_CONTAINER,
   _HASH_MULTIMAP_CONTAINER,
-  _BASIC_STRING_CONTAINER
 } containertype_t;
 
 /* iterator type */
@@ -395,7 +395,7 @@ extern void* iterator_at(random_access_iterator_t* it_iter, int n_index);
  * @return iterator distance.
  * @remakes two iterator must be valid, otherwise the behavior is undefined.
  */
-extern int iterator_minus(random_access_iterator_t* it_first,
+extern int iterator_continue_minus(random_access_iterator_t* it_first,
   random_access_iterator_t* it_second);
 
 /**
@@ -416,7 +416,7 @@ extern void iterator_disadvance(bidirectional_iterator_t* it_iter,
  * @return iterator distance.
  * @remakes two iterator must be valid, otherwise the behavior is undefined.
  */
-extern int iterator_distance(iterator_t* it_first, iterator_t* it_second);
+extern int iterator_distance(iterator_t* from, iterator_t* to);
 
 #ifdef __cplusplus
 }
