@@ -36,7 +36,6 @@ bool vector_iterator_valid_end(const vector_t* cpvec_vector, vector_iterator_t* 
   _VECTOR_ITERATOR_COREPOS(it_iter) <= cpvec_vector->_pby_endofstorage;
 }
 
-
 /**
  * Get the iterator that reference next data.
  */
@@ -618,8 +617,25 @@ void vector_swap(vector_t* pvec_first, vector_t* pvec_second)
   *pvec_first = *pvec_second;
   *pvec_second = vec_swap;
 }
-
-void vector_erase(random_access_iterator_t* position)
+void vector_clear(vector_t* pvec_vector)
+{
+  assert(vector_is_inited(pvec_vector));
+  type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
+  if (type->_t_typedestroy != NULL)
+  {
+    bool ret;
+    _byte_t* tmp = pvec_vector->_pby_start;
+    _byte_t* end = pvec_vector->_pby_finish;
+    size_t tsize = type->_t_typesize;
+    for (; tmp != end; tmp += tsize)
+    {
+      // free elment
+      type->_t_typedestroy(tmp, &ret);
+    }
+  }
+  pvec_vector->_pby_finish = pvec_vector->_pby_start;
+}
+void vector_erase(random_access_iterator_t* position, bool destruct_element)
 {
   assert(position->_t_pos >= ((vector_t* )(position->_pt_container))->_pby_start);
   assert(position->_t_pos < ((vector_t* )(position->_pt_container))->_pby_finish);
@@ -630,7 +646,7 @@ void vector_erase(random_access_iterator_t* position)
   _byte_t* first = destPosition + type->_t_typesize;
   _byte_t* last = ((vector_t*) (position->_pt_container))->_pby_finish;
 
-  if (type->_t_typedestroy)
+  if (type->_t_typedestroy && destruct_element)
   {
     bool ret;
     type->_t_typedestroy(destPosition, &ret);  // dtor the erased element

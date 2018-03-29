@@ -19,12 +19,6 @@ struct user_defined_type_init0_destroy0_copy0_less
       b = 0;
       memset(c, 0, 32);
     }
-    user_defined_type_init0_destroy0_copy0_less(const user_defined_type_init0_destroy0_copy0_less& x)
-    {
-      a = x.a;
-      b = x.b;
-      cstl_memcpy(c, x.c, 32 * sizeof(int));
-    }
 };
 static typeid_t user_defined_pod_id;
 static void func_less_user_defined_type_init0_destroy0_copy0_less(const void* in, const void* in_, void* out)
@@ -45,10 +39,12 @@ struct user_defined_type_init_destroy_copy_less
     // no deep copy and so copy function cam be NULL
     int* b;
     char c[32];
+
     user_defined_type_init_destroy_copy_less()
     {
       a = 100;
       b = cstl_alloc(int, a);
+      //b = (int*)malloc(a*sizeof(int));
       memset(b, 0, a * sizeof(int));
       //printf("default ctor called, b=%p\n", b);
       memset(c, 0, 32);
@@ -58,13 +54,28 @@ struct user_defined_type_init_destroy_copy_less
     {
       a = x.a;
       b = cstl_alloc(int, a);
+      //b = (int*)malloc(a*sizeof(int));
       //printf("cpy ctor called, x.a=%d,x.b=%p,x.c[0]=%d, this->b=%p\n", x.a, x.b, x.c[0], b);
+      cstl_memcpy(b, x.b, a * sizeof(int));
+      cstl_memcpy(c, x.c, 32);
+    }
+    void operator = (const user_defined_type_init_destroy_copy_less &x ) {
+      a = x.a;
+      //printf("operator = called, this->b=%p, x.b=%p,\n", b, x.b);
+      //b = x.b;
+      // cannot use this as std earse will call detor of last element ehich causes double free o last element
+      // this is something std should improve because we do not need to deep copy all moved elements shadow cpy is enough
+      cstl_free(b);
+      b = cstl_alloc(int, a);
+      //b = (int*)malloc(a*sizeof(int));
+      //printf("operator = called, this->b=%p, x.b=%p,\n", b, x.b);
       cstl_memcpy(b, x.b, a * sizeof(int));
       cstl_memcpy(c, x.c, 32);
     }
     ~user_defined_type_init_destroy_copy_less()
     {
       //printf("dtor called, b=%p\n", b);
+      //free(b);
       cstl_free(b);
     }
 };
@@ -72,7 +83,7 @@ static typeid_t user_defined_non_pod_id;
 static void func_init_user_defined_type_init_destroy_copy_less(const void* in, void* out)
 {
   ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int, 32);
-  //printf("init alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
+  //printf("init alloc = %p\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
   memset(((user_defined_type_init_destroy_copy_less*) in)->b, 0, 32 * sizeof(int));
   ((user_defined_type_init_destroy_copy_less*) in)->a = 0;
   memset(((user_defined_type_init_destroy_copy_less*) in)->c, 0, 32);
@@ -81,7 +92,7 @@ static void func_copy_user_defined_type_init_destroy_copy_less(const void* in, c
 {
   ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int,
       ((user_defined_type_init_destroy_copy_less* )in_)->a);
-  //printf("copy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
+  //printf("copy alloc = %p\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
   cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->b, ((user_defined_type_init_destroy_copy_less*) in_)->b,
       ((user_defined_type_init_destroy_copy_less*) in_)->a * sizeof(int));
   ((user_defined_type_init_destroy_copy_less*) in)->a = ((user_defined_type_init_destroy_copy_less*) in_)->a;
@@ -90,7 +101,7 @@ static void func_copy_user_defined_type_init_destroy_copy_less(const void* in, c
 }
 static void func_destroy_user_defined_type_init_destroy_copy_less(const void* in, void* out)
 {
-  //printf("destroy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
+  //printf("destroy alloc = %p\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
   cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
 }
 static void func_less_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
@@ -116,7 +127,7 @@ static void func_less_user_defined_type_init_destroy_copy_less(const void* in, c
     std::cout << #id << ":" << elapsed##id.count() << "ns, "
 #define profile_ratio(id1,id2)   std::cout << "ratio: " << elapsed##id1/elapsed##id2 << "\n"
 
-size_t size = 5000000;
+size_t size = 1000000;
 
 TEST benchmark_vector_ctor(void)
 {
@@ -172,7 +183,6 @@ TEST benchmark_vector_ctor_n_v(void)
 
   profile_ratio(zmdcstlvec, stdvec);
 
-
   PASS();
 }
 TEST benchmark_vector_ctor_vector(void)
@@ -182,7 +192,7 @@ TEST benchmark_vector_ctor_vector(void)
 
   profile_start(stdvec);
   std::vector<user_defined_type_init_destroy_copy_less> stdvec(stdvec_);
- // stdvec.~vector(); //cannot explicately call dtor because when excute ends, it will call dtor automatically
+  // stdvec.~vector(); //cannot explicately call dtor because when excute ends, it will call dtor automatically
   profile_end_ms(stdvec);
 
   vector_t zmdcstlvec_;
@@ -256,12 +266,33 @@ TEST benchmark_vector_ctor_range_n(void)
   vector_ctor_range(&zmdcstlvec, &first, &last);
   //vector_dtor(&zmdcstlvec);
   profile_end_ms(zmdcstlvec);
-  vector_dtor(&zmdcstlvec);bool vector_iterator_valid_end(const vector_t* cpvec_vector, vector_iterator_t* it_iter)
+  vector_dtor(&zmdcstlvec);
 
   profile_ratio(zmdcstlvec, stdvec);
 
   vector_dtor(&zmdcstlvec_);
 
+  PASS();
+}
+TEST benchmark_vector_erase(void)
+{
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(size);
+  profile_start(stdvec);
+  stdvec.erase(stdvec.begin());
+  profile_end_ms(stdvec);
+
+  vector_t zmdcstlvec;
+  vector_ctor_n(&zmdcstlvec, size, 1, user_defined_non_pod_id);
+
+  profile_start(zmdcstlvec);
+  random_access_iterator_t position;
+  vector_begin(&zmdcstlvec, &position);
+  vector_erase(&position,true);
+  profile_end_ms(zmdcstlvec);
+
+  vector_dtor(&zmdcstlvec);
+
+  profile_ratio(zmdcstlvec, stdvec);
   PASS();
 }
 SUITE(benchmark_vector)
@@ -272,6 +303,7 @@ SUITE(benchmark_vector)
   RUN_TEST(benchmark_vector_ctor_vector);
   RUN_TEST(benchmark_vector_ctor_range);
   RUN_TEST(benchmark_vector_ctor_range_n);
+  RUN_TEST(benchmark_vector_erase);
 }
 
 int main(int argc, char **argv)

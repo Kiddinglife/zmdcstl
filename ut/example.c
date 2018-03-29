@@ -667,7 +667,7 @@ TEST test_vector_erase()
   ASSERT_EQ(pre_end._t_pos,pvec_vector._pby_finish);
   vector_iterator_prev(&position);
   ASSERT_EQ(position._t_pos, pvec_vector._pby_finish-_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
-  vector_erase(&position);
+  vector_erase(&position,true);
   ASSERT_EQ(vector_size(&pvec_vector), elesize-1);
   ASSERT_EQ(pvec_vector._pby_finish, position._t_pos);
   ASSERT_EQ(pvec_vector._pby_endofstorage - pvec_vector._pby_finish,
@@ -682,7 +682,7 @@ TEST test_vector_erase()
   vector_iterator_next(&second);
   ((user_defined_type_init_destroy_copy_less*)second._t_pos)->a -= 1;
   user_defined_type_init_destroy_copy_less secondval = *((user_defined_type_init_destroy_copy_less*)second._t_pos);
-  vector_erase(&position);
+  vector_erase(&position,true);
   ASSERT_EQ(vector_size(&pvec_vector), elesize-2);
   ASSERT_EQ(((user_defined_type_init_destroy_copy_less*)position._t_pos)->a,secondval.a);
 

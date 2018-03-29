@@ -303,14 +303,14 @@ extern void vector_end_again(vector_iterator_t* it_end);
  */
 extern void vector_swap(vector_t* pvec_first, vector_t* pvec_second);
 
-extern void vector_erase(random_access_iterator_t * position);
-extern void vector_erase_unsort(random_access_iterator_t* position);
-extern void vector_erase_range(random_access_iterator_t* first, random_access_iterator_t* last);
-extern void vector_erase_range_unsort(random_access_iterator_t* first, random_access_iterator_t* last);
-extern void vector_erase_range_n(random_access_iterator_t* first, size_t n);
-extern void vector_erase_range__n_unsort(random_access_iterator_t* first, size_t n);
+extern void vector_erase(random_access_iterator_t* position, bool destruct);
+extern void vector_erase_unsort(random_access_iterator_t* position,bool destruct);
+extern void vector_erase_range(random_access_iterator_t* first, random_access_iterator_t* last,bool destruct);
+extern void vector_erase_range_unsort(random_access_iterator_t* first, random_access_iterator_t* last,bool destruct);
+extern void vector_erase_range_n(random_access_iterator_t* first, size_t n,bool destruct);
+extern void vector_erase_range__n_unsort(random_access_iterator_t* first, size_t n,bool destruct);
 
-
+extern void vector_clear(vector_t* pvec);
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ENDS ////////////////////////////////////////
 
 #ifdef __cplusplus
