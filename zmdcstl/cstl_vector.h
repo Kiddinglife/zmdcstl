@@ -68,7 +68,7 @@ typedef struct _tagvector
   _byte_t* _pby_start; /* the start of used space */
   _byte_t* _pby_finish; /* the end of used space */
   _byte_t* _pby_endofstorage; /* the end of capacity space */
-} vector_t;
+}vector_t;
 
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ITERATOR STARTS ////////////////////////////////////////
 /**

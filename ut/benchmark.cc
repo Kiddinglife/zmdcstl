@@ -21,13 +21,10 @@ struct user_defined_type_init0_destroy0_copy0_less
     }
 };
 static typeid_t user_defined_pod_id;
-static void func_less_user_defined_type_init0_destroy0_copy0_less(
-    const void* in, const void* in_, void* out)
+static void func_less_user_defined_type_init0_destroy0_copy0_less(const void* in, const void* in_, void* out)
 {
-  int a =
-      ((user_defined_type_init0_destroy0_copy0_less*) in)->a;
-  int b =
-      ((user_defined_type_init0_destroy0_copy0_less*) in_)->a;
+  int a = ((user_defined_type_init0_destroy0_copy0_less*) in)->a;
+  int b = ((user_defined_type_init0_destroy0_copy0_less*) in_)->a;
   if (a < b)
     *(char*) out = -1;
   else if (a > b)
@@ -53,8 +50,7 @@ struct user_defined_type_init_destroy_copy_less
       memset(c, 0, 32);
       c[0] = 100;
     }
-    user_defined_type_init_destroy_copy_less(
-        const user_defined_type_init_destroy_copy_less& x)
+    user_defined_type_init_destroy_copy_less(const user_defined_type_init_destroy_copy_less& x)
     {
       a = x.a;
       b = cstl_alloc(int, a);
@@ -63,8 +59,7 @@ struct user_defined_type_init_destroy_copy_less
       cstl_memcpy(b, x.b, a * sizeof(int));
       cstl_memcpy(c, x.c, 32);
     }
-    void operator =(
-        const user_defined_type_init_destroy_copy_less &x)
+    void operator =(const user_defined_type_init_destroy_copy_less &x)
     {
       a = x.a;
       //printf("operator = called, this->b=%p, x.b=%p,\n", b, x.b);
@@ -86,11 +81,9 @@ struct user_defined_type_init_destroy_copy_less
     }
 };
 static typeid_t user_defined_non_pod_id;
-static void func_init_user_defined_type_init_destroy_copy_less(
-    const void* in, void* out)
+static void func_init_user_defined_type_init_destroy_copy_less(const void* in, void* out)
 {
-  user_defined_type_init0_destroy0_copy0_less* to =
-      ((user_defined_type_init0_destroy0_copy0_less*) in);
+  user_defined_type_init0_destroy0_copy0_less* to = ((user_defined_type_init0_destroy0_copy0_less*) in);
   to->b = cstl_alloc(int, 100);
   //printf("init alloc = %p\n", to->b);
   memset(to->b, 0, 32 * sizeof(int));
@@ -98,33 +91,25 @@ static void func_init_user_defined_type_init_destroy_copy_less(
   memset(to->c, 0, 32);
   to->c[0] = 100;
 }
-static void func_copy_user_defined_type_init_destroy_copy_less(
-    const void* in, const void* in_, void* out)
+static void func_copy_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
 {
-  user_defined_type_init0_destroy0_copy0_less* to =
-      ((user_defined_type_init0_destroy0_copy0_less*) in);
-  user_defined_type_init0_destroy0_copy0_less* from =
-      ((user_defined_type_init0_destroy0_copy0_less*) in_);
+  user_defined_type_init0_destroy0_copy0_less* to = ((user_defined_type_init0_destroy0_copy0_less*) in);
+  user_defined_type_init0_destroy0_copy0_less* from = ((user_defined_type_init0_destroy0_copy0_less*) in_);
   to->b = cstl_alloc(int, from->a);
   //printf("copy alloc = %p\n", to->b);
   cstl_memcpy(to->b, from->b, from->a * sizeof(int));
   to->a = from->a;
   cstl_memcpy(to->c, from->c, 32);
 }
-static void func_destroy_user_defined_type_init_destroy_copy_less(
-    const void* in, void* out)
+static void func_destroy_user_defined_type_init_destroy_copy_less(const void* in, void* out)
 {
   //printf("destroy alloc = %p\n", to->b);
-  cstl_free(
-      ((user_defined_type_init_destroy_copy_less* )in)->b);
+  cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
 }
-static void func_less_user_defined_type_init_destroy_copy_less(
-    const void* in, const void* in_, void* out)
+static void func_less_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
 {
-  int a =
-      ((user_defined_type_init0_destroy0_copy0_less*) in)->a;
-  int b =
-      ((user_defined_type_init0_destroy0_copy0_less*) in_)->a;
+  int a = ((user_defined_type_init0_destroy0_copy0_less*) in)->a;
+  int b = ((user_defined_type_init0_destroy0_copy0_less*) in_)->a;
   if (a < b)
     *(char*) out = -1;
   else if (a > b)
@@ -169,14 +154,12 @@ TEST benchmark_vector_ctor_n(void)
 
   profile_start(zmdcstlvec);
   vector_t zmdcstlvec;
-  vector_ctor_n(&zmdcstlvec, size, 1,
-      user_defined_non_pod_id);
+  vector_ctor_n(&zmdcstlvec, size, 1, user_defined_non_pod_id);
   profile_end_ms(zmdcstlvec);
   vector_dtor(&zmdcstlvec);
 
   profile_start(stdvec);
-  std::vector<user_defined_type_init_destroy_copy_less> stdvec(
-      size);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(size);
   profile_end_ms(stdvec);
 
   profile_ratio(zmdcstlvec, stdvec);
@@ -191,14 +174,12 @@ TEST benchmark_vector_ctor_n_v(void)
 
   profile_start(vec_ctor_n_v_non_pod);
   vector_t zmdcstlvec;
-  vector_ctor_n_v(&zmdcstlvec, size, &v, 1,
-      user_defined_non_pod_id);
+  vector_ctor_n_v(&zmdcstlvec, size, &v, 1, user_defined_non_pod_id);
   profile_end_ms(vec_ctor_n_v_non_pod);
   vector_dtor(&zmdcstlvec);
 
   profile_start(stdvec_n_v_non_pod);
-  std::vector<user_defined_type_init_destroy_copy_less> stdvec(
-      size, v);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(size, v);
   profile_end_ms(stdvec_n_v_non_pod);
 
   profile_ratio(vec_ctor_n_v_non_pod, stdvec_n_v_non_pod);
@@ -208,14 +189,12 @@ TEST benchmark_vector_ctor_n_v(void)
 
   profile_start(vec_ctor_n_v_pod);
   vector_t zmdcstlvec1;
-  vector_ctor_n_v(&zmdcstlvec1, size, &v, 1,
-      user_defined_pod_id);
+  vector_ctor_n_v(&zmdcstlvec1, size, &v, 1, user_defined_pod_id);
   profile_end_ms(vec_ctor_n_v_pod);
   vector_dtor(&zmdcstlvec1);
 
   profile_start(stdvec_n_v_pod);
-  std::vector<user_defined_type_init0_destroy0_copy0_less> stdvec1(
-      size, v1);
+  std::vector<user_defined_type_init0_destroy0_copy0_less> stdvec1(size, v1);
   profile_end_ms(stdvec_n_v_pod);
 
   profile_ratio(vec_ctor_n_v_pod, stdvec_n_v_pod);
@@ -242,23 +221,19 @@ TEST benchmark_vector_ctor_vector(void)
   user_defined_type_init_destroy_copy_less v;
 
   vector_t zmdcstlvec_;
-  vector_ctor_n_v(&zmdcstlvec_, size, &v, 1,
-      user_defined_non_pod_id);
+  vector_ctor_n_v(&zmdcstlvec_, size, &v, 1, user_defined_non_pod_id);
   profile_start(cstl_vector_ctor_vector);
   vector_t zmdcstlvec;
   vector_ctor_vector(&zmdcstlvec, &zmdcstlvec_);
   profile_end_ms(cstl_vector_ctor_vector);
   vector_dtor(&zmdcstlvec);
 
-  std::vector<user_defined_type_init_destroy_copy_less> stdvec_(
-      size, v);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec_(size, v);
   profile_start(std_vector_ctor_vector);
-  std::vector<user_defined_type_init_destroy_copy_less> stdvec(
-      stdvec_);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(stdvec_);
   profile_end_ms(std_vector_ctor_vector);
 
-  profile_ratio(cstl_vector_ctor_vector,
-      std_vector_ctor_vector);
+  profile_ratio(cstl_vector_ctor_vector, std_vector_ctor_vector);
 
   vector_dtor(&zmdcstlvec_);
 
@@ -270,8 +245,7 @@ TEST benchmark_vector_ctor_range(void)
   user_defined_type_init_destroy_copy_less v;
 
   vector_t zmdcstlvec_;
-  vector_ctor_n_v(&zmdcstlvec_, size, &v, 1,
-      user_defined_non_pod_id);
+  vector_ctor_n_v(&zmdcstlvec_, size, &v, 1, user_defined_non_pod_id);
 
   random_access_iterator_t first;
   vector_begin(&zmdcstlvec_, &first);
@@ -286,11 +260,9 @@ TEST benchmark_vector_ctor_range(void)
   vector_dtor(&zmdcstlvec);
   vector_dtor(&zmdcstlvec_);
 
-  std::vector<user_defined_type_init_destroy_copy_less> stdvec_(
-      size, v);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec_(size, v);
   profile_start(stdvec);
-  std::vector<user_defined_type_init_destroy_copy_less> stdvec(
-      stdvec_.begin(), stdvec_.end());
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(stdvec_.begin(), stdvec_.end());
   profile_end_ms(stdvec);
 
   profile_ratio(zmdcstlvec, stdvec);
@@ -303,8 +275,7 @@ TEST benchmark_vector_ctor_range_n(void)
   user_defined_type_init_destroy_copy_less v;
 
   vector_t zmdcstlvec_;
-  vector_ctor_n_v(&zmdcstlvec_, size, &v, 1,
-      user_defined_non_pod_id);
+  vector_ctor_n_v(&zmdcstlvec_, size, &v, 1, user_defined_non_pod_id);
   random_access_iterator_t first;
   vector_begin(&zmdcstlvec_, &first);
   random_access_iterator_t last;
@@ -316,11 +287,9 @@ TEST benchmark_vector_ctor_range_n(void)
   vector_dtor(&zmdcstlvec);
   vector_dtor(&zmdcstlvec_);
 
-  std::vector<user_defined_type_init_destroy_copy_less> stdvec_(
-      size, v);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec_(size, v);
   profile_start(stdvec);
-  std::vector<user_defined_type_init_destroy_copy_less> stdvec(
-      stdvec_.begin(), stdvec_.end());
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(stdvec_.begin(), stdvec_.end());
   profile_end_ms(stdvec);
 
   profile_ratio(zmdcstlvec, stdvec);
@@ -331,8 +300,7 @@ TEST benchmark_vector_ctor_range_n(void)
 TEST benchmark_vector_erase(void)
 {
   vector_t zmdcstlvec;
-  vector_ctor_n(&zmdcstlvec, size, 1,
-      user_defined_non_pod_id);
+  vector_ctor_n(&zmdcstlvec, size, 1, user_defined_non_pod_id);
   profile_start(zmdcstlvec);
   random_access_iterator_t position;
   vector_begin(&zmdcstlvec, &position);
@@ -340,8 +308,7 @@ TEST benchmark_vector_erase(void)
   profile_end_ms(zmdcstlvec);
   vector_dtor(&zmdcstlvec);
 
-  std::vector<user_defined_type_init_destroy_copy_less> stdvec(
-      size);
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec(size);
   profile_start(stdvec);
   stdvec.erase(stdvec.begin());
   profile_end_ms(stdvec);
@@ -371,20 +338,13 @@ SUITE(benchmark_vector)
 int main(int argc, char **argv)
 {
   init_types(0);
-  user_defined_pod_id =
-      register_type(
-          sizeof(user_defined_type_init0_destroy0_copy0_less),
-          CSTL_ALIGN_OF(user_defined_type_init0_destroy0_copy0_less),
-          0, 0, 0,
-          func_less_user_defined_type_init0_destroy0_copy0_less);
-  user_defined_non_pod_id =
-      register_type(
-          sizeof(user_defined_type_init_destroy_copy_less),
-          CSTL_ALIGN_OF(user_defined_type_init_destroy_copy_less),
-          func_init_user_defined_type_init_destroy_copy_less,
-          func_copy_user_defined_type_init_destroy_copy_less,
-          func_destroy_user_defined_type_init_destroy_copy_less,
-          func_less_user_defined_type_init_destroy_copy_less);
+  user_defined_pod_id = register_type(sizeof(user_defined_type_init0_destroy0_copy0_less),
+  CSTL_ALIGN_OF(user_defined_type_init0_destroy0_copy0_less), 0, 0, 0,
+      func_less_user_defined_type_init0_destroy0_copy0_less);
+  user_defined_non_pod_id = register_type(sizeof(user_defined_type_init_destroy_copy_less),
+  CSTL_ALIGN_OF(user_defined_type_init_destroy_copy_less), func_init_user_defined_type_init_destroy_copy_less,
+      func_copy_user_defined_type_init_destroy_copy_less, func_destroy_user_defined_type_init_destroy_copy_less,
+      func_less_user_defined_type_init_destroy_copy_less);
 
   /* command-line options, initialization. */
   GREATEST_MAIN_BEGIN();
