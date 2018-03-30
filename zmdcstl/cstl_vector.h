@@ -253,6 +253,21 @@ extern size_t vector_size(vector_t* cpvec_vector);
 extern size_t vector_capacity(vector_t* cpvec_vector);
 extern bool empty(vector_t* cpvec_vector);
 
+extern void vector_resize(vector_t* cpvec_vector, size_t n, const void* value);
+extern void rvector_esize(vector_t* cpvec_vector,size_t n);
+extern void vector_reserve(vector_t* cpvec_vector,size_t n);
+// Revises the capacity to the user-specified value.
+// Resizes the container to match the capacity
+// if the requested capacity n is less than the current size.
+// If n == npos then the capacity is reallocated (if necessary)
+// such that capacity == size.
+extern void vector_set_capacity(vector_t* cpvec_vector,size_t n);
+// C++11 function which is the same as set_capacity().
+extern void vector_shrink_to_fit(vector_t* cpvec_vector);
+
+extern void* vector_at(vector_t* pvec, size_t position);
+extern void vector_clear(vector_t* pvec);
+#define vector_data(cpvec_vector) (cpvec_vector->_pby_start)
 /**
  * Test the two vectors are equal.
  * @param cpvec_first   first vector container.
@@ -275,7 +290,7 @@ extern bool vector_equal(vector_t* cpvec_first, vector_t* cpvec_second);
  * take care of this in your copy constructor
  * free it in the destructor
  */
-extern void vector_assign_n_v(vector_t* pvec,const void* v, size_t n);
+extern void vector_assign_n_v(vector_t* pvec, const void* v, size_t n);
 extern void vector_assign_range(input_iterator_t* first, input_iterator_t* last);
 extern void vector_assign_range_n(input_iterator_t* first, size_t n);
 
@@ -286,8 +301,8 @@ extern void vector_assign_range_n(input_iterator_t* first, size_t n);
  * @remarks if cpvec_vector == NULL, then the behavior is undefined. the vector must be initialized, otherwise the behavior
  *          is undefined.
  */
-extern void vector_end(const vector_t* cpvec_vector, vector_iterator_t* it_end);
-extern void vector_begin(const vector_t* cpvec_vector, vector_iterator_t* begin);
+extern void vector_end(vector_t* cpvec_vector, vector_iterator_t* it_end);
+extern void vector_begin(vector_t* cpvec_vector, vector_iterator_t* begin);
 
 /**
  * a  iterator that points just beyond the end of vector container.
@@ -304,13 +319,11 @@ extern void vector_end_again(vector_iterator_t* it_end);
 extern void vector_swap(vector_t* pvec_first, vector_t* pvec_second);
 
 extern void vector_erase(random_access_iterator_t* position, bool destruct);
-extern void vector_erase_unsort(random_access_iterator_t* position,bool destruct);
-extern void vector_erase_range(random_access_iterator_t* first, random_access_iterator_t* last,bool destruct);
-extern void vector_erase_range_unsort(random_access_iterator_t* first, random_access_iterator_t* last,bool destruct);
-extern void vector_erase_range_n(random_access_iterator_t* first, size_t n,bool destruct);
-extern void vector_erase_range__n_unsort(random_access_iterator_t* first, size_t n,bool destruct);
-
-extern void vector_clear(vector_t* pvec);
+extern void vector_erase_unsort(random_access_iterator_t* position, bool destruct);
+extern void vector_erase_range(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct);
+extern void vector_erase_range_unsort(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct);
+extern void vector_erase_range_n(random_access_iterator_t* first, size_t n, bool destruct);
+extern void vector_erase_range__n_unsort(random_access_iterator_t* first, size_t n, bool destruct);
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ENDS ////////////////////////////////////////
 
 #ifdef __cplusplus

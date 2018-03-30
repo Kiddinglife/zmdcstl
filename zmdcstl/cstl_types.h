@@ -71,6 +71,8 @@ typedef struct _tagtype_t
    * @caution if val has malloc data and you did not provide copyfunc,
    * when two vetors destroyed, it may free val twice this issue is
    * not belong to cstl and it is user level design issue
+   * @remark _t_typecopy and _t_typedestroy are both null or both not null, no other cases
+   * so we can use one of them for condition check and do assert() for the other one for efficiency reason
    */
   bfun_t _t_typecopy;
   bfun_t _t_typeless; /* can never be null*/
