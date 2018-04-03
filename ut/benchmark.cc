@@ -318,6 +318,29 @@ TEST benchmark_vector_erase(void)
   printf("\n");
   PASS();
 }
+TEST benchmark_vector_swap(void)
+{
+  vector_t zmdcstlvec;
+  vector_t zmdcstlvec1;
+  vector_ctor_n(&zmdcstlvec, size, 1, cstl_uint32);
+  vector_ctor_n(&zmdcstlvec1, size, 1, cstl_uint32);
+  profile_start(cstlvec_swap_ctype);
+  vector_swap(&zmdcstlvec, &zmdcstlvec1);
+  profile_end_ms(cstlvec_swap_ctype);
+  vector_dtor(&zmdcstlvec);
+  vector_dtor(&zmdcstlvec1);
+
+  std::vector<unsigned int> stdvec(size);
+  std::vector<unsigned int> stdvec1(size);
+  profile_start(stdvec_swap_ctype);
+  stdvec.swap(stdvec1);
+  profile_end_ms(stdvec_swap_ctype);
+
+  profile_ratio(cstlvec_swap_ctype, stdvec_swap_ctype);
+
+  printf("\n");
+  PASS();
+}
 SUITE(benchmark_vector)
 {
   RUN_TEST(benchmark_vector_ctor);
@@ -333,6 +356,8 @@ SUITE(benchmark_vector)
   RUN_TEST(benchmark_vector_ctor_vector);
   printf("\n");
   RUN_TEST(benchmark_vector_erase);
+  printf("\n");
+  RUN_TEST(benchmark_vector_swap);
 }
 
 int main(int argc, char **argv)

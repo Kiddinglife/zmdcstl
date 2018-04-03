@@ -514,10 +514,10 @@ void vector_set_capacity(vector_t* cpvec_vector, size_t n)
   } else
   {
     if (size > 0)
-      vector_resize_n(n);
+      vector_resize_n(cpvec_vector, n);
     else
       vector_clear(cpvec_vector);
-    vector_shrink_to_fit();
+    vector_shrink_to_fit(cpvec_vector);
   }
 }
 void vector_shrink_to_fit(vector_t* x)
@@ -686,7 +686,7 @@ void vector_clear(vector_t* pvec_vector)
 {
   assert(vector_is_inited(pvec_vector));
   type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
-  if (type->_t_typedestroy != NULL)
+  if (type->_t_typedestroy)
   {
     bool ret;
     _byte_t* tmp = pvec_vector->_pby_start;
@@ -892,35 +892,16 @@ void vector_assign_n_v(vector_t* pvec, const void* val, size_t elesize)
 
     if (type->_t_typedestroy)
     {
-      if (type->_t_typecopy)
+      for (; s != e; s += tsize)
       {
-        for (; s != e; s += tsize)
-        {
-          type->_t_typedestroy(s, &ret);
-          type->_t_typecopy(s, val, &ret);
-        }
-      } else
-      {
-        for (; s != e; s += tsize)
-        {
-          type->_t_typedestroy(s, &ret);
-          cstl_memcpy(s, val, tsize);
-        }
+        type->_t_typedestroy(s, &ret);
+        type->_t_typecopy(s, val, &ret);
       }
     } else
     {
-      if (type->_t_typecopy)
+      for (; s != e; s += tsize)
       {
-        for (; s != e; s += tsize)
-        {
-          type->_t_typecopy(s, val, &ret);
-        }
-      } else
-      {
-        for (; s != e; s += tsize)
-        {
-          cstl_memcpy(s, val, tsize);
-        }
+        cstl_memcpy(s, val, tsize);
       }
     }
 
@@ -936,39 +917,18 @@ void vector_assign_n_v(vector_t* pvec, const void* val, size_t elesize)
 
     if (type->_t_typedestroy)
     {
-      if (type->_t_typecopy)
+      for (; elesize > 0; elesize--)
       {
-        for (; elesize > 0; elesize--)
-        {
-          type->_t_typedestroy(s, &ret);
-          type->_t_typecopy(s, val, &ret);
-          s += tsize;
-        }
-      } else
-      {
-        for (; elesize > 0; elesize--)
-        {
-          type->_t_typedestroy(s, &ret);
-          cstl_memcpy(s, val, tsize);
-          s += tsize;
-        }
+        type->_t_typedestroy(s, &ret);
+        type->_t_typecopy(s, val, &ret);
+        s += tsize;
       }
     } else
     {
-      if (type->_t_typecopy)
+      for (; elesize > 0; elesize--)
       {
-        for (; elesize > 0; elesize--)
-        {
-          type->_t_typecopy(s, val, &ret);
-          s += tsize;
-        }
-      } else
-      {
-        for (; elesize > 0; elesize--)
-        {
-          cstl_memcpy(s, val, tsize);
-          s += tsize;
-        }
+        cstl_memcpy(s, val, tsize);
+        s += tsize;
       }
     }
   }

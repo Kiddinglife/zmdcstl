@@ -688,6 +688,54 @@ TEST test_vector_erase()
   vector_dtor(&pvec_vector);
   PASS();
 }
+TEST test_vector_swap()
+{
+  size_t firstelesize = 1000000;
+  user_defined_type_init_destroy_copy_less firstv;
+  firstv.a = 100;
+  firstv.b = cstl_alloc(int, firstv.a);
+  firstv.c[0] = 100;
+  vector_t firstpvec;
+  vector_ctor_n_v(&firstpvec, firstelesize, &firstv, 1, user_defined_pod_id);
+
+  size_t secondelesize = firstelesize / 2;
+  user_defined_type_init_destroy_copy_less secondv;
+  secondv.a = firstv.a / 2;
+  secondv.b = cstl_alloc(int, secondv.a);
+  secondv.c[0] = firstv.c[0] / 2;
+  vector_t secondpvec;
+  vector_ctor_n_v(&secondpvec, secondelesize, &secondv, 1, user_defined_pod_id);
+
+  user_defined_type_init_destroy_copy_less* origisecfv = (user_defined_type_init_destroy_copy_less*) vector_at(
+      &secondpvec, 0);
+  size_t origisecsize = vector_size(&secondpvec);
+
+  user_defined_type_init_destroy_copy_less* origifirstfv = (user_defined_type_init_destroy_copy_less*) vector_at(
+      &firstpvec, 0);
+  size_t origifirstsize = vector_size(&firstpvec);
+
+  vector_swap(&firstpvec, &secondpvec);
+
+  user_defined_type_init_destroy_copy_less* fv = (user_defined_type_init_destroy_copy_less*) vector_at(&firstpvec, 0);
+  ASSERT_EQ(origisecfv->a, fv->a);
+  ASSERT_EQ(origisecfv->c[0], fv->c[0]);
+  ASSERT_EQ(origisecfv->b, fv->b);
+  ASSERT_EQ(origisecsize, vector_size(&firstpvec));
+  ASSERT_EQ(origisecsize, vector_size(&firstpvec));
+
+  user_defined_type_init_destroy_copy_less* sv = (user_defined_type_init_destroy_copy_less*) vector_at(&secondpvec, 0);
+  ASSERT_EQ(origifirstfv->a, sv->a);
+  ASSERT_EQ(origifirstfv->c[0], sv->c[0]);
+  ASSERT_EQ(origifirstfv->b, sv->b);
+  ASSERT_EQ(origifirstsize, vector_size(&secondpvec));
+
+  vector_dtor(&firstpvec);
+  vector_dtor(&secondpvec);
+  cstl_free(firstv.b);
+  cstl_free(secondv.b);
+
+  PASS();
+}
 SUITE(test_vector)
 {
   RUN_TEST(test_vector_ctor_scalar_type);
@@ -709,6 +757,7 @@ SUITE(test_vector)
   RUN_TEST(test_vector_equal);
   RUN_TEST(test_vector_assign_n_v);
   RUN_TEST(test_vector_erase);
+  RUN_TEST(test_vector_swap);
 }
 
 TEST test_union_ptr_as_buf(void)
