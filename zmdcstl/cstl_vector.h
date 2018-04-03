@@ -68,7 +68,7 @@ typedef struct _tagvector
   _byte_t* _pby_start; /* the start of used space */
   _byte_t* _pby_finish; /* the end of used space */
   _byte_t* _pby_endofstorage; /* the end of capacity space */
-}vector_t;
+} vector_t;
 
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ITERATOR STARTS ////////////////////////////////////////
 /**
@@ -254,14 +254,14 @@ extern size_t vector_capacity(vector_t* cpvec_vector);
 extern bool empty(vector_t* cpvec_vector);
 
 extern void vector_resize(vector_t* cpvec_vector, size_t n, const void* value);
-extern void rvector_esize(vector_t* cpvec_vector,size_t n);
-extern void vector_reserve(vector_t* cpvec_vector,size_t n);
+extern void rvector_esize(vector_t* cpvec_vector, size_t n);
+extern void vector_reserve(vector_t* cpvec_vector, size_t n);
 // Revises the capacity to the user-specified value.
 // Resizes the container to match the capacity
 // if the requested capacity n is less than the current size.
 // If n == npos then the capacity is reallocated (if necessary)
 // such that capacity == size.
-extern void vector_set_capacity(vector_t* cpvec_vector,size_t n);
+extern void vector_set_capacity(vector_t* cpvec_vector, size_t n);
 // C++11 function which is the same as set_capacity().
 extern void vector_shrink_to_fit(vector_t* cpvec_vector);
 
@@ -291,6 +291,7 @@ extern bool vector_equal(vector_t* cpvec_first, vector_t* cpvec_second);
  * free it in the destructor
  */
 extern void vector_assign_n_v(vector_t* pvec, const void* v, size_t n);
+extern void vector_assign_vector(vector_t* to, vector_t* from);
 extern void vector_assign_range(input_iterator_t* first, input_iterator_t* last);
 extern void vector_assign_range_n(input_iterator_t* first, size_t n);
 
