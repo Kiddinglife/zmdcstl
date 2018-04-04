@@ -832,8 +832,7 @@ void vector_clear(vector_t* pvec_vector)
   }
   pvec_vector->_pby_finish = pvec_vector->_pby_start;
 }
-void vector_erase(random_access_iterator_t* position,
-bool destruct_element)
+void vector_erase(random_access_iterator_t* position, bool destruct_element)
 {
   assert(position->_t_pos >= ((vector_t* )(position->_pt_container))->_pby_start);
   assert(position->_t_pos < ((vector_t* )(position->_pt_container))->_pby_finish);
@@ -1046,11 +1045,19 @@ void vector_assign_n_v(vector_t* pvec, const void* val, size_t elesize)
         break;
     }
 
-    random_access_iterator_t ritr;
-    ritr._pt_container = pvec;
-    ritr._t_pos = pvec->_pby_finish;
-    uninitialized_fill_n(&ritr, val, elesize - vector_size(pvec));
-    pvec->_pby_finish = ritr._t_pos;
+    s = pvec->_pby_finish;
+    e = pvec->_pby_finish + (totalbytes - (pvec->_pby_finish - pvec->_pby_start));
+    pvec->_pby_finish = e;
+
+    if (cpyctor)
+    {
+      for (; s != e; s += tsize)
+        cpyctor(s, val, &ret);
+    } else
+    {
+      for (; s != e; s += tsize)
+        cstl_memcpy(s, val, tsize);
+    }
   } else
   {
     //0 <= elesize <= vector_size
@@ -1118,7 +1125,7 @@ void vector_assign_const_vector(vector_t* to, const vector_t* from)
   assert(vector_is_inited(from));
   assert(vector_is_same_type(to, from));
   assert(to != from);
-  assert(vector_size((vector_t*)from) > 0);
+  assert(vector_size((vector_t* )from) > 0);
 
   bool ret;
   type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(from);
