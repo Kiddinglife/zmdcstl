@@ -697,11 +697,12 @@ static inline void do_insert_value_at_end_n(vector_t* pvec_vector, size_t totalb
       cstl_memcpy(pNewEnd, pvec_vector->_pby_start, nPrevSize);
       pNewEnd += nPrevSize;
       // init new element to pNewEnd
-      if (type->_t_typeinit)
+      ufun_t dctor = type->_t_typeinit;
+      if (dctor)
       {
         _byte_t* from = pNewEnd + totalbytes;
         for (; pNewEnd != from; pNewEnd += nPrevSize)
-          type->_t_typeinit(pNewEnd, &ret);
+          dctor(pNewEnd, &ret);
       }
       else
       {
@@ -721,14 +722,15 @@ static inline void do_insert_value_at_end_n(vector_t* pvec_vector, size_t totalb
   else //totalbytes <= pvec_vector->_pby_endofstorage - pvec_vector->_pby_finish
   {
     // init new element to end
-    if (type->_t_typeinit)
+    ufun_t dctor = type->_t_typeinit;
+    if (dctor)
     {
       bool ret;
       _byte_t* from = pvec_vector->_pby_finish;
       _byte_t* end = from + totalbytes;
       size_t tsize = _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize;
       for (; from != end; from += tsize)
-        type->_t_typeinit(from, &ret);
+        dctor(from, &ret);
     }
     else
     {
