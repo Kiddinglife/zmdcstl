@@ -128,7 +128,7 @@ std::cout << #id << ":" << elapsed##id<< "ms, "
 #define profile_ratio(id1,id2) \
 std::cout << "ratio: " << (elapsed##id1)/(elapsed##id2) << " ";
 
-size_t size = 1000000;
+size_t size = 5000000;
 
 TEST benchmark_vector_ctor(void)
 {
@@ -360,6 +360,27 @@ SUITE(benchmark_vector)
   RUN_TEST(benchmark_vector_swap);
 }
 
+TEST how_std_vector_opt_assign_works(void)
+{
+  std::vector<int> nums1 { 3, 1, 4, 6, 5, 9 };
+  std::vector<int> nums2;
+  std::vector<int> nums3;
+
+  // copy assignment copies data from nums1 to nums2
+  nums2 = nums1;
+  printf("cpy assign: nums1 capacity = %lu, data = %p\n", nums1.capacity(), nums1.data());
+
+  // move assignment moves data from nums1 to nums3,
+  // modifying both nums1 and nums3
+  printf("move assign: nums1 capacity = %lu, data = %p\n", nums1.capacity(), nums1.data());
+  auto tmp = std::move(nums1);
+  printf("move assign: nums1 capacity = %lu, data = %p\n", nums1.capacity(), nums1.data());
+  nums3 = tmp;
+  printf("move assign: nums1 capacity = %lu, data = %p\n", nums1.capacity(), nums1.data());
+  printf("move assign: nums3 capacity = %lu, data = %p\n", nums3.capacity(), nums3.data());
+  PASS();
+}
+
 int main(int argc, char **argv)
 {
   init_types(0);
@@ -374,7 +395,7 @@ int main(int argc, char **argv)
   /* command-line options, initialization. */
   GREATEST_MAIN_BEGIN();
   /* Individual tests can be run directly in main, outside of suites. */
-  //...
+  RUN_TEST(how_std_vector_opt_assign_works);
   /* Tests can also be gathered into test suites. */
   RUN_SUITE(benchmark_vector);
   GREATEST_MAIN_END(); /* display results */
