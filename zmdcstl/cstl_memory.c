@@ -101,13 +101,18 @@ void uninitialized_default_fill_n(forward_iterator_t* destination, size_t n)
   assert(iterator_is_valid(destination));
   bool ret = false;
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(destination);
-  for (; n > 0; n--)
+  ufun_t dctor = type->_t_typeinit;
+  if(dctor)
   {
-    if (type->_t_typeinit)
-      type->_t_typeinit(destination->_t_pos, &ret);
-    else
+    for (; n > 0; n--)
+    {
+      dctor(destination->_t_pos, &ret);
+      iterator_next(destination);
+    }
+  }else
+  {
+    for (; n > 0; n--, iterator_next(destination))
       memset(destination->_t_pos, 0, type->_t_typesize);
-    iterator_next(destination);
   }
 }
 
@@ -164,7 +169,7 @@ void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last, con
   }
 }
 
-#define uninitialized_copy_from_vector_aux(iterator_next)\
+#define uninitialized_copy_from_continoues_to(iterator_next)\
 if (type->_t_typecopy)\
 {\
   bool ret = false;\
@@ -211,15 +216,15 @@ static inline void uninitialized_copy_from_continoues(_byte_t* from, _byte_t* en
     }
     break;
   case _LIST_CONTAINER:
-    uninitialized_copy_from_vector_aux(/*list_iterator_next(result)*/)
+    uninitialized_copy_from_continoues_to(/*list_iterator_next(result)*/)
     ;
     break;
   case _SLIST_CONTAINER:
-    uninitialized_copy_from_vector_aux(/*slist_iterator_next(result)*/)
+    uninitialized_copy_from_continoues_to(/*slist_iterator_next(result)*/)
     ;
     break;
   case _SET_CONTAINER:
-    uninitialized_copy_from_vector_aux(/*set_iterator_next(result)*/)
+    uninitialized_copy_from_continoues_to(/*set_iterator_next(result)*/)
     ;
     break;
   case _MULTISET_CONTAINER:
