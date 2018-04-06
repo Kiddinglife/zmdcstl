@@ -70,12 +70,6 @@ typedef struct _tagvector
   _byte_t* _pby_endofstorage; /* the end of capacity space */
 } vector_t;
 
-extern void vector_destruct_range(vector_t* pvec, _byte_t* first, _byte_t* last);
-extern void vector_destruct_range_n(vector_t* pvec, _byte_t* first, size_t bytelen);
-extern _byte_t* uninitialized_default_fill_nbytes_vector(type_t* type, _byte_t* destination, size_t totalbytes);
-extern _byte_t* uninitialized_default_fill_nbytes_v_vector(type_t* type, _byte_t* destination, size_t totalbytes,
-    const void* val);
-extern void uninitialized_copy_range_from_vec_to_any(_byte_t* first, _byte_t* last, forward_iterator_t* result);
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ITERATOR STARTS ////////////////////////////////////////
 /**
  * Create new vector iterator.

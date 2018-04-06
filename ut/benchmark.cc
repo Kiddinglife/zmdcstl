@@ -7,6 +7,8 @@
 /* Add definitions that need to be in the test runner's main file. */
 GREATEST_MAIN_DEFS()
 
+static size_t size = 5000000;
+
 struct user_defined_type_init0_destroy0_copy0_less
 {
     int a;
@@ -127,8 +129,6 @@ std::chrono::duration<double, std::milli>(end##id - start##id).count() ;\
 std::cout << #id << ":" << elapsed##id<< "ms, "
 #define profile_ratio(id1,id2) \
 std::cout << "ratio: " << (elapsed##id1)/(elapsed##id2) << " ";
-
-size_t size = 5000000;
 
 TEST benchmark_vector_ctor(void)
 {

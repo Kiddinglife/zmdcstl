@@ -68,8 +68,11 @@ typedef struct _tagtype_t
   ufun_t _t_typeinit; /* if null, use bzero */
   ufun_t _t_typedestroy; /* if null, do nothing */
   /* if _t_typecopy is null, use memcpy
-   * @remark _t_typecopy and _t_typedestroy
-   * are both null or both not null, no other cases
+   * @remark
+   * _t_typecopy =   null => _t_typedestroy=null
+   * _t_typecopy!=   null => _t_typedestroy=null||!null
+   * _t_typedestroy= null => _t_typecopy=   null||!null
+   * _t_typedestroy!=null => _t_typecopy!=  null
    */
   bfun_t _t_typecopy;
   bfun_t _t_typeless; /* can never be null*/
