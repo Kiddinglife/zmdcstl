@@ -301,9 +301,11 @@ extern void vector_assign_n_v(vector_t* pvec, const void* v, size_t n);
  *  @a from (for fast expansion) will not be copied.
  */
 extern void vector_assign_vector(vector_t* to, vector_t* from);
-
 extern void vector_assign_range(input_iterator_t* first, input_iterator_t* last);
 extern void vector_assign_range_n(input_iterator_t* first, size_t n);
+
+#define vector_front(eletype,pvec) ((eletype*)(pvec->_pby_start))
+#define vector_back(eletype,cpvec_vector) ((eletype*)(cpvec_vector->_pby_finish - _GET_VECTOR_TYPE_SIZE(cpvec_vector)))
 
 /**
  * a iterator that points just beyond the end of vector container.
