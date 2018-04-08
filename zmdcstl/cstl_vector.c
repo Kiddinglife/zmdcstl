@@ -84,11 +84,6 @@ void vector_end_again(vector_iterator_t* it_end)
   _VECTOR_ITERATOR_COREPOS(it_end) = ((vector_t*) it_end->_pt_container)->_pby_finish;
 }
 
-void swap(vector_t * to, vector_t * from)
-{
-
-}
-
 bool vector_iterator_equal(vector_iterator_t* it_first, vector_iterator_t* it_second)
 {
   assert(iterator_same_type(it_first, it_second));
