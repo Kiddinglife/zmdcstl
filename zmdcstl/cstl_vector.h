@@ -70,6 +70,7 @@ typedef struct _tagvector
   _byte_t* _pby_endofstorage; /* the end of capacity space */
 } vector_t;
 
+extern void vecor_debug(vector_t* pvec);
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ITERATOR STARTS ////////////////////////////////////////
 /**
  * Create new vector iterator.

@@ -4,6 +4,13 @@
 #include "cstl_vector.h"
 #include "cstl_algorithm.h"
 
+void vecor_debug(vector_t* pvec)
+{
+  printf("debug:\nstart=%llu\nfinish=%llu\nend=%llu\n",
+      pvec->_pby_start, pvec->_pby_finish, pvec->_pby_endofstorage);
+  printf("finish-start=%llu\n", pvec->_pby_finish -  pvec->_pby_start);
+  printf("end-start=%llu\n", pvec->_pby_endofstorage -  pvec->_pby_start);
+}
 bool vector_is_inited(const vector_t* cpvec_vector)
 {
   if (cpvec_vector == NULL)

@@ -579,7 +579,7 @@ TEST test_vector_assign_n_v()
   vector_ctor_n(&pvec_vector, elesize, 1, user_defined_pod_id);
   random_access_iterator_t ritr;
   vector_end(&pvec_vector, &ritr);
-  vector_iterator_prev_n(&ritr, elesize/2);
+  vector_iterator_prev_n(&ritr, elesize / 2);
   vector_erase(&ritr, true); //size = elesize - 1
   vector_assign_n_v(&pvec_vector, &v, elesize);
   ASSERT_EQ(pvec_vector._pby_endofstorage, pvec_vector._pby_finish);
@@ -600,29 +600,30 @@ TEST test_vector_assign_n_v()
   vector_dtor(&pvec_vector);
 
   // branch test:  vector_size < elesize  < vector_capacity
-   elesize = 100;
-   vector_ctor_n(&pvec_vector, elesize, 1, user_defined_pod_id);
-   vector_end(&pvec_vector, &ritr);
-   vector_iterator_prev_n(&ritr, elesize/2);
-   vector_erase(&ritr, true);
-   elesize -= 10;
-   vector_assign_n_v(&pvec_vector, &v, elesize);
-   ASSERT_FALSE(pvec_vector._pby_endofstorage <= pvec_vector._pby_finish);
-   ASSERT_EQ(pvec_vector._pby_finish - pvec_vector._pby_start,
-       elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
-   ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER);
-   ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typeid, user_defined_pod_id);
-   ASSERT_EQ(pvec_vector.meta._t_typeinfo._t_typeidsize, 1);
-   tmp = pvec_vector._pby_start;
-   for (; elesize > 0; elesize--)
-   {
-     vptr = (user_defined_type_init0_destroy0_copy0_less*) tmp;
-     ASSERT_EQ_FMT(100, vptr->a, "%d");
-     ASSERT_EQ(0, vptr->b);
-     ASSERT_EQ_FMT(100, vptr->c[0], "%d");
-     tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
-   }
-   vector_dtor(&pvec_vector);
+  elesize = 100;
+  vector_ctor_n(&pvec_vector, elesize, 1, user_defined_pod_id);
+  vector_end(&pvec_vector, &ritr);
+  vector_iterator_prev_n(&ritr, elesize / 2);
+  for (int i = 0; i < 10; i++)
+    vector_erase(&ritr, true);
+  elesize = 95; //size = 90 < 95 < 100
+  vector_assign_n_v(&pvec_vector, &v, elesize);
+  ASSERT_FALSE(pvec_vector._pby_endofstorage <= pvec_vector._pby_finish);
+  ASSERT_EQ(pvec_vector._pby_finish - pvec_vector._pby_start,
+      elesize * _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize);
+  ASSERT_EQ(pvec_vector.meta._t_containertype, _VECTOR_CONTAINER);
+  ASSERT_EQ(_GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typeid, user_defined_pod_id);
+  ASSERT_EQ(pvec_vector.meta._t_typeinfo._t_typeidsize, 1);
+  tmp = pvec_vector._pby_start;
+  for (; elesize > 0; elesize--)
+  {
+    vptr = (user_defined_type_init0_destroy0_copy0_less*) tmp;
+    ASSERT_EQ_FMT(100, vptr->a, "%d");
+    ASSERT_EQ(0, vptr->b);
+    ASSERT_EQ_FMT(100, vptr->c[0], "%d");
+    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  }
+  vector_dtor(&pvec_vector);
 
   // branch test: elesize = vector_size
   elesize = 100;
