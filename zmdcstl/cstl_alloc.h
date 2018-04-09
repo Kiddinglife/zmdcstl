@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #include "cstl_def.h"
-#include "eaplatform.h"
+#include "platform.h"
 
 #ifdef __cplusplus
 extern "C"

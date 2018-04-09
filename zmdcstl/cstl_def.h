@@ -29,6 +29,9 @@ extern "C"
 #include <float.h>
 #include <time.h>
 #include <stdbool.h>
+#include <stdint.h>
+
+#include "platform.h"
 
 #ifndef va_copy
 #define va_copy(dest, src) ((dest) = (src))

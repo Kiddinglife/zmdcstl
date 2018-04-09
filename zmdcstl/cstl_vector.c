@@ -253,7 +253,7 @@ void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
   type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
   size = type->_t_typesize * elesize;
   pvec_vector->_pby_finish = pvec_vector->_pby_start = cstl_alloc_ex_totaln(type->_t_typealign, size);
-  pvec_vector->_pby_endofstorage = pvec_vector->_pby_finish = uninitialized_default_fill_nbytes_continue(type,
+  pvec_vector->_pby_endofstorage = pvec_vector->_pby_finish = uninitialized_default_fill_n_continue(type,
       pvec_vector->_pby_start, size);
 }
 
@@ -280,7 +280,7 @@ void vector_ctor_n_v(vector_t* pvec_vector, size_t elesize, void* val, size_t si
   type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
   size = type->_t_typesize * elesize;
   pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex_totaln(type->_t_typealign, size);
-  pvec_vector->_pby_endofstorage = pvec_vector->_pby_finish = uninitialized_default_fill_nbytes_v_continue(type,
+  pvec_vector->_pby_endofstorage = pvec_vector->_pby_finish = uninitialized_fill_n_continue(type,
       pvec_vector->_pby_start, size, val);
 }
 

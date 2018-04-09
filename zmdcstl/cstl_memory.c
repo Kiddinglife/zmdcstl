@@ -143,8 +143,7 @@ void uninitialized_default_fill_n(forward_iterator_t* destination, size_t n)
       dctor(destination->_t_pos, &ret);
       iterator_next(destination);
     }
-  }
-  else
+  } else
   {
     for (; n > 0; n--, iterator_next(destination))
       memset(destination->_t_pos, 0, type->_t_typesize);
@@ -162,15 +161,14 @@ void uninitialized_fill_n(forward_iterator_t* destination, const void* value, in
       bool ret = false;
       type->_t_typecopy(destination->_t_pos, value, &ret);
       assert(ret);
-    }
-    else
+    } else
     {
       cstl_memcpy(destination->_t_pos, value, type->_t_typesize);
     }
     iterator_next(destination);
   }
 }
-_byte_t* uninitialized_default_fill_nbytes_continue(type_t* type, _byte_t* destination, size_t totalbytes)
+_byte_t* uninitialized_default_fill_n_continue(type_t* type, _byte_t* destination, size_t totalbytes)
 {
   ufun_t init = type->_t_typeinit;
   _byte_t* end = destination + totalbytes;
@@ -180,20 +178,19 @@ _byte_t* uninitialized_default_fill_nbytes_continue(type_t* type, _byte_t* desti
     totalbytes = type->_t_typesize;
     for (; destination != end; destination += totalbytes)
       init(destination, &ret);
-  }
-  else
+  } else
   {
     memset(destination, 0, totalbytes);
   }
   return end;
 }
-_byte_t* uninitialized_default_fill_nbytes_v_continue(type_t* type, _byte_t* destination, size_t totalbytes,
-    const void* val)
+_byte_t* uninitialized_fill_n_continue(type_t* type, _byte_t* destination, size_t totalbytes, const void* val)
 {
   bfun_t cpyctor = type->_t_typecopy;
   size_t size = type->_t_typesize;
   _byte_t* end = destination + totalbytes;
-  switch (type->_t_typeid) {
+  switch (type->_t_typeid)
+  {
     case cstl_int8:
       memset(destination, *(int*) val, totalbytes);
       break;
@@ -234,8 +231,7 @@ _byte_t* uninitialized_default_fill_nbytes_v_continue(type_t* type, _byte_t* des
         bool ret;
         for (; destination != end; destination += size)
           cpyctor(destination, val, &ret);
-      }
-      else
+      } else
       {
         for (; destination != end; destination += size)
           cstl_memcpy(destination, val, size);
@@ -268,8 +264,7 @@ void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last, con
       bool ret = false;
       type->_t_typecopy(first->_t_pos, value, &ret);
       assert(ret);
-    }
-    else
+    } else
     {
       cstl_memcpy(first->_t_pos, value, type->_t_typesize);
     }
@@ -281,7 +276,8 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward
   assert(iterator_is_valid(first) && iterator_is_valid(last) && iterator_is_valid(result));
   assert(iterator_same_elem_type(first, last) && iterator_same_elem_type(first, result));
 
-  switch (_ITERATOR_CONTAINER_TYPE(first)) {
+  switch (_ITERATOR_CONTAINER_TYPE(first))
+  {
     case _VECTOR_CONTAINER:
     case _DEQUE_CONTAINER:
     case _BASIC_STRING_CONTAINER:
@@ -315,7 +311,8 @@ _byte_t* uninitialized_copy_from_any_to_continue(forward_iterator_t* from, forwa
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(from);
   size_t tsize = type->_t_typesize;
-  switch (_ITERATOR_CONTAINER_TYPE(from)) {
+  switch (_ITERATOR_CONTAINER_TYPE(from))
+  {
     case _VECTOR_CONTAINER:
       if (type->_t_typecopy)
       {
@@ -329,8 +326,7 @@ _byte_t* uninitialized_copy_from_any_to_continue(forward_iterator_t* from, forwa
           type->_t_typecopy(result, bfrom, &ret);
           result += tsize;
         }
-      }
-      else
+      } else
       {
         // this is the case uninitialized_copy_from_continoues_to_continoues
         // and _t_typecopy null, so use memcpy
@@ -371,7 +367,8 @@ void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, for
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(result);
   size_t tsize = type->_t_typesize;
-  switch (_ITERATOR_CONTAINER_TYPE(result)) {
+  switch (_ITERATOR_CONTAINER_TYPE(result))
+  {
     case _VECTOR_CONTAINER:
       if (type->_t_typecopy)
       {
@@ -383,8 +380,7 @@ void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, for
           type->_t_typecopy(result->_t_pos, from, &ret);
           result->_t_pos += tsize;
         }
-      }
-      else
+      } else
       {
         // this is the case uninitialized_copy_from_continoues_to_continoues
         // and _t_typecopy null, so use memcpy
@@ -434,8 +430,7 @@ _byte_t* uninitialized_copy_from_continue_to_continue(type_t* type, _byte_t* fro
       cpy(result, from, &ret);
       result += tsize;
     }
-  }
-  else
+  } else
   {
     // this is the case uninitialized_copy_from_continoues_to_continoues
     // and _t_typecopy null, so use memcpy
@@ -448,7 +443,8 @@ void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_iterator_
 {
   assert(iterator_is_valid(first) && iterator_is_valid(result));
 
-  switch (_ITERATOR_CONTAINER_TYPE(first)) {
+  switch (_ITERATOR_CONTAINER_TYPE(first))
+  {
     case _VECTOR_CONTAINER:
     case _DEQUE_CONTAINER:
     case _BASIC_STRING_CONTAINER:
@@ -485,7 +481,8 @@ void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, fo
   // else use copyfunc for each element
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(result);
   size_t tsize = type->_t_typesize;
-  switch (_ITERATOR_CONTAINER_TYPE(result)) {
+  switch (_ITERATOR_CONTAINER_TYPE(result))
+  {
     case _VECTOR_CONTAINER:
       // if result in [vec,deque,string], use memcpy for all element
       if (type->_t_typecopy)
@@ -499,8 +496,7 @@ void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, fo
           type->_t_typecopy(result->_t_pos, from, &ret);
           result->_t_pos += tsize;
         }
-      }
-      else
+      } else
       {
         // this is the case uninitialized_copy_from_continoues_to_continoues
         // and _t_typecopy null, so use memcpy
@@ -541,7 +537,8 @@ _byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, siz
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(from);
   size_t tsize = type->_t_typesize;
-  switch (_ITERATOR_CONTAINER_TYPE(from)) {
+  switch (_ITERATOR_CONTAINER_TYPE(from))
+  {
     case _VECTOR_CONTAINER:
       if (type->_t_typecopy)
       {
@@ -553,8 +550,7 @@ _byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, siz
           type->_t_typecopy(result, bfrom, &ret);
           result += tsize;
         }
-      }
-      else
+      } else
       {
         nstep *= tsize;
         cstl_memcpy(result, from->_t_pos, nstep);
@@ -590,6 +586,127 @@ _byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, siz
   }
   return result;
 }
+
+char* fill_n_char(char* first, size_t n, const char c)
+{
+  return (char*) memset(first, (char) c, n) + n;
+}
+
+unsigned char* fill_n_uchar(unsigned char* first, size_t n, const unsigned char c)
+{
+  return (unsigned char*) memset(first, (unsigned char) c, n) + n;
+}
+
+#if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__ICL) // ICL = Intel compiler
+bool* fill_n_bool(bool* first, size_t n, const bool b)
+{
+  return (bool*)memset(first, (char)b, n) + n;
+}
+#endif
+
+#if(defined(EA_COMPILER_GNUC) || defined(EA_COMPILER_CLANG)) && (defined(EA_PROCESSOR_X86) || defined(EA_PROCESSOR_X86_64))
+#if defined(EA_PROCESSOR_X86_64)
+uint64_t* fill_n_uint64(uint64_t* first, size_t n, uint64_t c)
+{
+  uintptr_t count = (uintptr_t) (n);
+  uint64_t value = (uint64_t) (c);
+  __asm__ __volatile__ ("cld\n\t"
+      "rep stosq\n\t"
+      : "+c" (count), "+D" (first), "=m" (first)
+      : "a" (value)
+      : "cc" );
+  return first; // first is updated by the code above.
+}
+int64_t* fill_n_int64(int64_t* first, size_t n, int64_t c)
+{
+  uintptr_t count = (uintptr_t) (n);
+  int64_t value = (int64_t) (c);
+  __asm__ __volatile__ ("cld\n\t"
+      "rep stosq\n\t"
+      : "+c" (count), "+D" (first), "=m" (first)
+      : "a" (value)
+      : "cc" );
+  return first; // first is updated by the code above.
+}
+#endif  // #if defined(EA_PROCESSOR_X86_64)
+uint32_t* fill_n_uint32(uint32_t* first, size_t n, uint32_t c)
+{
+  uintptr_t count = (uintptr_t) (n);
+  uint32_t value = (uint32_t) (c);
+  __asm__ __volatile__ ("cld\n\t"
+      "rep stosl\n\t"
+      : "+c" (count), "+D" (first), "=m" (first)
+      : "a" (value)
+      : "cc" );
+  return first; // first is updated by the code above.
+}
+int32_t* fill_int32(int32_t* first, size_t n, int32_t c)
+{
+  uintptr_t count = (uintptr_t) (n);
+  int32_t value = (int32_t) (c);
+  __asm__ __volatile__ ("cld\n\t"
+      "rep stosl\n\t"
+      : "+c" (count), "+D" (first), "=m" (first)
+      : "a" (value)
+      : "cc" );
+  return first; // first is updated by the code above.
+}
+uint16_t* fill_n_uint16(uint16_t* first, size_t n, uint16_t c)
+{
+  uintptr_t count = (uintptr_t) (n);
+  uint16_t value = (uint16_t) (c);
+  __asm__ __volatile__ ("cld\n\t"
+      "rep stosw\n\t"
+      : "+c" (count), "+D" (first), "=m" (first)
+      : "a" (value)
+      : "cc" );
+  return first; // first is updated by the code above.
+}
+int16_t* fill_n_int16(int16_t* first, size_t n, int16_t c)
+{
+  uintptr_t count = (uintptr_t) (n);
+  int16_t value = (int16_t) (c);
+  __asm__ __volatile__ ("cld\n\t"
+      "rep stosw\n\t"
+      : "+c" (count), "+D" (first), "=m" (first)
+      : "a" (value)
+      : "cc" );
+  return first; // first is updated by the code above.
+}
+#elif defined(EA_COMPILER_MICROSOFT) && (defined(EA_PROCESSOR_X86) || defined(EA_PROCESSOR_X86_64))
+#if defined(EA_PROCESSOR_X86_64)
+uint64_t* fill_n_uint64(uint64_t* first, size_t n, uint64_t c)
+{
+  __stosq(first, (uint64_t)c, n);
+  return first + n;
+}
+int64_t* fill_n_int64(int64_t* first, size_t n, int64_t c)
+{
+  __stosq((uint64_t*)first, (uint64_t)c, n);
+  return first + n;
+}
+#endif
+uint32_t* fill_n_uint32(uint32_t* first, size_t n, uint32_t c)
+{
+  __stosd((unsigned long*)first, (unsigned long)c, (size_t)n);
+  return first + n;
+}
+int32_t* fill_int32(int32_t* first, size_t n, int32_t c)
+{
+  __stosd((unsigned long*)first, (unsigned long)c, (size_t)n);
+  return first + n;
+}
+uint16_t* fill_n_uint16(uint16_t* first, size_t n, uint16_t c)
+{
+  __stosw(first, (uint16_t)c, (size_t)n);
+  return first + n;
+}
+int16_t* fill_n_int16(int16_t* first, size_t n, int16_t c)
+{
+  __stosw((uint16_t*)first, (uint16_t)c, (size_t)n);
+  return first + n;
+}
+#endif
 
 #ifdef _MSC_VER
 #pragma warning(pop)
