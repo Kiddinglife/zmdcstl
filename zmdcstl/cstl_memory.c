@@ -420,7 +420,30 @@ void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, for
       break;
   }
 }
-
+_byte_t* uninitialized_copy_from_continue_to_continue(type_t* type, _byte_t* from, _byte_t* end, _byte_t* result)
+{
+  size_t tsize = type->_t_typesize;
+  bfun_t cpy = type->_t_typecopy;
+  if (cpy)
+  {
+    // this is the case uninitialized_copy_from_continoues_to_continoues,
+    // but _t_typecopy not null, so have to copy on by one
+    bool ret = false;
+    for (; from != end; from += tsize)
+    {
+      cpy(result, from, &ret);
+      result += tsize;
+    }
+  }
+  else
+  {
+    // this is the case uninitialized_copy_from_continoues_to_continoues
+    // and _t_typecopy null, so use memcpy
+    cstl_memcpy(result, from, end - from);
+    result += end - from;
+  }
+  return result;
+}
 void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_iterator_t* result)
 {
   assert(iterator_is_valid(first) && iterator_is_valid(result));

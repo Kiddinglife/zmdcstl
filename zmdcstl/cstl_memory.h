@@ -112,9 +112,11 @@ extern _byte_t* uninitialized_default_fill_nbytes_v_continue(type_t* type, _byte
 ///    uninitialized_copy(pSourceDataBegin, pSourceDataBegin + 10, pArray);
 ///
 extern void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward_iterator_t* result);
+/// vector, deque and string
 extern _byte_t* uninitialized_copy_from_any_to_continue(forward_iterator_t* from, forward_iterator_t* end,
     _byte_t* result);
 extern void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, forward_iterator_t* result);
+extern _byte_t* uninitialized_copy_from_continue_to_continue(type_t* type, _byte_t* from, _byte_t* end, _byte_t* result);
 
 /// uninitialized_copy_n
 ///
