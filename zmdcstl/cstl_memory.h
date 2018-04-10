@@ -129,18 +129,21 @@ extern void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_it
 extern void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, forward_iterator_t* result);
 extern _byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, size_t nstep, _byte_t* result);
 
-extern char* fill_n_char(char* first, size_t n, const char c);
-extern unsigned char* fill_n_uchar(unsigned char* first, size_t n, const unsigned char c);
+extern void fill_n(output_iterator_t* dest, size_t n, void* val);
+extern _byte_t* fill_n_continue(type_t* type, _byte_t* destPosition, size_t n, void* val);
+
+extern char* fill_n_char(char* first, size_t n, char c);
+extern unsigned char* fill_n_uchar(unsigned char* first, size_t n, unsigned char c);
 #if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__ICL) // ICL = Intel compiler
-extern bool* fill_n_bool(bool* first, size_t n, const bool b);
+extern bool* fill_n_bool(bool* first, size_t n, bool b);
 #endif
 #if(defined(EA_COMPILER_GNUC) || defined(EA_COMPILER_CLANG)) && (defined(EA_PROCESSOR_X86) || defined(EA_PROCESSOR_X86_64))
 #if defined(EA_PROCESSOR_X86_64)
 extern uint64_t* fill_n_uint64(uint64_t* first, size_t n, uint64_t c);
 extern int64_t* fill_n_int64(int64_t* first, size_t n, int64_t c);
 #endif
-extern uint32_t* fill_n_uint32(uint32_t* first, size_t n, uint32_t c);
 extern int32_t* fill_n_int32(int32_t* first, size_t n, int32_t c);
+extern uint32_t* fill_n_uint32(uint32_t* first, size_t n, uint32_t c);
 extern uint16_t* fill_n_uint16(uint16_t* first, size_t n, uint16_t c);
 extern int16_t* fill_n_int16(int16_t* first, size_t n, int16_t c);
 #elif defined(EA_COMPILER_MICROSOFT) && (defined(EA_PROCESSOR_X86) || defined(EA_PROCESSOR_X86_64))

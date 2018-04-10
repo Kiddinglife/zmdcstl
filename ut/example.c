@@ -38,8 +38,13 @@ static void func_init_user_defined_type_init_destroy_copy_less(const void* in, v
   ((user_defined_type_init_destroy_copy_less*) in)->a = 0;
   memset(((user_defined_type_init_destroy_copy_less*) in)->c, 0, 32);
 }
-static void func_copy_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
+static void func_copy_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* is_copy__assign)
 {
+  //assert(in != in_);
+  if(in == in_) return;
+  if(*(bool*)is_copy__assign)
+    cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
+
   ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int,
       ((user_defined_type_init_destroy_copy_less* )in_)->a);
   //printf("copy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
@@ -53,6 +58,17 @@ static void func_destroy_user_defined_type_init_destroy_copy_less(const void* in
 {
   //printf("destroy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
   cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
+}
+static void func_opt_assign_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
+{
+  ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int,
+      ((user_defined_type_init_destroy_copy_less* )in_)->a);
+  //printf("copy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
+  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->b, ((user_defined_type_init_destroy_copy_less*) in_)->b,
+      ((user_defined_type_init_destroy_copy_less*) in_)->a * sizeof(int));
+  ((user_defined_type_init_destroy_copy_less*) in)->a = ((user_defined_type_init_destroy_copy_less*) in_)->a;
+  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->c, ((user_defined_type_init_destroy_copy_less*) in_)->c,
+      32);
 }
 static void func_less_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
 {
@@ -785,6 +801,39 @@ TEST test_vector_swap()
 
   PASS();
 }
+TEST test_vector_reserve()
+{
+  // given a vector with 100 user_defined_type_init_destroy_copy_less structs
+  size_t elesize = 100;
+  user_defined_type_init_destroy_copy_less firstv;
+  firstv.a = 100;
+  firstv.b = cstl_alloc(int, firstv.a);
+  firstv.c[0] = 100;
+  vector_t pvec_vector;
+  vector_ctor_n_v(&pvec_vector, elesize, &firstv, 1, user_defined_pod_id);
+
+  // when reserve 101
+  vector_reserve(&pvec_vector, elesize + 1);
+  // then size should remains same
+  ASSERT_EQ_FMT(vector_size(&pvec_vector), elesize, "%lu");
+  // then capacity should increase
+  ASSERT_EQ(vector_capacity(&pvec_vector), elesize+1);
+  // then all elements should remain same to before
+  elesize = vector_size(&pvec_vector);
+  _byte_t* tmp = pvec_vector._pby_start;
+  for (; elesize > 0; elesize--)
+  {
+    user_defined_type_init_destroy_copy_less* vptr = (user_defined_type_init_destroy_copy_less*) tmp;
+    ASSERT_EQ_FMT(firstv.a, vptr->a, "%d");
+    ASSERT_FALSE(vptr->b == 0);
+    ASSERT_EQ_FMT(firstv.c[0], vptr->c[0], "%d");
+    tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  }
+
+  vector_dtor(&pvec_vector);
+  cstl_free(firstv.b);
+  PASS();
+}
 SUITE(test_vector)
 {
   RUN_TEST(test_vector_ctor_scalar_type);
@@ -807,6 +856,7 @@ SUITE(test_vector)
   RUN_TEST(test_vector_assign_n_v);
   RUN_TEST(test_vector_erase);
   RUN_TEST(test_vector_swap);
+  RUN_TEST(test_vector_reserve);
 }
 
 TEST test_union_ptr_as_buf(void)

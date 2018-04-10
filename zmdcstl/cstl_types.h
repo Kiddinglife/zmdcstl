@@ -64,26 +64,27 @@ typedef struct _tagtype_t
 {
   unsigned char _t_typeid;
   unsigned char _t_typealign;
-  unsigned short _t_typesize; /* type size */
-  ufun_t _t_typeinit; /* if null, use bzero */
-  ufun_t _t_typedestroy; /* if null, do nothing */
-  bfun_t _t_typeless; /* can never be null*/
-  union
-  {
-    /* if _t_typecopy is null, use memcpy
-     * @remark
-     * _t_typecopy =   null => _t_typedestroy=null
-     * _t_typecopy!=   null => _t_typedestroy=null||!null
-     * _t_typedestroy= null => _t_typecopy=   null||!null
-     * _t_typedestroy!=null => _t_typecopy!=  null
-     *
-     * if _t_typecopy Not NUll,
-     * and if the third parameter is true it is copy-ctor,
-     * else it is opt-assignment
-     */
-    bfun_t _t_typecopy;
-    bfun_t _t_type_opt_assign;
-  };
+  unsigned short _t_typesize;
+  ufun_t _t_typeinit; /*< if null, use bzero */
+  ufun_t _t_typedestroy; /*< if null, do nothing */
+  bfun_t _t_typeless; /*< can never be null*/
+  /*
+   * _t_typecopy plays two roles of copy ctor and operator= in c++
+   * if _t_typecopy is null -> pod -> use memcpy
+   * you must not copy or asign self so add this assertion to your own func:
+   * @code
+   * assert(self != another);
+   * @endcode
+   *
+   * @remark
+   * _t_typecopy =   null => _t_typedestroy=null
+   * _t_typecopy!=   null => _t_typedestroy=null||!null
+   * _t_typedestroy= null => _t_typecopy=   null||!null
+   * _t_typedestroy!=null => _t_typecopy!=  null
+   *
+   */
+  bfun_t _t_typecopy;
+  //bfun_t (*getfunc)(int funcid);
 } type_t;
 
 #define TYPE_INFO_TYPE_ID_FIRST(type_info) ((type_info)._t_typeids[0])

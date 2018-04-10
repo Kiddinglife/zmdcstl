@@ -1,7 +1,12 @@
-#include "greatest.h"
 #include <chrono>
 #include <vector>
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#include <iterator>
+
+#include "greatest.h"
+
 #include "../zmdcstl/cstl_vector.h"
 
 /* Add definitions that need to be in the test runner's main file. */
@@ -54,6 +59,9 @@ struct user_defined_type_init_destroy_copy_less
     }
     user_defined_type_init_destroy_copy_less(const user_defined_type_init_destroy_copy_less& x)
     {
+      if (this == &x)
+        return;
+
       a = x.a;
       b = cstl_alloc(int, a);
       //b = (int*)malloc(a*sizeof(int));
@@ -63,6 +71,9 @@ struct user_defined_type_init_destroy_copy_less
     }
     void operator =(const user_defined_type_init_destroy_copy_less &x)
     {
+      if (this == &x)
+        return;
+
       a = x.a;
       //printf("operator = called, this->b=%p, x.b=%p,\n", b, x.b);
       //b = x.b;
@@ -95,6 +106,9 @@ static void func_init_user_defined_type_init_destroy_copy_less(const void* in, v
 }
 static void func_copy_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
 {
+  if (in == in_)
+    return;
+
   user_defined_type_init0_destroy0_copy0_less* to = ((user_defined_type_init0_destroy0_copy0_less*) in);
   user_defined_type_init0_destroy0_copy0_less* from = ((user_defined_type_init0_destroy0_copy0_less*) in_);
   to->b = cstl_alloc(int, from->a);
@@ -145,8 +159,8 @@ TEST benchmark_vector_ctor(void)
   profile_end_ms(stdvec);
 
   profile_ratio(zmdcstlvec, stdvec);
-
   printf("\n");
+
   PASS();
 }
 TEST benchmark_vector_ctor_n(void)
@@ -163,8 +177,8 @@ TEST benchmark_vector_ctor_n(void)
   profile_end_ms(stdvec);
 
   profile_ratio(zmdcstlvec, stdvec);
-
   printf("\n");
+
   PASS();
 }
 
@@ -212,8 +226,8 @@ TEST benchmark_vector_ctor_n_v(void)
   profile_end_ms(stdvec_n_v_ctype);
 
   profile_ratio(vec_ctor_n_v_ctype, stdvec_n_v_ctype);
-
   printf("\n");
+
   PASS();
 }
 TEST benchmark_vector_ctor_vector(void)
@@ -227,6 +241,7 @@ TEST benchmark_vector_ctor_vector(void)
   vector_ctor_vector(&zmdcstlvec, &zmdcstlvec_);
   profile_end_ms(cstl_vector_ctor_vector);
   vector_dtor(&zmdcstlvec);
+  vector_dtor(&zmdcstlvec_);
 
   std::vector<user_defined_type_init_destroy_copy_less> stdvec_(size, v);
   profile_start(std_vector_ctor_vector);
@@ -234,10 +249,8 @@ TEST benchmark_vector_ctor_vector(void)
   profile_end_ms(std_vector_ctor_vector);
 
   profile_ratio(cstl_vector_ctor_vector, std_vector_ctor_vector);
-
-  vector_dtor(&zmdcstlvec_);
-
   printf("\n");
+
   PASS();
 }
 TEST benchmark_vector_ctor_range(void)
@@ -266,8 +279,8 @@ TEST benchmark_vector_ctor_range(void)
   profile_end_ms(stdvec);
 
   profile_ratio(zmdcstlvec, stdvec);
-
   printf("\n");
+
   PASS();
 }
 TEST benchmark_vector_ctor_range_n(void)
@@ -293,8 +306,8 @@ TEST benchmark_vector_ctor_range_n(void)
   profile_end_ms(stdvec);
 
   profile_ratio(zmdcstlvec, stdvec);
-
   printf("\n");
+
   PASS();
 }
 TEST benchmark_vector_erase(void)
@@ -314,8 +327,8 @@ TEST benchmark_vector_erase(void)
   profile_end_ms(stdvec);
 
   profile_ratio(zmdcstlvec, stdvec);
-
   printf("\n");
+
   PASS();
 }
 TEST benchmark_vector_swap(void)
@@ -337,8 +350,61 @@ TEST benchmark_vector_swap(void)
   profile_end_ms(stdvec_swap_ctype);
 
   profile_ratio(cstlvec_swap_ctype, stdvec_swap_ctype);
-
   printf("\n");
+
+  PASS();
+}
+TEST benchmark_vector_reserve(void)
+{
+  user_defined_type_init_destroy_copy_less firstv;
+  user_defined_type_init0_destroy0_copy0_less secondv;
+  uint32_t v = 100;
+
+  vector_t pvec_vector;
+  vector_ctor_n_v(&pvec_vector, size, &firstv, 1, user_defined_non_pod_id);
+  profile_start(cstlvec_reserve_non_pod);
+  vector_reserve(&pvec_vector, vector_capacity(&pvec_vector) + 1);
+  profile_end_ms(cstlvec_reserve_non_pod);
+  vector_dtor(&pvec_vector);
+
+  std::vector<user_defined_type_init_destroy_copy_less> stdvec_(size, firstv);
+  profile_start(stdvec_reserve_non_pod);
+  stdvec_.reserve(stdvec_.capacity() + 1);
+  profile_end_ms(stdvec_reserve_non_pod);
+
+  profile_ratio(cstlvec_reserve_non_pod, stdvec_reserve_non_pod);
+  printf("\n");
+
+  vector_t pvec_vector1;
+  vector_ctor_n_v(&pvec_vector1, size, &secondv, 1, user_defined_pod_id);
+  profile_start(cstlvec_reserve_pod);
+  vector_reserve(&pvec_vector1, vector_capacity(&pvec_vector1) + 1);
+  profile_end_ms(cstlvec_reserve_pod);
+  vector_dtor(&pvec_vector1);
+
+  std::vector<user_defined_type_init0_destroy0_copy0_less> stdvec1(size, secondv);
+  profile_start(stdvec_reserve_pod);
+  stdvec1.reserve(stdvec1.capacity() + 1);
+  profile_end_ms(stdvec_reserve_pod);
+
+  profile_ratio(cstlvec_reserve_pod, stdvec_reserve_pod);
+  printf("\n");
+
+  vector_t pvec_vector2;
+  vector_ctor_n_v(&pvec_vector2, size, &v, 1, cstl_uint32);
+  profile_start(cstlvec_reserve_ctype);
+  vector_reserve(&pvec_vector2, vector_capacity(&pvec_vector2) + 1);
+  profile_end_ms(cstlvec_reserve_ctype);
+  vector_dtor(&pvec_vector2);
+
+  std::vector<uint32_t> stdvec2(size, v);
+  profile_start(stdvec_reserve_ctype);
+  stdvec2.reserve(stdvec2.capacity() + 1);
+  profile_end_ms(stdvec_reserve_ctype);
+
+  profile_ratio(cstlvec_reserve_ctype, stdvec_reserve_ctype);
+  printf("\n");
+
   PASS();
 }
 SUITE(benchmark_vector)
@@ -358,6 +424,9 @@ SUITE(benchmark_vector)
   RUN_TEST(benchmark_vector_erase);
   printf("\n");
   RUN_TEST(benchmark_vector_swap);
+  printf("\n");
+  RUN_TEST(benchmark_vector_reserve);
+  printf("\n");
 }
 
 TEST how_std_vector_opt_assign_works(void)
@@ -381,6 +450,24 @@ TEST how_std_vector_opt_assign_works(void)
   PASS();
 }
 
+bfun_t mytype_get_func(int funcid)
+{
+  switch (funcid) {
+    case 0:
+      return func_less_user_defined_type_init0_destroy0_copy0_less;
+      break;
+  }
+  return 0;
+}
+TEST how_std_fill_n_works(void)
+{
+  user_defined_type_init_destroy_copy_less v1;
+  user_defined_type_init_destroy_copy_less v2;
+  user_defined_type_init_destroy_copy_less v3;
+  std::vector<user_defined_type_init_destroy_copy_less> v { v1, v2 };
+  std::fill_n(v.begin(), 1, v3); // fill_n will internally call opt assign
+  PASS();
+}
 int main(int argc, char **argv)
 {
   init_types(0);
@@ -396,6 +483,7 @@ int main(int argc, char **argv)
   GREATEST_MAIN_BEGIN();
   /* Individual tests can be run directly in main, outside of suites. */
   RUN_TEST(how_std_vector_opt_assign_works);
+  RUN_TEST(how_std_fill_n_works);
   /* Tests can also be gathered into test suites. */
   RUN_SUITE(benchmark_vector);
   GREATEST_MAIN_END(); /* display results */

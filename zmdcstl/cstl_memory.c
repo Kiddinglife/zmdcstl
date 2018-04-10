@@ -143,7 +143,8 @@ void uninitialized_default_fill_n(forward_iterator_t* destination, size_t n)
       dctor(destination->_t_pos, &ret);
       iterator_next(destination);
     }
-  } else
+  }
+  else
   {
     for (; n > 0; n--, iterator_next(destination))
       memset(destination->_t_pos, 0, type->_t_typesize);
@@ -161,7 +162,8 @@ void uninitialized_fill_n(forward_iterator_t* destination, const void* value, in
       bool ret = false;
       type->_t_typecopy(destination->_t_pos, value, &ret);
       assert(ret);
-    } else
+    }
+    else
     {
       cstl_memcpy(destination->_t_pos, value, type->_t_typesize);
     }
@@ -178,7 +180,8 @@ _byte_t* uninitialized_default_fill_n_continue(type_t* type, _byte_t* destinatio
     totalbytes = type->_t_typesize;
     for (; destination != end; destination += totalbytes)
       init(destination, &ret);
-  } else
+  }
+  else
   {
     memset(destination, 0, totalbytes);
   }
@@ -189,8 +192,7 @@ _byte_t* uninitialized_fill_n_continue(type_t* type, _byte_t* destination, size_
   bfun_t cpyctor = type->_t_typecopy;
   size_t size = type->_t_typesize;
   _byte_t* end = destination + totalbytes;
-  switch (type->_t_typeid)
-  {
+  switch (type->_t_typeid) {
     case cstl_int8:
       memset(destination, *(int*) val, totalbytes);
       break;
@@ -231,7 +233,8 @@ _byte_t* uninitialized_fill_n_continue(type_t* type, _byte_t* destination, size_
         bool ret;
         for (; destination != end; destination += size)
           cpyctor(destination, val, &ret);
-      } else
+      }
+      else
       {
         for (; destination != end; destination += size)
           cstl_memcpy(destination, val, size);
@@ -264,7 +267,8 @@ void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last, con
       bool ret = false;
       type->_t_typecopy(first->_t_pos, value, &ret);
       assert(ret);
-    } else
+    }
+    else
     {
       cstl_memcpy(first->_t_pos, value, type->_t_typesize);
     }
@@ -276,8 +280,7 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward
   assert(iterator_is_valid(first) && iterator_is_valid(last) && iterator_is_valid(result));
   assert(iterator_same_elem_type(first, last) && iterator_same_elem_type(first, result));
 
-  switch (_ITERATOR_CONTAINER_TYPE(first))
-  {
+  switch (_ITERATOR_CONTAINER_TYPE(first)) {
     case _VECTOR_CONTAINER:
     case _DEQUE_CONTAINER:
     case _BASIC_STRING_CONTAINER:
@@ -311,8 +314,7 @@ _byte_t* uninitialized_copy_from_any_to_continue(forward_iterator_t* from, forwa
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(from);
   size_t tsize = type->_t_typesize;
-  switch (_ITERATOR_CONTAINER_TYPE(from))
-  {
+  switch (_ITERATOR_CONTAINER_TYPE(from)) {
     case _VECTOR_CONTAINER:
       if (type->_t_typecopy)
       {
@@ -326,7 +328,8 @@ _byte_t* uninitialized_copy_from_any_to_continue(forward_iterator_t* from, forwa
           type->_t_typecopy(result, bfrom, &ret);
           result += tsize;
         }
-      } else
+      }
+      else
       {
         // this is the case uninitialized_copy_from_continoues_to_continoues
         // and _t_typecopy null, so use memcpy
@@ -367,8 +370,7 @@ void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, for
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(result);
   size_t tsize = type->_t_typesize;
-  switch (_ITERATOR_CONTAINER_TYPE(result))
-  {
+  switch (_ITERATOR_CONTAINER_TYPE(result)) {
     case _VECTOR_CONTAINER:
       if (type->_t_typecopy)
       {
@@ -380,7 +382,8 @@ void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, for
           type->_t_typecopy(result->_t_pos, from, &ret);
           result->_t_pos += tsize;
         }
-      } else
+      }
+      else
       {
         // this is the case uninitialized_copy_from_continoues_to_continoues
         // and _t_typecopy null, so use memcpy
@@ -430,7 +433,8 @@ _byte_t* uninitialized_copy_from_continue_to_continue(type_t* type, _byte_t* fro
       cpy(result, from, &ret);
       result += tsize;
     }
-  } else
+  }
+  else
   {
     // this is the case uninitialized_copy_from_continoues_to_continoues
     // and _t_typecopy null, so use memcpy
@@ -443,8 +447,7 @@ void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_iterator_
 {
   assert(iterator_is_valid(first) && iterator_is_valid(result));
 
-  switch (_ITERATOR_CONTAINER_TYPE(first))
-  {
+  switch (_ITERATOR_CONTAINER_TYPE(first)) {
     case _VECTOR_CONTAINER:
     case _DEQUE_CONTAINER:
     case _BASIC_STRING_CONTAINER:
@@ -481,8 +484,7 @@ void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, fo
   // else use copyfunc for each element
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(result);
   size_t tsize = type->_t_typesize;
-  switch (_ITERATOR_CONTAINER_TYPE(result))
-  {
+  switch (_ITERATOR_CONTAINER_TYPE(result)) {
     case _VECTOR_CONTAINER:
       // if result in [vec,deque,string], use memcpy for all element
       if (type->_t_typecopy)
@@ -496,7 +498,8 @@ void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, fo
           type->_t_typecopy(result->_t_pos, from, &ret);
           result->_t_pos += tsize;
         }
-      } else
+      }
+      else
       {
         // this is the case uninitialized_copy_from_continoues_to_continoues
         // and _t_typecopy null, so use memcpy
@@ -537,8 +540,7 @@ _byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, siz
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(from);
   size_t tsize = type->_t_typesize;
-  switch (_ITERATOR_CONTAINER_TYPE(from))
-  {
+  switch (_ITERATOR_CONTAINER_TYPE(from)) {
     case _VECTOR_CONTAINER:
       if (type->_t_typecopy)
       {
@@ -550,7 +552,8 @@ _byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, siz
           type->_t_typecopy(result, bfrom, &ret);
           result += tsize;
         }
-      } else
+      }
+      else
       {
         nstep *= tsize;
         cstl_memcpy(result, from->_t_pos, nstep);
@@ -587,18 +590,104 @@ _byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, siz
   return result;
 }
 
-char* fill_n_char(char* first, size_t n, const char c)
+void fill_n(output_iterator_t* from, size_t n, void* val)
+{
+  type_t* type = _ITERATOR_TYPE_INFO_TYPE(from);
+  switch (_ITERATOR_CONTAINER_TYPE(from)) {
+    case _VECTOR_CONTAINER:
+      from->_t_pos = fill_n_continue(type, from->_t_pos, n, val);
+      break;
+    case _DEQUE_CONTAINER:
+      break;
+    case _BASIC_STRING_CONTAINER:
+      break;
+    case _LIST_CONTAINER:
+      break;
+    case _SLIST_CONTAINER:
+      break;
+    case _SET_CONTAINER:
+      break;
+    case _MULTISET_CONTAINER:
+      break;
+    case _MAP_CONTAINER:
+      break;
+    case _MULTIMAP_CONTAINER:
+      break;
+    case _HASH_SET_CONTAINER:
+      break;
+    case _HASH_MULTISET_CONTAINER:
+      break;
+    case _HASH_MAP_CONTAINER:
+      break;
+    case _HASH_MULTIMAP_CONTAINER:
+      break;
+    default:
+      break;
+  }
+}
+
+_byte_t* fill_n_continue(type_t* type, _byte_t* destPosition, size_t n, void* val)
+{
+  bfun_t cpyctor = type->_t_typecopy;
+  _byte_t* e = destPosition + type->_t_typesize * n;
+  switch (type->_t_typeid) {
+    case cstl_int8:
+      fill_n_char((char*) destPosition, n, *(char*)val);
+      break;
+    case cstl_uint8:
+      fill_n_uchar((unsigned char*) destPosition, n, *(unsigned char*) val);
+      break;
+    case cstl_int16:
+      fill_n_int16((int16_t*) destPosition, n, *(int16_t*) val);
+      break;
+    case cstl_uint16:
+      fill_n_uint16((uint16_t*) destPosition, n, *(uint16_t*) val);
+      break;
+    case cstl_int32:
+      fill_n_int32((int32_t*) destPosition, n, *(int32_t*) val);
+      break;
+    case cstl_uint32:
+      fill_n_uint32((uint32_t*) destPosition, n, *(uint32_t*) val);
+      break;
+    case cstl_int64:
+      fill_n_int64((int64_t*) destPosition, n, *(int64_t*) val);
+      break;
+    case cstl_uint64:
+      fill_n_uint64((uint64_t*) destPosition, n, *(uint64_t*) val);
+      break;
+    case cstl_void_pt:
+      fill_n_uint64((uint64_t*) destPosition, n, *(uint64_t*) val);
+      break;
+    default:
+      if (cpyctor)
+      { // heap-allocation inside this struct
+        bool ret;
+        size_t tsize = type->_t_typesize;
+        for (; destPosition != e; destPosition += tsize)
+          cpyctor(destPosition, val, &ret);
+      }
+      else
+      { // pod struct
+        size_t tsize = type->_t_typesize;
+        for (; destPosition != e; destPosition += tsize)
+          cstl_memcpy(destPosition, val, tsize);
+      }
+      break;
+  }
+  return e;
+}
+char* fill_n_char(char* first, size_t n, char c)
 {
   return (char*) memset(first, (char) c, n) + n;
 }
 
-unsigned char* fill_n_uchar(unsigned char* first, size_t n, const unsigned char c)
+unsigned char* fill_n_uchar(unsigned char* first, size_t n, unsigned char c)
 {
   return (unsigned char*) memset(first, (unsigned char) c, n) + n;
 }
 
 #if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__ICL) // ICL = Intel compiler
-bool* fill_n_bool(bool* first, size_t n, const bool b)
+bool* fill_n_bool(bool* first, size_t n, bool b)
 {
   return (bool*)memset(first, (char)b, n) + n;
 }
@@ -640,7 +729,7 @@ uint32_t* fill_n_uint32(uint32_t* first, size_t n, uint32_t c)
       : "cc" );
   return first; // first is updated by the code above.
 }
-int32_t* fill_int32(int32_t* first, size_t n, int32_t c)
+int32_t* fill_n_int32(int32_t* first, size_t n, int32_t c)
 {
   uintptr_t count = (uintptr_t) (n);
   int32_t value = (int32_t) (c);

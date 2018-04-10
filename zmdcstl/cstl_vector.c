@@ -426,39 +426,37 @@ void vector_reserve(vector_t* cpvec_vector, size_t n)
     _byte_t* pNewStart = pNewData;
     _byte_t* from = cpvec_vector->_pby_start;
     _byte_t* end = cpvec_vector->_pby_finish;
-    size_t totalbytes = size;
     bfun_t cpyctor = type->_t_typecopy;
     ufun_t dtor = type->_t_typedestroy;
-    if (cpyctor) // when there is _t_typecopy there must be _t_typedestroy, it works in reversed way.
-    {
-      bool ret;
+    if (cpyctor)
+    { // _t_typecopy not null -> destroy can be null or not
+      bool is_cpy_assign = false;
       size = type->_t_typesize;
       if (dtor)
       {
         for (; from != end; from += size, pNewData += size)
         {
-          cpyctor(pNewData, from, &ret);
-          dtor(from, &ret);
+          cpyctor(pNewData, from, &is_cpy_assign);
+          dtor(from, &is_cpy_assign);
         }
       }
       else
       {
         for (; from != end; from += size, pNewData += size)
-          cpyctor(pNewData, from, &ret);
+          cpyctor(pNewData, from, &is_cpy_assign);
       }
     }
     else
     {
       assert(dtor == NULL); // no cpy => no dtor
-      cstl_memcpy(pNewData, from, size);
-      pNewData += size;
+      cstl_memcpy(pNewData, from, end - from);
+      pNewData += end - from;
     }
 
     cstl_free(cpvec_vector->_pby_start);
-
     cpvec_vector->_pby_start = pNewStart;
     cpvec_vector->_pby_finish = pNewData;
-    cpvec_vector->_pby_endofstorage = pNewStart + totalbytes;
+    cpvec_vector->_pby_endofstorage = pNewStart + size;
   }
 }
 void vector_set_capacity(vector_t* cpvec_vector, size_t n)
@@ -498,10 +496,10 @@ void vector_shrink_to_fit(vector_t* x)
     pvec_vector._pby_start = pvec_vector._pby_finish = cstl_alloc_ex_totaln(type->_t_typealign, size);
     if (cpyctor)
     {
-      bool ret;
+      bool is_cpy_assign = false;
       size = type->_t_typesize;
       for (; from != end; from += size, pvec_vector._pby_finish += size)
-        cpyctor(pvec_vector._pby_finish, from, &ret);
+        cpyctor(pvec_vector._pby_finish, from, &is_cpy_assign);
     }
     else
     {
@@ -534,17 +532,17 @@ static inline void do_insert_value_at_end_v(vector_t* pvec_vector, const void* v
   if (cpyctor)
   {
     // copy the old elements to pNewData
-    bool ret;
+    bool is_cpy_assign = false;
     _byte_t* from = pvec_vector->_pby_start;
     _byte_t* end = pvec_vector->_pby_finish;
     do
     {
-      cpyctor(pNewEnd, from, &ret);
+      cpyctor(pNewEnd, from, &is_cpy_assign);
       pNewEnd += type->_t_typesize;
       from += type->_t_typesize;
     } while (from != end);
     // copy new element to pNewEnd
-    cpyctor(pNewEnd, value, &ret);
+    cpyctor(pNewEnd, value, &is_cpy_assign);
     // destruct each old elements
     destruct_vec(type, pvec_vector->_pby_start, pvec_vector->_pby_finish);
   }
@@ -575,7 +573,7 @@ static inline void do_insert_value_at_end_n(vector_t* pvec_vector, size_t totalb
 
     _byte_t* pNewData = cstl_alloc_ex_totaln(type->_t_typealign, nNewSize);
     _byte_t* pNewEnd = pNewData;
-    bool ret = false;
+    bool is_cpy_assign = false;
     bfun_t cpyctor = type->_t_typecopy;
 
     if (cpyctor)
@@ -586,7 +584,7 @@ static inline void do_insert_value_at_end_n(vector_t* pvec_vector, size_t totalb
       _byte_t* end = pvec_vector->_pby_finish;
       do
       {
-        cpyctor(pNewEnd, from, &ret);
+        cpyctor(pNewEnd, from, &is_cpy_assign);
         pNewEnd += nPrevSize;
         from += nPrevSize;
       } while (from != end);
@@ -596,7 +594,7 @@ static inline void do_insert_value_at_end_n(vector_t* pvec_vector, size_t totalb
       {
         from = pNewEnd + totalbytes;
         for (; pNewEnd != from; pNewEnd += nPrevSize)
-          type->_t_typeinit(pNewEnd, &ret);
+          type->_t_typeinit(pNewEnd, &is_cpy_assign);
       }
       else
       {
@@ -618,7 +616,7 @@ static inline void do_insert_value_at_end_n(vector_t* pvec_vector, size_t totalb
       {
         _byte_t* from = pNewEnd + totalbytes;
         for (; pNewEnd != from; pNewEnd += nPrevSize)
-          dctor(pNewEnd, &ret);
+          dctor(pNewEnd, &is_cpy_assign);
       }
       else
       {
@@ -641,12 +639,12 @@ static inline void do_insert_value_at_end_n(vector_t* pvec_vector, size_t totalb
     ufun_t dctor = type->_t_typeinit;
     if (dctor)
     {
-      bool ret;
+      bool is_cpy_assign = false;
       _byte_t* from = pvec_vector->_pby_finish;
       _byte_t* end = from + totalbytes;
       size_t tsize = _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector)->_t_typesize;
       for (; from != end; from += tsize)
-        dctor(from, &ret);
+        dctor(from, &is_cpy_assign);
     }
     else
     {
@@ -873,7 +871,7 @@ void vector_assign_n_v(vector_t* pvec, const void* val, size_t elesize)
       default:
         if (cpyctor)
         { // heap-allocation inside this struct
-          if (ss)
+          if (ss != ee)
           {
             for (; destPosition != e; destPosition += tsize)
             {
@@ -882,12 +880,13 @@ void vector_assign_n_v(vector_t* pvec, const void* val, size_t elesize)
                 dtor(ss, &ret);
                 ss += tsize;
               }
+              ret = false;
               cpyctor(destPosition, val, &ret);
             }
-            cstl_free(ss);
           }
           else
           {
+            ret = false;
             for (; destPosition != e; destPosition += tsize)
               cpyctor(destPosition, val, &ret);
           }
@@ -899,6 +898,8 @@ void vector_assign_n_v(vector_t* pvec, const void* val, size_t elesize)
         }
         break;
     }
+    if (ss)
+      cstl_free(ss);
     pvec->_pby_endofstorage = pvec->_pby_finish = destPosition;
   }
   else if (totalbytes > pvec->_pby_finish - pvec->_pby_start)
