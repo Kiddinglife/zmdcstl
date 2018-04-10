@@ -206,7 +206,6 @@ size_t vector_iterator_minus(vector_iterator_t* it_first, vector_iterator_t* it_
       / (int) _GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_first));
 }
 
-#include <stdint.h>
 void vector_ctor(vector_t* pvec_vector, size_t size, ...)
 {
   // map_t<vector_t<int>, list<string>>
