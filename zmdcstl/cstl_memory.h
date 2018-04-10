@@ -148,8 +148,35 @@ extern uint16_t* fill_n_uint16(uint16_t* first, size_t n, uint16_t c);
 extern int16_t* fill_n_int16(int16_t* first, size_t n, int16_t c);
 #elif defined(EA_COMPILER_MICROSOFT) && (defined(EA_PROCESSOR_X86) || defined(EA_PROCESSOR_X86_64))
 #if defined(EA_PROCESSOR_X86_64)
-
+uint64_t* fill_n_uint64(uint64_t* first, size_t n, uint64_t c);
+int64_t* fill_n_int64(int64_t* first, size_t n, int64_t c);
 #endif
+uint32_t* fill_n_uint32(uint32_t* first, size_t n, uint32_t c);
+int32_t* fill_int32(int32_t* first, size_t n, int32_t c);
+uint16_t* fill_n_uint16(uint16_t* first, size_t n, uint16_t c);
+int16_t* fill_n_int16(int16_t* first, size_t n, int16_t c);
+#endif
+
+void fill_char(char* first, char* last, char c);
+void fill_uchar(unsigned char* first, unsigned char* last, unsigned char c);
+#if(defined(EA_COMPILER_GNUC) || defined(EA_COMPILER_CLANG)) && (defined(EA_PROCESSOR_X86) || defined(EA_PROCESSOR_X86_64))
+#if defined(EA_PROCESSOR_X86_64)
+void fill_uint64(uint64_t* first, uint64_t* last, uint64_t c);
+void fill_unt64(int64_t* first, int64_t* last, int64_t c);
+#endif
+void fill_uint32(uint32_t* first, uint32_t* last, uint32_t c);
+void fill_int32(int32_t* first, int32_t* last, int32_t c);
+void fill_uint16(uint16_t* first, uint16_t* last, uint16_t c);
+void fill_int16(int16_t* first, int16_t* last, int16_t c);
+#elif defined(EA_COMPILER_MICROSOFT) && (defined(EA_PROCESSOR_X86) || defined(EA_PROCESSOR_X86_64))
+#if defined(EA_PROCESSOR_X86_64)
+void fill_uint64(uint64_t* first, uint64_t* last, Value c);
+void fill_int64(int64_t* first, int64_t* last, Value c);
+#endif
+void fill_uint32(uint32_t* first, uint32_t* last, Value c);
+void fill_int32(int32_t* first, int32_t* last, Value c);
+void fill_uint16(uint16_t* first, uint16_t* last, Value c);
+void fill_int16(int16_t* first, int16_t* last, Value c);
 #endif
 
 #ifdef __cplusplus

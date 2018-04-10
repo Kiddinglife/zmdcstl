@@ -59,17 +59,6 @@ static void func_destroy_user_defined_type_init_destroy_copy_less(const void* in
   //printf("destroy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
   cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
 }
-static void func_opt_assign_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
-{
-  ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int,
-      ((user_defined_type_init_destroy_copy_less* )in_)->a);
-  //printf("copy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->b, ((user_defined_type_init_destroy_copy_less*) in_)->b,
-      ((user_defined_type_init_destroy_copy_less*) in_)->a * sizeof(int));
-  ((user_defined_type_init_destroy_copy_less*) in)->a = ((user_defined_type_init_destroy_copy_less*) in_)->a;
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->c, ((user_defined_type_init_destroy_copy_less*) in_)->c,
-      32);
-}
 static void func_less_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
 {
   int a = ((user_defined_type_init0_destroy0_copy0_less*) in)->a;
@@ -813,7 +802,7 @@ TEST test_vector_reserve()
   vector_ctor_n_v(&pvec_vector, elesize, &firstv, 1, user_defined_pod_id);
 
   // when reserve 101
-  vector_reserve(&pvec_vector, elesize + 1);
+  vector_reserve_n(&pvec_vector, elesize + 1);
   // then size should remains same
   ASSERT_EQ_FMT(vector_size(&pvec_vector), elesize, "%lu");
   // then capacity should increase

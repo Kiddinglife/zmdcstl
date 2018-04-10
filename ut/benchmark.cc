@@ -64,7 +64,6 @@ struct user_defined_type_init_destroy_copy_less
 
       a = x.a;
       b = cstl_alloc(int, a);
-      //b = (int*)malloc(a*sizeof(int));
       //printf("cpy ctor called, x.a=%d,x.b=%p,x.c[0]=%d, this->b=%p\n", x.a, x.b, x.c[0], b);
       cstl_memcpy(b, x.b, a * sizeof(int));
       cstl_memcpy(c, x.c, 32);
@@ -76,12 +75,11 @@ struct user_defined_type_init_destroy_copy_less
 
       a = x.a;
       //printf("operator = called, this->b=%p, x.b=%p,\n", b, x.b);
-      //b = x.b;
       // cannot use this as std earse will call detor of last element ehich causes double free o last element
       // this is something std should improve because we do not need to deep copy all moved elements shadow cpy is enough
+      //b = x.b;
       cstl_free(b);
       b = cstl_alloc(int, a);
-      //b = (int*)malloc(a*sizeof(int));
       //printf("operator = called, this->b=%p, x.b=%p,\n", b, x.b);
       cstl_memcpy(b, x.b, a * sizeof(int));
       cstl_memcpy(c, x.c, 32);
@@ -89,7 +87,6 @@ struct user_defined_type_init_destroy_copy_less
     ~user_defined_type_init_destroy_copy_less()
     {
       //printf("dtor called, b=%p\n", b);
-      //free(b);
       cstl_free(b);
     }
 };
@@ -104,10 +101,12 @@ static void func_init_user_defined_type_init_destroy_copy_less(const void* in, v
   memset(to->c, 0, 32);
   to->c[0] = 100;
 }
-static void func_copy_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* out)
+static void func_copy_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* is_copy__assign)
 {
   if (in == in_)
     return;
+  if (*(bool*) is_copy__assign)
+    cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
 
   user_defined_type_init0_destroy0_copy0_less* to = ((user_defined_type_init0_destroy0_copy0_less*) in);
   user_defined_type_init0_destroy0_copy0_less* from = ((user_defined_type_init0_destroy0_copy0_less*) in_);
@@ -452,7 +451,8 @@ TEST how_std_vector_opt_assign_works(void)
 
 bfun_t mytype_get_func(int funcid)
 {
-  switch (funcid) {
+  switch (funcid)
+  {
     case 0:
       return func_less_user_defined_type_init0_destroy0_copy0_less;
       break;

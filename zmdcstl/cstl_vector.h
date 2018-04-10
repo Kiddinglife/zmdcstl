@@ -255,9 +255,9 @@ extern size_t vector_size(vector_t* cpvec_vector);
 extern size_t vector_capacity(vector_t* cpvec_vector);
 extern bool empty(vector_t* cpvec_vector);
 
-extern void vector_resize(vector_t* cpvec_vector, size_t n, const void* value);
-extern void rvector_esize(vector_t* cpvec_vector, size_t n);
-extern void vector_reserve(vector_t* cpvec_vector, size_t n);
+extern void vector_resize_n_v(vector_t* cpvec_vector, size_t n, void* value);
+extern void vector_resize_n(vector_t* cpvec_vector, size_t n);
+extern void vector_reserve_n(vector_t* cpvec_vector, size_t n);
 // Revises the capacity to the user-specified value.
 // Resizes the container to match the capacity
 // if the requested capacity n is less than the current size.
