@@ -292,7 +292,7 @@ extern bool vector_equal(vector_t* cpvec_first, vector_t* cpvec_second);
  * take care of this in your copy constructor
  * free it in the destructor
  */
-extern void vector_assign_n_v(vector_t* pvec, const void* v, size_t n);
+extern void vector_assign_n_v(vector_t* pvec, void* v, size_t n);
 
 /**
  *  @brief  %Vector assignment operator.

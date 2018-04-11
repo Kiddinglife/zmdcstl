@@ -213,7 +213,8 @@ void vector_ctor(vector_t* pvec_vector, size_t size, ...)
   {
     pvec_vector->meta._t_typeinfo.typeids_ptr = cstl_alloc(unsigned char, size);
     pvec_vector->_pby_endofstorage = pvec_vector->meta._t_typeinfo.typeids_ptr;
-  } else
+  }
+  else
   {
     pvec_vector->_pby_endofstorage = (unsigned char*) &pvec_vector->meta._t_typeinfo.typeids_ptr;
   }
@@ -234,7 +235,8 @@ void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
   {
     pvec_vector->meta._t_typeinfo.typeids_ptr = cstl_alloc(unsigned char, size);
     pvec_vector->_pby_endofstorage = pvec_vector->meta._t_typeinfo.typeids_ptr;
-  } else
+  }
+  else
   {
     pvec_vector->_pby_endofstorage = (unsigned char*) &pvec_vector->meta._t_typeinfo.typeids_ptr;
   }
@@ -256,28 +258,32 @@ void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
 
 void vector_ctor_n_v(vector_t* pvec_vector, size_t elesize, void* val, size_t size, ...)
 {
+  va_list args;
+  va_start(args, size);
+
+  // cnstruct meta
+  pvec_vector->meta._t_containertype = _VECTOR_CONTAINER;
+  pvec_vector->meta._t_typeinfo._t_typeidsize = size;
   if (size > TYPE_ID_SIZE)
   {
     pvec_vector->meta._t_typeinfo.typeids_ptr = cstl_alloc(unsigned char, size);
     pvec_vector->_pby_endofstorage = pvec_vector->meta._t_typeinfo.typeids_ptr;
-  } else
+  }
+  else
   {
     pvec_vector->_pby_endofstorage = (unsigned char*) &pvec_vector->meta._t_typeinfo.typeids_ptr;
   }
-
-  va_list args;
-  va_start(args, size);
   for (int x = 0; x < size; x++)
     pvec_vector->_pby_endofstorage[x] = va_arg(args, int);
-  va_end(args);
 
-  pvec_vector->meta._t_containertype = _VECTOR_CONTAINER;
-  pvec_vector->meta._t_typeinfo._t_typeidsize = size;
+  // cnstruct vector
   type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
   size = type->_t_typesize * elesize;
   pvec_vector->_pby_start = pvec_vector->_pby_finish = cstl_alloc_ex_totaln(type->_t_typealign, size);
   pvec_vector->_pby_endofstorage = pvec_vector->_pby_finish = uninitialized_fill_n_continue(type,
       pvec_vector->_pby_start, size, val);
+
+  va_end(args);
 }
 
 void vector_ctor_array(vector_t* pvec_vector, size_t elesize, void* array, size_t size, ...)
@@ -286,7 +292,8 @@ void vector_ctor_array(vector_t* pvec_vector, size_t elesize, void* array, size_
   {
     pvec_vector->meta._t_typeinfo.typeids_ptr = cstl_alloc(unsigned char, size);
     pvec_vector->_pby_endofstorage = pvec_vector->meta._t_typeinfo.typeids_ptr;
-  } else
+  }
+  else
   {
     pvec_vector->_pby_endofstorage = (unsigned char*) &pvec_vector->meta._t_typeinfo.typeids_ptr;
   }
@@ -324,7 +331,8 @@ void vector_ctor_range(vector_t* pvec_vector, forward_iterator_t* first, forward
   if (size == 0)
   {
     pvec_vector->_pby_start = pvec_vector->_pby_finish = pvec_vector->_pby_endofstorage = NULL;
-  } else
+  }
+  else
   {
     type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
     pvec_vector->_pby_start = cstl_alloc_ex(type->_t_typesize, type->_t_typealign, size);
@@ -346,7 +354,8 @@ void vector_ctor_range_n(vector_t* pvec_vector, forward_iterator_t* first, size_
   if (size == 0)
   {
     pvec_vector->_pby_start = pvec_vector->_pby_finish = pvec_vector->_pby_endofstorage = NULL;
-  } else
+  }
+  else
   {
     type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
     pvec_vector->_pby_start = cstl_alloc_ex(type->_t_typesize, type->_t_typealign, size);
@@ -373,7 +382,8 @@ void vector_ctor_vector(vector_t* pvec_vector, vector_t* x)
   if (size == 0)
   {
     pvec_vector->_pby_start = pvec_vector->_pby_finish = pvec_vector->_pby_endofstorage = NULL;
-  } else
+  }
+  else
   {
     type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
     pvec_vector->_pby_start = cstl_alloc_ex_totaln(type->_t_typealign, size);
@@ -428,12 +438,14 @@ void vector_reserve_n(vector_t* cpvec_vector, size_t n)
           cpyctor(pNewData, from, &is_cpy_assign);
           dtor(from, &is_cpy_assign);
         }
-      } else
+      }
+      else
       {
         for (; from != end; from += size, pNewData += size)
           cpyctor(pNewData, from, &is_cpy_assign);
       }
-    } else
+    }
+    else
     {
       assert(dtor == NULL); // no cpy => no dtor
       cstl_memcpy(pNewData, from, end - from);
@@ -460,7 +472,8 @@ void vector_set_capacity(vector_t* cpvec_vector, size_t n)
     cpvec_vector->_pby_endofstorage = cpvec_vector->_pby_start + newcapacity;
     destruct_vec(type, s, e);
     cstl_free(s);
-  } else
+  }
+  else
   {
     newcapacity != 0 ? vector_resize_n(cpvec_vector, n) : vector_clear(cpvec_vector);
     vector_shrink_to_fit(cpvec_vector);
@@ -475,7 +488,8 @@ void vector_shrink_to_fit(vector_t* x)
   if (size == 0)
   {
     pvec_vector._pby_start = pvec_vector._pby_finish = pvec_vector._pby_endofstorage = NULL;
-  } else
+  }
+  else
   {
     type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(&pvec_vector);
     pvec_vector._pby_start = pvec_vector._pby_finish = cstl_alloc_ex_totaln(type->_t_typealign, size);
@@ -519,7 +533,8 @@ static inline void do_insert_value_at_end_v(vector_t* pvec_vector, const void* v
     cpyctor(pNewEnd, value, &is_cpy_assign);
     // destruct each old elements
     destruct_vec(type, pvec_vector->_pby_start, pvec_vector->_pby_finish);
-  } else
+  }
+  else
   {
     // copy the old elements
     cstl_memcpy(pNewEnd, pvec_vector->_pby_start, nPrevSize);
@@ -558,7 +573,8 @@ static inline void do_insert_value_at_end_n(vector_t* pvec_vector, size_t totalb
     pvec_vector->_pby_start = pNewData;
     pvec_vector->_pby_finish = pNewEnd;
     pvec_vector->_pby_endofstorage = pNewData + nNewSize;
-  } else //totalbytes <= pvec_vector->_pby_endofstorage - pvec_vector->_pby_finish
+  }
+  else //totalbytes <= pvec_vector->_pby_endofstorage - pvec_vector->_pby_finish
   {
     // uninit fill new element to _pby_finish
     pvec_vector->_pby_finish = uninitialized_default_fill_n_continue(type, pvec_vector->_pby_finish, totalbytes);
@@ -588,7 +604,8 @@ static inline void do_insert_value_at_end_n_v(vector_t* pvec_vector, size_t tota
     pvec_vector->_pby_start = pNewData;
     pvec_vector->_pby_finish = pNewEnd;
     pvec_vector->_pby_endofstorage = pNewData + nNewSize;
-  } else //totalbytes <= pvec_vector->_pby_endofstorage - pvec_vector->_pby_finish
+  }
+  else //totalbytes <= pvec_vector->_pby_endofstorage - pvec_vector->_pby_finish
   {
     // uninit fill new element to _pby_finish
     pvec_vector->_pby_finish = uninitialized_fill_n_continue(type, pvec_vector->_pby_finish, totalbytes, val);
@@ -712,8 +729,7 @@ void vector_erase(random_access_iterator_t* position, bool destruct_element)
     type->_t_typedestroy(destPosition, &ret); // destruct the erased element
   }
 
-  switch (type->_t_typeid)
-  {
+  switch (type->_t_typeid) {
     case cstl_int8:
       for (; first != last; first += tsize, destPosition += tsize)
         *(char*) destPosition = *(char*) first;
@@ -760,7 +776,7 @@ void vector_erase(random_access_iterator_t* position, bool destruct_element)
   ((vector_t*) (position->_pt_container))->_pby_finish -= type->_t_typesize;
 }
 
-void vector_assign_n_v(vector_t* pvec, const void* val, size_t elesize)
+void vector_assign_n_v(vector_t* pvec, void* val, size_t elesize)
 {
   assert(vector_is_inited(pvec));
   if (elesize == 0)
@@ -776,87 +792,20 @@ void vector_assign_n_v(vector_t* pvec, const void* val, size_t elesize)
   if (totalbytes > pvec->_pby_endofstorage - pvec->_pby_start)
   {
     // elesize > vector_capacity
-    _byte_t* ee = pvec->_pby_finish;
-    _byte_t* ss = pvec->_pby_start;
-    _byte_t* destPosition = pvec->_pby_start = pvec->_pby_finish = cstl_alloc_ex_totaln(type->_t_typealign, totalbytes);
-    _byte_t* e = pvec->_pby_start + totalbytes;
-    switch (type->_t_typeid)
-    {
-      case cstl_int8:
-        for (; destPosition != e; destPosition += tsize)
-          *(char*) destPosition = *(char*) val;
-        break;
-      case cstl_uint8:
-        for (; destPosition != e; destPosition += tsize)
-          *(unsigned char*) destPosition = *(unsigned char*) val;
-        break;
-      case cstl_int16:
-        for (; destPosition != e; destPosition += tsize)
-          *(short*) destPosition = *(short*) val;
-        break;
-      case cstl_uint16:
-        for (; destPosition != e; destPosition += tsize)
-          *(unsigned short*) destPosition = *(unsigned short*) val;
-        break;
-      case cstl_int32:
-        for (; destPosition != e; destPosition += tsize)
-          *(int*) destPosition = *(int*) val;
-        break;
-      case cstl_uint32:
-        for (; destPosition != e; destPosition += tsize)
-          *(unsigned int*) destPosition = *(unsigned int*) val;
-        break;
-      case cstl_int64:
-        for (; destPosition != e; destPosition += tsize)
-          *(long long*) destPosition = *(long long*) val;
-        break;
-      case cstl_uint64:
-        for (; destPosition != e; destPosition += tsize)
-          *(unsigned long long*) destPosition = *(unsigned long long*) val;
-        break;
-      case cstl_void_pt:
-        for (; destPosition != e; destPosition += tsize)
-          *(void**) destPosition = *(void**) val;
-        break;
-      default:
-        if (cpyctor)
-        { // heap-allocation inside this struct
-          if (ss != ee)
-          {
-            for (; destPosition != e; destPosition += tsize)
-            {
-              if (ss != ee)
-              {
-                dtor(ss, &ret);
-                ss += tsize;
-              }
-              ret = false;
-              cpyctor(destPosition, val, &ret);
-            }
-          } else
-          {
-            ret = false;
-            for (; destPosition != e; destPosition += tsize)
-              cpyctor(destPosition, val, &ret);
-          }
-        } else
-        { // pod struct
-          for (; destPosition != e; destPosition += tsize)
-            cstl_memcpy(destPosition, val, tsize);
-        }
-        break;
-    }
-    if (ss)
-      cstl_free(ss);
-    pvec->_pby_endofstorage = pvec->_pby_finish = destPosition;
-  } else if (totalbytes > pvec->_pby_finish - pvec->_pby_start)
+    vector_t tmp;
+    tmp._pby_start = tmp._pby_finish = cstl_alloc_ex_totaln(type->_t_typealign, totalbytes);
+    tmp._pby_endofstorage = tmp._pby_finish = uninitialized_fill_n_continue(type, tmp._pby_start, totalbytes, val);
+    vector_swap(&tmp, pvec);
+    destruct_vec(type, tmp._pby_start, tmp._pby_finish);
+    cstl_free(tmp._pby_start);
+  }
+  else if (totalbytes > pvec->_pby_finish - pvec->_pby_start)
   {
     // elesize > vector_size
     _byte_t* s = pvec->_pby_start;
     _byte_t* destPosition = s;
     _byte_t* e = pvec->_pby_finish;
-    switch (type->_t_typeid)
-    {
+    switch (type->_t_typeid) {
       case cstl_int8:
         for (; destPosition != e; destPosition += tsize)
           *(char*) destPosition = *(char*) val;
@@ -901,7 +850,8 @@ void vector_assign_n_v(vector_t* pvec, const void* val, size_t elesize)
             dtor(s, &ret);
             cpyctor(s, val, &ret);
           }
-        } else
+        }
+        else
         {
           for (; s != e; s += tsize)
             cstl_memcpy(s, val, tsize);
@@ -917,18 +867,19 @@ void vector_assign_n_v(vector_t* pvec, const void* val, size_t elesize)
     {
       for (; s != e; s += tsize)
         cpyctor(s, val, &ret);
-    } else
+    }
+    else
     {
       for (; s != e; s += tsize)
         cstl_memcpy(s, val, tsize);
     }
-  } else
+  }
+  else
   {
     //0 <= elesize <= vector_size
     _byte_t* destPosition = pvec->_pby_start;
     _byte_t* e = pvec->_pby_start + totalbytes;
-    switch (type->_t_typeid)
-    {
+    switch (type->_t_typeid) {
       case cstl_int8:
         for (; destPosition != e; destPosition += tsize)
           *(char*) destPosition = *(char*) val;
@@ -973,7 +924,8 @@ void vector_assign_n_v(vector_t* pvec, const void* val, size_t elesize)
             dtor(destPosition, &ret);
             cpyctor(destPosition, val, &ret);
           }
-        } else
+        }
+        else
         {
           for (; destPosition != e; destPosition += tsize)
             cstl_memcpy(destPosition, val, tsize);

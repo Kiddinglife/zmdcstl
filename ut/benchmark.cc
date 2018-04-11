@@ -362,7 +362,7 @@ TEST benchmark_vector_reserve(void)
   vector_t pvec_vector;
   vector_ctor_n_v(&pvec_vector, size, &firstv, 1, user_defined_non_pod_id);
   profile_start(cstlvec_reserve_non_pod);
-  vector_reserve(&pvec_vector, vector_capacity(&pvec_vector) + 1);
+  vector_reserve_n(&pvec_vector, vector_capacity(&pvec_vector) + 1);
   profile_end_ms(cstlvec_reserve_non_pod);
   vector_dtor(&pvec_vector);
 
@@ -377,7 +377,7 @@ TEST benchmark_vector_reserve(void)
   vector_t pvec_vector1;
   vector_ctor_n_v(&pvec_vector1, size, &secondv, 1, user_defined_pod_id);
   profile_start(cstlvec_reserve_pod);
-  vector_reserve(&pvec_vector1, vector_capacity(&pvec_vector1) + 1);
+  vector_reserve_n(&pvec_vector1, vector_capacity(&pvec_vector1) + 1);
   profile_end_ms(cstlvec_reserve_pod);
   vector_dtor(&pvec_vector1);
 
@@ -392,7 +392,7 @@ TEST benchmark_vector_reserve(void)
   vector_t pvec_vector2;
   vector_ctor_n_v(&pvec_vector2, size, &v, 1, cstl_uint32);
   profile_start(cstlvec_reserve_ctype);
-  vector_reserve(&pvec_vector2, vector_capacity(&pvec_vector2) + 1);
+  vector_reserve_n(&pvec_vector2, vector_capacity(&pvec_vector2) + 1);
   profile_end_ms(cstlvec_reserve_ctype);
   vector_dtor(&pvec_vector2);
 
