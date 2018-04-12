@@ -34,7 +34,7 @@ extern "C"
 #define cstl_alloc_ex_totaln(align,n) cstl_alloc_(0,0,(n),align)
 #endif
 
-#define cstl_free(p) free(*((void**) p - 1))
+#define cstl_free(p) if(p) free(*((void**) p - 1))
 
 extern void* cstl_alloc_(const char* file, int line, size_t n, size_t alignment);
 

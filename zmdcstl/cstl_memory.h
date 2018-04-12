@@ -89,6 +89,7 @@ extern void uninitialized_default_fill(forward_iterator_t* first, forward_iterat
 /// Returns void. It wouldn't be useful to return the end of the destination range,
 /// as that is the same as the 'last' input parameter.
 extern void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last, const void* value);
+extern void uninitialized_fill_continue(type_t* type, _byte_t* first, _byte_t* end, void* val);
 
 /// uninitialized_fill_n
 ///
@@ -114,6 +115,10 @@ extern _byte_t* uninitialized_copy_from_any_to_continue(forward_iterator_t* from
     _byte_t* result);
 extern void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, forward_iterator_t* result);
 extern _byte_t* uninitialized_copy_from_continue_to_continue(type_t* type, _byte_t* from, _byte_t* end, _byte_t* result);
+
+/// firstly copy an element and then destruct it
+extern _byte_t* uninitialized_copy_from_continue_to_continue_destruct(type_t* type, _byte_t* from, _byte_t* end,
+    _byte_t* result);
 
 /// uninitialized_copy_n
 ///
@@ -157,6 +162,8 @@ uint16_t* fill_n_uint16(uint16_t* first, size_t n, uint16_t c);
 int16_t* fill_n_int16(int16_t* first, size_t n, int16_t c);
 #endif
 
+extern void fill(forward_iterator_t* first, forward_iterator_t* end, void* val);
+extern void fill_continue(type_t* type, _byte_t* first, _byte_t* end, void* val);
 void fill_char(char* first, char* last, char c);
 void fill_uchar(unsigned char* first, unsigned char* last, unsigned char c);
 #if(defined(EA_COMPILER_GNUC) || defined(EA_COMPILER_CLANG)) && (defined(EA_PROCESSOR_X86) || defined(EA_PROCESSOR_X86_64))
