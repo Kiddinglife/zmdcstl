@@ -642,16 +642,12 @@ void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, fo
   }
 }
 
-_byte_t* copy_from_any_to_continue(input_iterator_t* first, input_iterator_t* last, _byte_t* start, _byte_t* finish,
-    _byte_t* end)
+_byte_t* copy_from_any_to_continue(input_iterator_t* first, input_iterator_t* last, _byte_t* result)
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
   size_t tsize = type->_t_typesize;
   switch (_ITERATOR_CONTAINER_TYPE(first)) {
     case _VECTOR_CONTAINER:
-    {
-      copy_from_continue_to_continue(type, first->_t_pos, last->_t_pos, result);
-    }
       break;
     case _DEQUE_CONTAINER:
       break;
@@ -680,7 +676,7 @@ _byte_t* copy_from_any_to_continue(input_iterator_t* first, input_iterator_t* la
     default:
       break;
   }
-  return dest;
+  return result;
 }
 
 _byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, size_t elesize, _byte_t* result)

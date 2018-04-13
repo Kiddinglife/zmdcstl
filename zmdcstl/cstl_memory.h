@@ -119,8 +119,7 @@ extern _byte_t* uninitialized_copy_from_continue_to_continue(type_t* type, _byte
 extern _byte_t* uninitialized_copy_from_continue_to_continue_destruct(type_t* type, _byte_t* from, _byte_t* end,
     _byte_t* result);
 
-extern _byte_t* copy_from_any_to_continue(input_iterator_t* first, input_iterator_t* last, _byte_t* start, _byte_t* finish,
-    _byte_t* end);
+extern _byte_t* copy_from_any_to_continue(input_iterator_t* first, input_iterator_t* last, _byte_t* result);
 extern _byte_t* copy_from_continue_to_continue(type_t* type, _byte_t* from, _byte_t* end, _byte_t* result);
 
 /// uninitialized_copy_n

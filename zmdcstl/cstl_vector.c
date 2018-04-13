@@ -805,11 +805,14 @@ void vector_assign_n_v(vector_t* pvec, void* val, size_t elesize)
   }
 }
 
-void vector_assign_vector_range(vector_t* to, _byte_t* _pby_start, _byte_t* _pby_finish)
+void vector_assign_const_vector(vector_t* to, const vector_t* from)
 {
-  assert(vector_is_inited(to));
+  assert(vector_is_same_type(to, from));
 
-  size_t totalbytes = _pby_finish - _pby_start;
+  if (to == from)
+    return;
+
+  size_t totalbytes = from->_pby_finish - from->_pby_start;
   if (totalbytes == 0)
   {
     to->_pby_finish = to->_pby_start;
@@ -820,7 +823,7 @@ void vector_assign_vector_range(vector_t* to, _byte_t* _pby_start, _byte_t* _pby
   if (totalbytes > to->_pby_endofstorage - to->_pby_start)
   { // elesize > vector_capacity
     _byte_t* newstart = cstl_alloc_ex_totaln(type->_t_typealign, totalbytes);
-    _byte_t* newend = uninitialized_copy_from_continue_to_continue(type, _pby_start, _pby_finish, newstart);
+    _byte_t* newend = uninitialized_copy_from_continue_to_continue(type, from->_pby_start, from->_pby_finish, newstart);
 
     destruct_vec(type, to->_pby_start, to->_pby_finish);
     cstl_free(to->_pby_start);
@@ -831,26 +834,16 @@ void vector_assign_vector_range(vector_t* to, _byte_t* _pby_start, _byte_t* _pby
   }
   else if (totalbytes <= to->_pby_finish - to->_pby_start)
   { //elesize <= size
-    _byte_t* newsfinish = copy_from_continue_to_continue(type, _pby_start, _pby_finish, to->_pby_start);
+    _byte_t* newsfinish = copy_from_continue_to_continue(type, from->_pby_start, from->_pby_finish, to->_pby_start);
     destruct_vec(type, newsfinish, to->_pby_finish);
     to->_pby_finish = newsfinish;
   }
   else
   { //size < elesize <= capacity
-    _byte_t* pos = _pby_start + (to->_pby_finish - to->_pby_start);
-    copy_from_continue_to_continue(type, _pby_start, pos, to->_pby_start);
-    to->_pby_finish = uninitialized_copy_from_continue_to_continue(type, pos, _pby_finish, to->_pby_finish);
+    _byte_t* pos = from->_pby_start + (to->_pby_finish - to->_pby_start);
+    copy_from_continue_to_continue(type, from->_pby_start, pos, to->_pby_start);
+    to->_pby_finish = uninitialized_copy_from_continue_to_continue(type, pos, from->_pby_finish, to->_pby_finish);
   }
-}
-
-void vector_assign_const_vector(vector_t* to, const vector_t* from)
-{
-  assert(vector_is_same_type(to, from));
-
-  if (to == from)
-    return;
-
-  vector_assign_vector_range(to, from->_pby_start, from->_pby_finish);
 }
 void vector_assign_vector(vector_t* to, vector_t* from)
 {
@@ -880,8 +873,6 @@ void vector_assign_range(vector_t* pvec, input_iterator_t * first, input_iterato
 
   if (first->_t_pos == last->_t_pos)
     return;
-
-  copy_from_any_to_continue(first, last, pvec->_pby_start, pvec->_pby_finish, pvec->_pby_endofstorage);
 }
 
 void vector_assign_range_n(vector_t* to, input_iterator_t * first, size_t n)
