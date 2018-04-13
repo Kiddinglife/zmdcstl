@@ -79,11 +79,10 @@ extern void vecor_debug(vector_t* pvec);
  * @return new vector iterator.
  * @remarks the newly created vector iterator is not a valid iterator, it does not belong to any vector.
  */
-#define  create_vector_iterator(it_iter) \
-    _VECTOR_ITERATOR_COREPOS((it_iter)) = NULL;\
-    _ITERATOR_CONTAINER((it_iter)) = NULL;\
-    _VECTOR_ITERATOR_CONTAINER_TYPE((it_iter)) = _VECTOR_CONTAINER;\
-    _VECTOR_ITERATOR_ITERATOR_TYPE((it_iter)) = _RANDOM_ACCESS_ITERATOR;
+#define  vector_create_iterator(it_iter, pvec, pos)\
+    random_access_iterator_t it_iter;\
+    it_iter._pt_container = pvec;\
+    it_iter._t_pos = pos;
 
 /**
  * Compare two iterators for equality.
@@ -306,7 +305,7 @@ extern void vector_assign_vector(vector_t* to, vector_t* from);
 extern void vector_assign_const_vector_range(vector_t* to, _byte_t* _pby_start, _byte_t* _pby_finish);
 extern void vector_assign_const_vector(vector_t* to, const vector_t* from);
 extern void vector_assign_range(vector_t* to, input_iterator_t* first, input_iterator_t* last);
-extern void vector_assign_range_n(vector_t* to,input_iterator_t* first, size_t n);
+extern void vector_assign_range_n(vector_t* to, input_iterator_t* first, size_t n);
 
 #define vector_front(eletype,pvec) ((eletype*)(pvec->_pby_start))
 #define vector_back(eletype,cpvec_vector) ((eletype*)(cpvec_vector->_pby_finish - _GET_VECTOR_TYPE_SIZE(cpvec_vector)))
@@ -345,6 +344,9 @@ extern void vector_erase_range(random_access_iterator_t* first, random_access_it
 extern void vector_erase_range_unsort(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct);
 extern void vector_erase_range_n(random_access_iterator_t* first, size_t n, bool destruct);
 extern void vector_erase_range__n_unsort(random_access_iterator_t* first, size_t n, bool destruct);
+
+extern void vector_insert_range(random_access_iterator_t* insertpos, random_access_iterator_t* first,
+    random_access_iterator_t* last);
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ENDS ////////////////////////////////////////
 
 #ifdef __cplusplus

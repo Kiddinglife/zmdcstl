@@ -35,14 +35,15 @@ static void func_init_user_defined_type_init_destroy_copy_less(const void* in, v
   ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int, 32);
   //printf("init alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
   memset(((user_defined_type_init_destroy_copy_less*) in)->b, 0, 32 * sizeof(int));
-  ((user_defined_type_init_destroy_copy_less*) in)->a = 0;
+  ((user_defined_type_init_destroy_copy_less*) in)->a = 32;
   memset(((user_defined_type_init_destroy_copy_less*) in)->c, 0, 32);
 }
 static void func_copy_user_defined_type_init_destroy_copy_less(const void* in, const void* in_, void* is_copy__assign)
 {
   //assert(in != in_);
-  if(in == in_) return;
-  if(*(bool*)is_copy__assign)
+  if (in == in_)
+    return;
+  if (*(bool*) is_copy__assign)
     cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
 
   ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int,
