@@ -71,6 +71,7 @@ typedef struct _tagvector
 } vector_t;
 
 extern void vecor_debug(vector_t* pvec);
+
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ITERATOR STARTS ////////////////////////////////////////
 /**
  * Create new vector iterator.
@@ -302,15 +303,16 @@ extern void vector_assign_n_v(vector_t* pvec, void* v, size_t n);
  *  @a from (for fast expansion) will not be copied.
  */
 extern void vector_assign_vector(vector_t* to, vector_t* from);
+extern void vector_assign_const_vector_range(vector_t* to, _byte_t* _pby_start, _byte_t* _pby_finish);
 extern void vector_assign_const_vector(vector_t* to, const vector_t* from);
-extern void vector_assign_range(input_iterator_t* first, input_iterator_t* last);
-extern void vector_assign_range_n(input_iterator_t* first, size_t n);
+extern void vector_assign_range(vector_t* to, input_iterator_t* first, input_iterator_t* last);
+extern void vector_assign_range_n(vector_t* to,input_iterator_t* first, size_t n);
 
 #define vector_front(eletype,pvec) ((eletype*)(pvec->_pby_start))
 #define vector_back(eletype,cpvec_vector) ((eletype*)(cpvec_vector->_pby_finish - _GET_VECTOR_TYPE_SIZE(cpvec_vector)))
 
 extern void* vector_push_back();
-extern void vector_push_back_v(void* value);
+extern void vector_push_back_v(vector_t* cpvec_vector, void* value);
 extern void* vector_push_back_v_placement(vector_t* cpvec_vector);
 
 /**

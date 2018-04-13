@@ -171,6 +171,11 @@ typedef struct _tagmeta
 {
 containertype_t _t_containertype;
 type_info_t _t_typeinfo;
+//bool (*iterator_equal)(iterator_t*, iterator_t*);
+//void (*iterator_next)(iterator_t*);
+//void (*iterator_pre)(iterator_t*);
+//void (*iterator_next_n)(iterator_t*);
+//void (*iterator_pre_n)(iterator_t*);
 } meta_t;
 
 typedef struct _tagrange
@@ -254,8 +259,7 @@ extern bool iterator_limit_type(iterator_t* it_iter, iteratortype_t t_limittype)
  * @return whether the [it_first, it_end) is valid range.
  * @remarks two iterator must be valid iterator and iterator type must be valid type, otherwise behavior is undefined.
  */
-extern bool iterator_valid_range(iterator_t* it_first, iterator_t* it_end,
-  iteratortype_t t_type);
+extern bool iterator_valid_range(iterator_t* it_first, iterator_t* it_end, iteratortype_t t_type);
 
 /**
  * Get typeinfo of iterator.
@@ -328,8 +332,7 @@ extern void iterator_prev(bidirectional_iterator_t* bidirectional_iterator);
  * @return next n position.
  * @remakes it_iter must be valid and must be not end(), otherwise the behavior is undefined.
  */
-extern void iterator_next_n(forward_iterator_t* random_access_iterator,
-  size_t n_step);
+extern void iterator_next_n(forward_iterator_t* random_access_iterator, size_t n_step);
 
 /**
  * Move iterator to prev n position.
@@ -346,8 +349,7 @@ extern void iterator_prev_n(random_access_iterator_t* it_iter, int n_step);
  * @return whether first iterator less than second iterator or not.
  * @remakes two iterator must be valid, otherwise the behavior is undefined.
  */
-extern bool iterator_less(random_access_iterator_t* it_first,
-  random_access_iterator_t* it_second);
+extern bool iterator_less(random_access_iterator_t* it_first, random_access_iterator_t* it_second);
 
 /**
  * Test first iterator is less than or equal to second iterator.
@@ -356,8 +358,7 @@ extern bool iterator_less(random_access_iterator_t* it_first,
  * @return whether first iterator less than or equal to second iterator or not.
  * @remakes two iterator must be valid, otherwise the behavior is undefined.
  */
-extern bool iterator_less_equal(random_access_iterator_t* it_first,
-  random_access_iterator_t* it_second);
+extern bool iterator_less_equal(random_access_iterator_t* it_first, random_access_iterator_t* it_second);
 
 /**
  * Test first iterator is greater than second iterator.
@@ -366,8 +367,7 @@ extern bool iterator_less_equal(random_access_iterator_t* it_first,
  * @return whether first iterator greater than second iterator or not.
  * @remakes two iterator must be valid, otherwise the behavior is undefined.
  */
-extern bool iterator_greater(random_access_iterator_t* it_first,
-  random_access_iterator_t* it_second);
+extern bool iterator_greater(random_access_iterator_t* it_first, random_access_iterator_t* it_second);
 
 /**
  * Test first iterator is greater than or equal to second iterator.
@@ -376,8 +376,7 @@ extern bool iterator_greater(random_access_iterator_t* it_first,
  * @return whether first iterator greater than or equal to second iterator or not.
  * @remakes two iterator must be valid, otherwise the behavior is undefined.
  */
-extern bool iterator_greater_equal(random_access_iterator_t* it_first,
-  random_access_iterator_t* it_second);
+extern bool iterator_greater_equal(random_access_iterator_t* it_first, random_access_iterator_t* it_second);
 
 /**
  * Element random access.
@@ -395,8 +394,7 @@ extern void* iterator_at(random_access_iterator_t* it_iter, int n_index);
  * @return iterator distance.
  * @remakes two iterator must be valid, otherwise the behavior is undefined.
  */
-extern int iterator_continue_minus(random_access_iterator_t* it_first,
-  random_access_iterator_t* it_second);
+extern int iterator_continue_minus(random_access_iterator_t* it_first, random_access_iterator_t* it_second);
 
 /**
  * Iterator next n for all iterator type.
@@ -406,8 +404,7 @@ extern int iterator_continue_minus(random_access_iterator_t* it_first,
  * @remarks iterator must be valid, otherwise the behavior is undefined.
  */
 extern void iterator_advance(forward_iterator_t* it_iter, size_t n_step);
-extern void iterator_disadvance(bidirectional_iterator_t* it_iter,
-  size_t n_step);
+extern void iterator_disadvance(bidirectional_iterator_t* it_iter, size_t n_step);
 
 /**
  * Iterator distance for all iterator type.

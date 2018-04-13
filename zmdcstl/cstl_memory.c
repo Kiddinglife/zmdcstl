@@ -470,10 +470,34 @@ _byte_t* uninitialized_copy_from_continue_to_continue(type_t* type, _byte_t* fro
   {
     // this is the case uninitialized_copy_from_continoues_to_continoues,
     // but _t_typecopy not null, so have to copy on by one
-    bool is_copy_assign = false;
+    bool is_opt_assign = false;
     for (; from != end; from += tsize)
     {
-      cpy(result, from, &is_copy_assign);
+      cpy(result, from, &is_opt_assign);
+      result += tsize;
+    }
+  }
+  else
+  {
+    // this is the case uninitialized_copy_from_continoues_to_continoues
+    // and _t_typecopy null, so use memcpy
+    cstl_memcpy(result, from, end - from);
+    result += end - from;
+  }
+  return result;
+}
+_byte_t* copy_from_continue_to_continue(type_t* type, _byte_t* from, _byte_t* end, _byte_t* result)
+{
+  size_t tsize = type->_t_typesize;
+  bfun_t cpy = type->_t_typecopy;
+  if (cpy)
+  {
+    // this is the case uninitialized_copy_from_continoues_to_continoues,
+    // but _t_typecopy not null, so have to copy on by one
+    bool is_opt_assign = true;
+    for (; from != end; from += tsize)
+    {
+      cpy(result, from, &is_opt_assign);
       result += tsize;
     }
   }
@@ -617,29 +641,55 @@ void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, fo
       break;
   }
 }
-_byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, size_t nstep, _byte_t* result)
+
+_byte_t* copy_from_any_to_continue(input_iterator_t* first, input_iterator_t* last, _byte_t* start, _byte_t* finish,
+    _byte_t* end)
+{
+  type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
+  size_t tsize = type->_t_typesize;
+  switch (_ITERATOR_CONTAINER_TYPE(first)) {
+    case _VECTOR_CONTAINER:
+    {
+      copy_from_continue_to_continue(type, first->_t_pos, last->_t_pos, result);
+    }
+      break;
+    case _DEQUE_CONTAINER:
+      break;
+    case _BASIC_STRING_CONTAINER:
+      break;
+    case _LIST_CONTAINER:
+      break;
+    case _SLIST_CONTAINER:
+      break;
+    case _SET_CONTAINER:
+      break;
+    case _MULTISET_CONTAINER:
+      break;
+    case _MAP_CONTAINER:
+      break;
+    case _MULTIMAP_CONTAINER:
+      break;
+    case _HASH_SET_CONTAINER:
+      break;
+    case _HASH_MULTISET_CONTAINER:
+      break;
+    case _HASH_MAP_CONTAINER:
+      break;
+    case _HASH_MULTIMAP_CONTAINER:
+      break;
+    default:
+      break;
+  }
+  return dest;
+}
+
+_byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, size_t elesize, _byte_t* result)
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(from);
   size_t tsize = type->_t_typesize;
   switch (_ITERATOR_CONTAINER_TYPE(from)) {
     case _VECTOR_CONTAINER:
-      if (type->_t_typecopy)
-      {
-        bool ret;
-        _byte_t* bfrom = from->_t_pos;
-        _byte_t* end = bfrom + nstep * tsize;
-        for (; bfrom != end; bfrom += tsize)
-        {
-          type->_t_typecopy(result, bfrom, &ret);
-          result += tsize;
-        }
-      }
-      else
-      {
-        nstep *= tsize;
-        cstl_memcpy(result, from->_t_pos, nstep);
-        result += nstep;
-      }
+      result = copy_n_from_continue_to_continue(type, from, elesize, result);
       break;
     case _DEQUE_CONTAINER:
       break;
@@ -670,7 +720,32 @@ _byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, siz
   }
   return result;
 }
+_byte_t* copy_n_from_continue_to_continue(type_t* type, _byte_t* from, size_t elesize, _byte_t* result)
+{
 
+  size_t tsize = type->_t_typesize;
+  bfun_t cpy = type->_t_typecopy;
+  _byte_t* end = from + tsize * elesize;
+  if (cpy)
+  {
+    // this is the case uninitialized_copy_from_continoues_to_continoues,
+    // but _t_typecopy not null, so have to copy on by one
+    bool is_opt_assign = true;
+    for (; from != end; from += tsize)
+    {
+      cpy(result, from, &is_opt_assign);
+      result += tsize;
+    }
+  }
+  else
+  {
+    // this is the case uninitialized_copy_from_continoues_to_continoues
+    // and _t_typecopy null, so use memcpy
+    cstl_memcpy(result, from, end - from);
+    result += end - from;
+  }
+  return result;
+}
 void fill_n(output_iterator_t* from, size_t n, void* val)
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(from);

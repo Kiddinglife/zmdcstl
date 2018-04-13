@@ -115,10 +115,13 @@ extern _byte_t* uninitialized_copy_from_any_to_continue(forward_iterator_t* from
     _byte_t* result);
 extern void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, forward_iterator_t* result);
 extern _byte_t* uninitialized_copy_from_continue_to_continue(type_t* type, _byte_t* from, _byte_t* end, _byte_t* result);
-
 /// firstly copy an element and then destruct it
 extern _byte_t* uninitialized_copy_from_continue_to_continue_destruct(type_t* type, _byte_t* from, _byte_t* end,
     _byte_t* result);
+
+extern _byte_t* copy_from_any_to_continue(input_iterator_t* first, input_iterator_t* last, _byte_t* start, _byte_t* finish,
+    _byte_t* end);
+extern _byte_t* copy_from_continue_to_continue(type_t* type, _byte_t* from, _byte_t* end, _byte_t* result);
 
 /// uninitialized_copy_n
 ///
@@ -133,6 +136,7 @@ extern _byte_t* uninitialized_copy_from_continue_to_continue_destruct(type_t* ty
 extern void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_iterator_t* result);
 extern void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, forward_iterator_t* result);
 extern _byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, size_t nstep, _byte_t* result);
+extern _byte_t* copy_n_from_continue_to_continue(type_t* type, _byte_t* from, size_t nbytes, _byte_t* result);
 
 extern void fill_n(output_iterator_t* dest, size_t n, void* val);
 extern _byte_t* fill_n_continue(type_t* type, _byte_t* destPosition, size_t n, void* val);
