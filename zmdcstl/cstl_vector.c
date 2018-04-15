@@ -474,9 +474,13 @@ void vector_shrink_to_fit(vector_t* x)
   }
 }
 
+static inline do_insert_value(vector_t* pvec, random_access_iterator_t* position)
+{
+
+}
+
 // This needs to return a value of at least currentCapacity and at least typesize.
 #define get_new_capacity_(currentCapacity, typesize) (((currentCapacity) > 0) ? (2 * (currentCapacity)) : typesize)
-
 static inline void do_insert_value_at_end_v(vector_t* pvec_vector, const void* value)
 {
   type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector);
@@ -572,6 +576,17 @@ static inline void do_insert_value_at_end_n_v(vector_t* pvec_vector, size_t tota
   {
     // uninit fill new element to _pby_finish
     pvec_vector->_pby_finish = uninitialized_fill_n_continue(type, pvec_vector->_pby_finish, totalbytes, val);
+  }
+}
+
+void pop_back(vector_t* cpvec_vector)
+{
+  type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(cpvec_vector);
+  cpvec_vector->_pby_finish -= type->_t_typesize;
+  if (type->_t_typedestroy)
+  {
+    bool ret;
+    type->_t_typedestroy(cpvec_vector->_pby_finish, &ret);
   }
 }
 
@@ -792,7 +807,7 @@ void vector_assign_n_v(vector_t* pvec, void* val, size_t elesize)
   }
 }
 
-static inline void vector_assign_continue(vector_t* to, _byte_t* _pby_start, _byte_t* _pby_finish)
+static inline void vector_assign_const_vector_aux(vector_t* to, _byte_t* _pby_start, _byte_t* _pby_finish)
 {
   size_t totalbytes = _pby_finish - _pby_start;
   if (totalbytes == 0)
@@ -832,7 +847,7 @@ void vector_assign_const_vector(vector_t* to, const vector_t* from)
   if (to == from)
     return;
 
-  vector_assign_continue(to, from->_pby_start, from->_pby_finish);
+  vector_assign_const_vector_aux(to, from->_pby_start, from->_pby_finish);
 }
 void vector_assign_vector(vector_t* to, vector_t* from)
 {
@@ -860,6 +875,16 @@ void vector_erase_range(random_access_iterator_t* first, random_access_iterator_
 
 void vector_insert_range(random_access_iterator_t* insertpos, random_access_iterator_t* first,
     random_access_iterator_t* last)
+{
+
+}
+
+void vector_insert_range_n(random_access_iterator_t* insertpos, input_iterator_t* first, size_t elesize)
+{
+
+}
+
+void vector_erase_range_n(random_access_iterator_t* first, size_t n, bool destruct)
 {
 
 }
@@ -905,30 +930,32 @@ void vector_assign_range(vector_t* pvec, input_iterator_t * first, input_iterato
   switch (_ITERATOR_CONTAINER_TYPE(first))
   {
     case _VECTOR_CONTAINER:
-      vector_assign_continue(pvec, first->_t_pos, last->_t_pos);
+      vector_assign_const_vector_aux(pvec, first->_t_pos, last->_t_pos);
       break;
     case _DEQUE_CONTAINER:
-//      if (cpy)
-//      {
-//        bool is_opt_assign = true;
-//        for (; s != e && !itertor_equal(first, last); s += tsize, itertor_next(first))
-//          cpy(s, first->_t_pos, &is_opt_assign);
-//      } else
-//      {
-//        for (; s != e && !itertor_equal(first, last); s += tsize, itertor_next(first))
-//          cstl_memcpy(s, first->_t_pos, tsize);
-//      }
-//      if (itertor_equal(first, last))
-//      {
-//        vector_create_iterator(sitr, pvec, s);
-//        vector_create_iterator(eitr, pvec, pvec->_pby_finish);
-//        vector_erase_range(pvec, &sitr, &eitr);
-//      } else
-//      {
-//        vector_create_iterator(pos, pvec, pvec->_pby_finish);
-//        vector_insert(pos, first, last);
-//      }
-      //vector_assign_range_aux(deque_iterator_equal, deque_iterator_next)
+      /*
+       if (cpy)
+       {
+       bool is_opt_assign = true;
+       for (; s != e && !itertor_equal(first, last); s += tsize, itertor_next(first))
+       cpy(s, first->_t_pos, &is_opt_assign);
+       } else
+       {
+       for (; s != e && !itertor_equal(first, last); s += tsize, itertor_next(first))
+       cstl_memcpy(s, first->_t_pos, tsize);
+       }
+       if (itertor_equal(first, last))
+       {
+       vector_create_iterator(sitr, pvec, s);
+       vector_create_iterator(eitr, pvec, pvec->_pby_finish);
+       vector_erase_range(pvec, &sitr, &eitr);
+       } else
+       {
+       vector_create_iterator(pos, pvec, pvec->_pby_finish);
+       vector_insert(pos, first, last);
+       }
+       */
+      vector_assign_range_aux(vector_iterator_equal, vector_iterator_next)
       break;
     case _BASIC_STRING_CONTAINER:
       break;
@@ -958,6 +985,27 @@ void vector_assign_range(vector_t* pvec, input_iterator_t * first, input_iterato
   }
 }
 
+#define vector_assign_range_n_aux(itertor_next)\
+if (cpy)\
+{\
+  bool is_opt_assign = true;\
+  for (; s != e && n > 0; s += tsize, n--, itertor_next(first))\
+    cpy(s, first->_t_pos, &is_opt_assign);\
+} else\
+{\
+  for (; s != e && n > 0; s += tsize, itertor_next(first))\
+    cstl_memcpy(s, first->_t_pos, tsize);\
+}\
+if (n > 0)\
+{\
+  vector_create_iterator(sitr, to, s);\
+  vector_erase_range_n(&sitr, n, true);\
+} else\
+{\
+  vector_create_iterator(pos, to, to->_pby_finish);\
+  vector_insert_range_n(&pos, first, n);\
+}
+
 void vector_assign_range_n(vector_t* to, input_iterator_t * first, size_t n)
 {
 //todo  need earse() and insert() done
@@ -967,11 +1015,44 @@ void vector_assign_range_n(vector_t* to, input_iterator_t * first, size_t n)
   if (n == 0)
     return;
 
-  if (_ITERATOR_CONTAINER_TYPE(first) == _VECTOR_CONTAINER)
-  {
-    vector_assign_continue(to, first->_t_pos, first->_t_pos + n * _GET_VECTOR_TYPE_INFO_TYPE(to)->_t_typesize);
-  } else
-  {
+  type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(to);
+  size_t tsize = type->_t_typesize;
+  bfun_t cpy = type->_t_typecopy;
+  _byte_t* s = to->_pby_start;
+  _byte_t* e = to->_pby_finish;
 
+  switch (to->meta._t_containertype)
+  {
+    case _VECTOR_CONTAINER:
+      vector_assign_const_vector_aux(to, first->_t_pos,
+          first->_t_pos + n * _GET_VECTOR_TYPE_INFO_TYPE(to)->_t_typesize);
+      break;
+    case _DEQUE_CONTAINER:
+      break;
+    case _BASIC_STRING_CONTAINER:
+      break;
+    case _LIST_CONTAINER:
+      vector_assign_range_n_aux(vector_iterator_next)
+      break;
+    case _SLIST_CONTAINER:
+      break;
+    case _SET_CONTAINER:
+      break;
+    case _MULTISET_CONTAINER:
+      break;
+    case _MAP_CONTAINER:
+      break;
+    case _MULTIMAP_CONTAINER:
+      break;
+    case _HASH_SET_CONTAINER:
+      break;
+    case _HASH_MULTISET_CONTAINER:
+      break;
+    case _HASH_MAP_CONTAINER:
+      break;
+    case _HASH_MULTIMAP_CONTAINER:
+      break;
+    default:
+      break;
   }
 }

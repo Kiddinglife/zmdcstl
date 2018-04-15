@@ -313,6 +313,7 @@ extern void vector_assign_range_n(vector_t* to, input_iterator_t* first, size_t 
 extern void* vector_push_back();
 extern void vector_push_back_v(vector_t* cpvec_vector, void* value);
 extern void* vector_push_back_v_placement(vector_t* cpvec_vector);
+extern void pop_back(vector_t* cpvec_vector);
 
 /**
  * a iterator that points just beyond the end of vector container.
@@ -343,10 +344,10 @@ extern void vector_erase_unsort(random_access_iterator_t* position, bool destruc
 extern void vector_erase_range(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct);
 extern void vector_erase_range_unsort(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct);
 extern void vector_erase_range_n(random_access_iterator_t* first, size_t n, bool destruct);
-extern void vector_erase_range__n_unsort(random_access_iterator_t* first, size_t n, bool destruct);
+extern void vector_erase_range_n_unsort(random_access_iterator_t* first, size_t n, bool destruct);
 
-extern void vector_insert_range(random_access_iterator_t* insertpos, random_access_iterator_t* first,
-    random_access_iterator_t* last);
+extern void vector_insert_range(random_access_iterator_t* insertpos, input_iterator_t* first, input_iterator_t* last);
+extern void vector_insert_range_n(random_access_iterator_t* insertpos, input_iterator_t* first, size_t elesize);
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ENDS ////////////////////////////////////////
 
 #ifdef __cplusplus
