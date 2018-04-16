@@ -171,11 +171,11 @@ typedef struct _tagmeta
 {
 containertype_t _t_containertype;
 type_info_t _t_typeinfo;
-//bool (*iterator_equal)(iterator_t*, iterator_t*);
-//void (*iterator_next)(iterator_t*);
-//void (*iterator_pre)(iterator_t*);
-//void (*iterator_next_n)(iterator_t*);
-//void (*iterator_pre_n)(iterator_t*);
+bool (*iterator_equal)(iterator_t*, iterator_t*);
+void (*iterator_next)(iterator_t*);
+void (*iterator_pre)(iterator_t*);
+void (*iterator_next_n)(iterator_t*, size_t);
+void (*iterator_pre_n)(iterator_t*, size_t);
 } meta_t;
 
 typedef struct _tagrange
@@ -192,19 +192,19 @@ typedef forward_iterator_t bidirectional_iterator_t;
 typedef bidirectional_iterator_t random_access_iterator_t;
 
 /* declaration four iterator adapters */
-  /// reverse_iterator
-  ///
-  /// From the C++ standard:
-  /// Bidirectional and random access iterators have corresponding reverse
-  /// iterator adaptors that iterate through the data structure in the
-  /// opposite direction. They have the same signatures as the corresponding
-  /// iterators. The fundamental relation between a reverse iterator and its
-  /// corresponding iterator i is established by the identity:
-  ///     &*(reverse_iterator(i)) == &*(i - 1).
-  /// This mapping is dictated by the fact that while there is always a pointer
-  /// past the end of an array, there might not be a valid pointer before the
-  /// beginning of an array.
-  ///
+ /// reverse_iterator
+ ///
+ /// From the C++ standard:
+ /// Bidirectional and random access iterators have corresponding reverse
+ /// iterator adaptors that iterate through the data structure in the
+ /// opposite direction. They have the same signatures as the corresponding
+ /// iterators. The fundamental relation between a reverse iterator and its
+ /// corresponding iterator i is established by the identity:
+ ///     &*(reverse_iterator(i)) == &*(i - 1).
+ /// This mapping is dictated by the fact that while there is always a pointer
+ /// past the end of an array, there might not be a valid pointer before the
+ /// beginning of an array.
+ ///
 typedef iterator_t reverse_iterator_t;
 typedef output_iterator_t insert_iterator_t;
 typedef input_iterator_t istream_iterator_t;
