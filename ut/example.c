@@ -745,7 +745,7 @@ TEST test_vector_erase()
 }
 TEST test_vector_swap()
 {
-  size_t firstelesize = 1000000;
+  size_t firstelesize = 10000;
   user_defined_type_init_destroy_copy_less firstv;
   firstv.a = 100;
   firstv.b = cstl_alloc(int, firstv.a);

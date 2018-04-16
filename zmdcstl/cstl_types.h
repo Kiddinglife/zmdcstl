@@ -82,6 +82,9 @@ typedef struct _tagtype_t
    * _t_typedestroy= null => _t_typecopy=   null||!null
    * _t_typedestroy!=null => _t_typecopy!=  null
    *
+   * if we has to use move_assignment or move construct for shadow copy
+   * just use memecpy they are same.
+   *
    */
   bfun_t _t_typecopy;
   //bfun_t (*getfunc)(int funcid);

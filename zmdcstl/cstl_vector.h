@@ -249,37 +249,15 @@ extern void vector_ctor_range(vector_t* vec, forward_iterator_t* first, forward_
 extern void vector_ctor_range_n(vector_t* pvec_vector, forward_iterator_t* first, size_t size);
 extern void vector_ctor_vector(vector_t* vec, vector_t* x);
 extern void vector_ctor_array(vector_t* vec, size_t elesize, void* array, size_t argsize, ...);
+
 extern void vector_dtor(vector_t* vec);
-
-extern size_t vector_size(vector_t* cpvec_vector);
-extern size_t vector_capacity(vector_t* cpvec_vector);
-extern bool empty(vector_t* cpvec_vector);
-
-extern void vector_resize_n_v(vector_t* cpvec_vector, size_t n, void* value);
-extern void vector_resize_n(vector_t* cpvec_vector, size_t n);
-extern void vector_reserve_n(vector_t* cpvec_vector, size_t n);
-// Revises the capacity to the user-specified value.
-// Resizes the container to match the capacity
-// if the requested capacity n is less than the current size.
-// If n == npos then the capacity is reallocated (if necessary)
-// such that capacity == size.
-extern void vector_set_capacity(vector_t* cpvec_vector, size_t n);
-// C++11 function which is the same as set_capacity().
-extern void vector_shrink_to_fit(vector_t* cpvec_vector);
-
-extern void* vector_at(vector_t* pvec, size_t position);
 extern void vector_clear(vector_t* pvec);
-#define vector_data(cpvec_vector) (cpvec_vector->_pby_start)
+
 /**
- * Test the two vectors are equal.
- * @param cpvec_first   first vector container.
- * @param cpvec_second  second vector container.
- * @return if first vector equal to second vector, then return true, else return false.
- * @remarks the two vectors must be initialized, otherwise the behavior is undefined.
- * if the two vectors are not same type, then return false.
- * if cpvec_first == cpvec_second, then return true.
+ * swap exchanges the contents of two containers.
+ * @param x  vector container.
  */
-extern bool vector_equal(vector_t* cpvec_first, vector_t* cpvec_second);
+extern void vector_swap(vector_t* pvec_first, vector_t* pvec_second);
 
 /**
  * Assigns new contents to the vector, replacing its current contents,
@@ -293,27 +271,55 @@ extern bool vector_equal(vector_t* cpvec_first, vector_t* cpvec_second);
  * free it in the destructor
  */
 extern void vector_assign_n_v(vector_t* pvec, void* v, size_t n);
-
-/**
- *  @brief  %Vector assignment operator.
- *  @param  from  A %vector of identical element and allocator types.
- *
- *  All the elements of @a from are copied, but any extra memory in
- *  @a from (for fast expansion) will not be copied.
- */
 extern void vector_assign_vector(vector_t* to, vector_t* from);
-extern void vector_assign_const_vector_range(vector_t* to, _byte_t* _pby_start, _byte_t* _pby_finish);
 extern void vector_assign_const_vector(vector_t* to, const vector_t* from);
 extern void vector_assign_range(vector_t* to, input_iterator_t* first, input_iterator_t* last);
 extern void vector_assign_range_n(vector_t* to, input_iterator_t* first, size_t n);
 
-#define vector_front(eletype,pvec) ((eletype*)(pvec->_pby_start))
-#define vector_back(eletype,cpvec_vector) ((eletype*)(cpvec_vector->_pby_finish - _GET_VECTOR_TYPE_SIZE(cpvec_vector)))
+extern size_t vector_size(vector_t* cpvec_vector);
+extern size_t vector_capacity(vector_t* cpvec_vector);
+extern bool empty(vector_t* cpvec_vector);
+
+extern void vector_resize_n_v(vector_t* cpvec_vector, size_t n, void* value);
+extern void vector_resize_n(vector_t* cpvec_vector, size_t n);
+
+extern void vector_reserve_n(vector_t* cpvec_vector, size_t n);
+
+// Revises the capacity to the user-specified value.
+// Resizes the container to match the capacity
+// if the requested capacity n is less than the current size.
+// If n == npos then the capacity is reallocated (if necessary)
+// such that capacity == size.
+extern void vector_set_capacity(vector_t* cpvec_vector, size_t n);
+
+// C++11 function which is the same as set_capacity().
+extern void vector_shrink_to_fit(vector_t* cpvec_vector);
+
+#define vector_data(cpvec_vector) ((cpvec_vector)->_pby_start)
+#define vector_at(pvec, position) \
+((pvec)->_pby_start + position * _GET_VECTOR_TYPE_INFO_TYPE((pvec))->_t_typesize)
+
+#define vector_front(eletype,pvec) ((eletype*)((pvec)->_pby_start))
+#define vector_back(eletype,cpvec_vector) \
+((eletype*)((cpvec_vector)->_pby_finish - _GET_VECTOR_TYPE_SIZE((cpvec_vector))))
 
 extern void* vector_push_back();
 extern void vector_push_back_v(vector_t* cpvec_vector, void* value);
 extern void* vector_push_back_v_placement(vector_t* cpvec_vector);
-extern void pop_back(vector_t* cpvec_vector);
+extern void vector_pop_back(vector_t* cpvec_vector);
+
+extern void emplace(random_access_iterator_t* pos, size_t argssize, ...);
+extern void emplace_back(size_t argssize, ...);
+
+extern void vector_insert_range(random_access_iterator_t* insertpos, input_iterator_t* first, input_iterator_t* last);
+extern void vector_insert_range_n(random_access_iterator_t* insertpos, input_iterator_t* first, size_t elesize);
+
+extern void vector_erase(random_access_iterator_t* position, bool destruct);
+extern void vector_erase_unsort(random_access_iterator_t* position, bool destruct);
+extern void vector_erase_range(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct);
+extern void vector_erase_range_unsort(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct);
+extern void vector_erase_range_n(random_access_iterator_t* first, size_t n, bool destruct);
+extern void vector_erase_range_n_unsort(random_access_iterator_t* first, size_t n, bool destruct);
 
 /**
  * a iterator that points just beyond the end of vector container.
@@ -334,20 +340,15 @@ extern void vector_begin(vector_t* cpvec_vector, vector_iterator_t* begin);
 extern void vector_end_again(vector_iterator_t* it_end);
 
 /**
- * swap exchanges the contents of two containers.
- * @param x  vector container.
+ * Test the two vectors are equal.
+ * @param cpvec_first   first vector container.
+ * @param cpvec_second  second vector container.
+ * @return if first vector equal to second vector, then return true, else return false.
+ * @remarks the two vectors must be initialized, otherwise the behavior is undefined.
+ * if the two vectors are not same type, then return false.
+ * if cpvec_first == cpvec_second, then return true.
  */
-extern void vector_swap(vector_t* pvec_first, vector_t* pvec_second);
-
-extern void vector_erase(random_access_iterator_t* position, bool destruct);
-extern void vector_erase_unsort(random_access_iterator_t* position, bool destruct);
-extern void vector_erase_range(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct);
-extern void vector_erase_range_unsort(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct);
-extern void vector_erase_range_n(random_access_iterator_t* first, size_t n, bool destruct);
-extern void vector_erase_range_n_unsort(random_access_iterator_t* first, size_t n, bool destruct);
-
-extern void vector_insert_range(random_access_iterator_t* insertpos, input_iterator_t* first, input_iterator_t* last);
-extern void vector_insert_range_n(random_access_iterator_t* insertpos, input_iterator_t* first, size_t elesize);
+extern bool vector_equal(vector_t* cpvec_first, vector_t* cpvec_second);
 //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ VECTOR ENDS ////////////////////////////////////////
 
 #ifdef __cplusplus
