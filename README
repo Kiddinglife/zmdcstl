@@ -1,13 +1,3 @@
-This directory contains the sources of the zmdcstl Library.
-See the file "VERSION" for what release version you have.
-
-zmdcstl is the use of C language, a common data structure 
-and used algorithms library, which mimic the interface and 
-the EASTL to achieve.
-
-Problems, bugs, questions, desirable enhancements, etc. should be sent
-to the address "jakezhang1989@hotmail.com".  
-
-Bugs, support requests, and feature requests may also be submitted on 
-the GitHub sit for libcstl at https://github.com/Kiddinglife/zmdcstl
+zmdcstl is a data structure  and algorithm library that mimic c++ stl. 
+Bugs, support requests, and feature requests are welcome.
 
