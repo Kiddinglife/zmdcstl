@@ -35,7 +35,8 @@ extern "C"
 #include "cstl_iterator.h"
 
 #define _GET_VECTOR_TYPE_INFO(pvec_vector) (((meta_t*)pvec_vector)->_t_typeinfo)
-#define _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector) \
+#define _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector) (((meta_t*)pvec_vector)->_t_type)
+#define _INIT_VECTOR_TYPE_INFO_TYPE(pvec_vector) \
   (_g_type_register._ptr_types[TYPE_INFO_TYPE_IDS(((meta_t*)pvec_vector)->_t_typeinfo)[0]])
 #define _GET_VECTOR_TYPE_SIZE(pvec_vector) \
   (_GET_VECTOR_TYPE_INFO_TYPE(pvec_vector)->_t_typesize)
@@ -83,6 +84,8 @@ extern void vecor_debug(vector_t* pvec);
     random_access_iterator_t it_iter;\
     it_iter._pt_container = pvec;\
     it_iter._t_pos = pos;
+
+extern _byte_t* vector_iterator_dref(vector_iterator_t* it);
 
 /**
  * Compare two iterators for equality.

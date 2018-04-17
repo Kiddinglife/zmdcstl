@@ -96,8 +96,7 @@ extern "C"
 #define _ITERATOR_CONTAINER_TYPE(it_iter)             (((meta_t*)((it_iter)->_pt_container))->_t_containertype)
 //#define _ITERATOR_ITERATOR_TYPE(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype)
 #define _ITERATOR_TYPE_INFO(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_typeinfo)
-#define _ITERATOR_TYPE_INFO_TYPE(it_iter)\
-    (_g_type_register._ptr_types[TYPE_INFO_TYPE_IDS(((meta_t*)(it_iter->_pt_container))->_t_typeinfo)[0]])
+#define _ITERATOR_TYPE_INFO_TYPE(it_iter) (_ITERATOR_META_TYPE(it_iter)->_t_type)
 #define _ITERATOR_TYPE_INFO_TYPE_IDS_PTR(it_iter) (((meta_t*)it_iter->_pt_container)->_t_typeinfo.typeids_ptr)
 #define _ITERATOR_TYPE_INFO_TYPE_IDS(it_iter) (((meta_t*)it_iter->_pt_container)->_t_typeinfo.typeids)
 #define _STRING_CONTAINER        _BASIC_STRING_CONTAINER
@@ -167,15 +166,24 @@ iterator_status_flag _t_iteratorstatusflag;
 #endif
 } iterator_t;
 
+typedef _byte_t* (*iterator_dref_t)(iterator_t*);
+typedef bool (*iterator_equal_t)(iterator_t*, iterator_t*);
+typedef void (*iterator_next_t)(iterator_t*);
+typedef void (*iterator_pre_t)(iterator_t*);
+typedef void (*iterator_next_n_t)(iterator_t*, size_t);
+typedef void (*iterator_pre_n_t)(iterator_t*, size_t);
+
 typedef struct _tagmeta
 {
 containertype_t _t_containertype;
 type_info_t _t_typeinfo;
-bool (*iterator_equal)(iterator_t*, iterator_t*);
-void (*iterator_next)(iterator_t*);
-void (*iterator_pre)(iterator_t*);
-void (*iterator_next_n)(iterator_t*, size_t);
-void (*iterator_pre_n)(iterator_t*, size_t);
+type_t* _t_type;
+iterator_dref_t iterator_dref;
+iterator_equal_t iterator_equal;
+iterator_next_t iterator_next;
+iterator_pre_t iterator_pre;
+iterator_next_n_t iterator_next_n;
+iterator_pre_n_t iterator_pre_n;
 } meta_t;
 
 typedef struct _tagrange
@@ -192,19 +200,19 @@ typedef forward_iterator_t bidirectional_iterator_t;
 typedef bidirectional_iterator_t random_access_iterator_t;
 
 /* declaration four iterator adapters */
- /// reverse_iterator
- ///
- /// From the C++ standard:
- /// Bidirectional and random access iterators have corresponding reverse
- /// iterator adaptors that iterate through the data structure in the
- /// opposite direction. They have the same signatures as the corresponding
- /// iterators. The fundamental relation between a reverse iterator and its
- /// corresponding iterator i is established by the identity:
- ///     &*(reverse_iterator(i)) == &*(i - 1).
- /// This mapping is dictated by the fact that while there is always a pointer
- /// past the end of an array, there might not be a valid pointer before the
- /// beginning of an array.
- ///
+  /// reverse_iterator
+  ///
+  /// From the C++ standard:
+  /// Bidirectional and random access iterators have corresponding reverse
+  /// iterator adaptors that iterate through the data structure in the
+  /// opposite direction. They have the same signatures as the corresponding
+  /// iterators. The fundamental relation between a reverse iterator and its
+  /// corresponding iterator i is established by the identity:
+  ///     &*(reverse_iterator(i)) == &*(i - 1).
+  /// This mapping is dictated by the fact that while there is always a pointer
+  /// past the end of an array, there might not be a valid pointer before the
+  /// beginning of an array.
+  ///
 typedef iterator_t reverse_iterator_t;
 typedef output_iterator_t insert_iterator_t;
 typedef input_iterator_t istream_iterator_t;
