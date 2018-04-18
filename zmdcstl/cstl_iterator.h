@@ -94,6 +94,7 @@ extern "C"
 #define _ITERATOR_CONTAINER(it_iter)                    ((it_iter)->_pt_container)
 #define _ITERATOR_META_TYPE(it_iter)                       ((meta_t*)((it_iter)->_pt_container))
 #define _ITERATOR_CONTAINER_TYPE(it_iter)             (((meta_t*)((it_iter)->_pt_container))->_t_containertype)
+#define _ITERATOR_TYPE(it_iter)             (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype_t)
 //#define _ITERATOR_ITERATOR_TYPE(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype)
 #define _ITERATOR_TYPE_INFO(it_iter)                 (((meta_t*)((it_iter)->_pt_container))->_t_typeinfo)
 #define _ITERATOR_TYPE_INFO_TYPE(it_iter) (_ITERATOR_META_TYPE(it_iter)->_t_type)
@@ -161,9 +162,6 @@ typedef struct _tagiterator
 {
   void* _pt_container;
   _byte_t* _t_pos;
-#ifdef DEBUG
-iterator_status_flag _t_iteratorstatusflag;
-#endif
 } iterator_t;
 
 typedef _byte_t* (*iterator_dref_t)(iterator_t*);
@@ -176,6 +174,7 @@ typedef void (*iterator_pre_n_t)(iterator_t*, size_t);
 typedef struct _tagmeta
 {
 containertype_t _t_containertype;
+iteratortype_t _t_iteratortype_t;
 type_info_t _t_typeinfo;
 type_t* _t_type;
 iterator_dref_t iterator_dref;

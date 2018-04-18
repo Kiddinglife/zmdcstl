@@ -510,7 +510,8 @@ TEST test_vector_equal()
   // same elements
   vector_ctor_n(&pvec_vector, 100, 1, user_defined_pod_id);
   vector_ctor_n(&pvec_vector1, 100, 1, user_defined_pod_id);
-  ASSERT_EQ(vector_equal(&pvec_vector, &pvec_vector1), true);
+  bool is_equal = vector_equal(&pvec_vector, &pvec_vector1);
+  ASSERT_EQ(is_equal, true);
   vector_dtor(&pvec_vector);
   vector_dtor(&pvec_vector1);
 

@@ -62,19 +62,12 @@ extern void* align_advance(size_t alignment, size_t size, void* ptr, size_t spac
 /// We have a specialization for objects with trivial destructors, such as
 /// PODs. In this specialization the destruction of the range is a no-op.
 extern void destruct(forward_iterator_t* first, forward_iterator_t* last);
-extern void destruct_vec(type_t* type, _byte_t* first, _byte_t* last);
-
 extern void destruct_n(forward_iterator_t* first, int n);
-extern void destruct_n_vec(type_t* type, _byte_t* first, size_t bytelen);
-
-extern void destruct_at(input_iterator_t* first);
-void destruct_at_vec(type_t* type, _byte_t* destination);
 
 /// uninitialized_default_fill_n
 ///
 /// Default-constructs the range of [first, first + n).
 extern void uninitialized_default_fill_n(forward_iterator_t* destination, size_t n);
-extern _byte_t* uninitialized_default_fill_n_continue(type_t* type, _byte_t* destination, size_t totalbytes);
 
 /// uninitialized_default_fill
 ///
@@ -89,7 +82,6 @@ extern void uninitialized_default_fill(forward_iterator_t* first, forward_iterat
 /// Returns void. It wouldn't be useful to return the end of the destination range,
 /// as that is the same as the 'last' input parameter.
 extern void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last, const void* value);
-extern void uninitialized_fill_continue(type_t* type, _byte_t* first, _byte_t* end, void* val);
 
 /// uninitialized_fill_n
 ///
@@ -97,7 +89,6 @@ extern void uninitialized_fill_continue(type_t* type, _byte_t* first, _byte_t* e
 /// Returns void as per the C++ standard, though returning the end input iterator
 /// value may be of use.
 extern void uninitialized_fill_n(forward_iterator_t* destination, const void* value, int n);
-extern _byte_t* uninitialized_fill_n_continue(type_t* type, _byte_t* destination, size_t totalbytes, const void* val);
 
 /// uninitialized_copy
 ///
@@ -114,13 +105,8 @@ extern void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, 
 extern _byte_t* uninitialized_copy_from_any_to_continue(forward_iterator_t* from, forward_iterator_t* end,
     _byte_t* result);
 extern void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, forward_iterator_t* result);
-extern _byte_t* uninitialized_copy_from_continue_to_continue(type_t* type, _byte_t* from, _byte_t* end, _byte_t* result);
-/// firstly copy an element and then destruct it
-extern _byte_t* uninitialized_copy_from_continue_to_continue_destruct(type_t* type, _byte_t* from, _byte_t* end,
-    _byte_t* result);
 
-extern _byte_t* copy_from_any_to_continue(input_iterator_t* first, input_iterator_t* last, _byte_t* result);
-extern _byte_t* copy_from_continue_to_continue(type_t* type, _byte_t* from, _byte_t* end, _byte_t* result);
+/// firstly copy an element and then destruct it
 
 /// uninitialized_copy_n
 ///
@@ -132,9 +118,8 @@ extern _byte_t* copy_from_continue_to_continue(type_t* type, _byte_t* from, _byt
 /// dest:         Beginning of the destination range.
 /// return value: Iterator of dest type to the element past the last element copied.
 ///
-extern void uninitialized_copy_n(input_iterator_t* first, int n_step, forward_iterator_t* result);
+extern void uninitialized_copy_n(input_iterator_t* first, size_t n, forward_iterator_t* result);
 extern void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, forward_iterator_t* result);
-extern _byte_t* uninitialized_copy_n_from_any_to_continue(forward_iterator_t* from, size_t nstep, _byte_t* result);
 extern _byte_t* copy_n_from_continue_to_continue(type_t* type, _byte_t* from, size_t nbytes, _byte_t* result);
 
 extern void fill_n(output_iterator_t* dest, size_t n, void* val);

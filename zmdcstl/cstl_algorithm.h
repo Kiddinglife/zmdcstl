@@ -11,9 +11,7 @@ extern "C"
 #define cstl_max(a,b) (((a)>(b))?(a):(b))
 
 // if all same f1=l1 else f1 points to unsame element fist2 also points to unsame element
-extern bool equal(input_iterator_t* first1, input_iterator_t* last1, input_iterator_t* first2);
-extern bool equal_from_continus(_byte_t* first1, _byte_t* last1, input_iterator_t* first2);
-
+extern bool cstl_equal(input_iterator_t* first1, input_iterator_t* last1, input_iterator_t* first2);
 /**
  * Moves the elements from the range [first, last), to another range ending at d_last.
  * The elements are moved in reverse order (the last element is moved first), but their
@@ -31,8 +29,6 @@ extern bool equal_from_continus(_byte_t* first1, _byte_t* last1, input_iterator_
  */
 extern void cstl_move_backward(bidirectional_iterator_t* first, bidirectional_iterator_t* last,
     bidirectional_iterator_t* d_last);
-extern void cstl_move_backward_from_continue_to_any(_byte_t* first, _byte_t* last, bidirectional_iterator_t* dlast);
-
 /**
  * Moves the elements in the range [first, last), to another range beginning
  * at d_first. After this operation the elements in the moved-from range will
