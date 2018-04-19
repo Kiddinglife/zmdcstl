@@ -38,8 +38,7 @@ extern "C"
 #define _GET_VECTOR_TYPE_INFO_TYPE(pvec_vector) (((meta_t*)pvec_vector)->_t_type)
 #define _INIT_VECTOR_TYPE_INFO_TYPE(pvec_vector) \
   (_g_type_register._ptr_types[TYPE_INFO_TYPE_IDS(((meta_t*)pvec_vector)->_t_typeinfo)[0]])
-#define _GET_VECTOR_TYPE_SIZE(pvec_vector) \
-  (_GET_VECTOR_TYPE_INFO_TYPE(pvec_vector)->_t_typesize)
+#define _GET_VECTOR_TYPE_SIZE(pvec_vector) (_GET_VECTOR_TYPE_INFO_TYPE(pvec_vector)->_t_typesize)
 #define _GET_VECTOR_TYPE_NAME(pvec_vector)\
   get_type_name(_GET_VECTOR_TYPE_INFO_TYPE(pvec_vector)->_t_typeid)
 #define _GET_VECTOR_TYPE_BASENAME(pvec_vector)\

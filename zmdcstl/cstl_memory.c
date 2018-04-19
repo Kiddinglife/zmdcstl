@@ -116,7 +116,8 @@ void uninitialized_default_fill_n(forward_iterator_t* destination, size_t n)
       dctor(destination->_t_pos, &ret);
       iterator_next(destination);
     }
-  } else
+  }
+  else
   {
     for (; n > 0; n--, iterator_next(destination))
       memset(destination->_t_pos, 0, type->_t_typesize);
@@ -134,7 +135,8 @@ void uninitialized_fill_n(forward_iterator_t* destination, const void* value, in
       bool ret = false;
       type->_t_typecopy(destination->_t_pos, value, &ret);
       assert(ret);
-    } else
+    }
+    else
     {
       cstl_memcpy(destination->_t_pos, value, type->_t_typesize);
     }
@@ -166,7 +168,8 @@ void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last, con
       bool ret = false;
       type->_t_typecopy(first->_t_pos, value, &ret);
       assert(ret);
-    } else
+    }
+    else
     {
       cstl_memcpy(first->_t_pos, value, type->_t_typesize);
     }
@@ -178,8 +181,7 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward
   assert(iterator_is_valid(first) && iterator_is_valid(last) && iterator_is_valid(result));
   assert(iterator_same_elem_type(first, last) && iterator_same_elem_type(first, result));
 
-  switch (_ITERATOR_CONTAINER_TYPE(first))
-  {
+  switch (_ITERATOR_CONTAINER_TYPE(first)) {
     case _VECTOR_CONTAINER:
     case _DEQUE_CONTAINER:
     case _BASIC_STRING_CONTAINER:
@@ -213,8 +215,7 @@ _byte_t* uninitialized_copy_from_any_to_continue(forward_iterator_t* from, forwa
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(from);
   size_t tsize = type->_t_typesize;
-  switch (_ITERATOR_CONTAINER_TYPE(from))
-  {
+  switch (_ITERATOR_CONTAINER_TYPE(from)) {
     case _VECTOR_CONTAINER:
       if (type->_t_typecopy)
       {
@@ -228,7 +229,8 @@ _byte_t* uninitialized_copy_from_any_to_continue(forward_iterator_t* from, forwa
           type->_t_typecopy(result, bfrom, &ret);
           result += tsize;
         }
-      } else
+      }
+      else
       {
         // this is the case uninitialized_copy_from_continoues_to_continoues
         // and _t_typecopy null, so use memcpy
@@ -269,8 +271,7 @@ void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, for
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(result);
   size_t tsize = type->_t_typesize;
-  switch (_ITERATOR_CONTAINER_TYPE(result))
-  {
+  switch (_ITERATOR_CONTAINER_TYPE(result)) {
     case _VECTOR_CONTAINER:
       if (type->_t_typecopy)
       {
@@ -282,7 +283,8 @@ void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, for
           type->_t_typecopy(result->_t_pos, from, &ret);
           result->_t_pos += tsize;
         }
-      } else
+      }
+      else
       {
         // this is the case uninitialized_copy_from_continoues_to_continoues
         // and _t_typecopy null, so use memcpy
@@ -341,19 +343,25 @@ void uninitialized_copy_n(input_iterator_t* first, size_t n, forward_iterator_t*
       n *= tsize;
       cstl_memcpy(result_dref(result), dref(first), n);
       result->_t_pos += n;
-    } else
+    }
+    else
     {
-      for (; n > 0; next(first), result_next(result))
+      for (; n > 0; n--)
       {
         cstl_memcpy(result_dref(result), dref(first), tsize);
+        next(first);
+        result_next(result);
       }
     }
-  } else
+  }
+  else
   {
     bool is_assign = false;
-    for (; n > 0; next(first), result_next(result))
+    for (; n > 0; n--)
     {
       cpy(result_dref(result), dref(first), &is_assign);
+      next(first);
+      result_next(result);
     }
   }
 }
@@ -364,8 +372,7 @@ void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, fo
   // else use copyfunc for each element
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(result);
   size_t tsize = type->_t_typesize;
-  switch (_ITERATOR_CONTAINER_TYPE(result))
-  {
+  switch (_ITERATOR_CONTAINER_TYPE(result)) {
     case _VECTOR_CONTAINER:
       // if result in [vec,deque,string], use memcpy for all element
       if (type->_t_typecopy)
@@ -379,7 +386,8 @@ void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, fo
           type->_t_typecopy(result->_t_pos, from, &ret);
           result->_t_pos += tsize;
         }
-      } else
+      }
+      else
       {
         // this is the case uninitialized_copy_from_continoues_to_continoues
         // and _t_typecopy null, so use memcpy
@@ -433,7 +441,8 @@ _byte_t* copy_n_from_continue_to_continue(type_t* type, _byte_t* from, size_t el
       cpy(result, from, &is_opt_assign);
       result += tsize;
     }
-  } else
+  }
+  else
   {
     // this is the case uninitialized_copy_from_continoues_to_continoues
     // and _t_typecopy null, so use memcpy
@@ -445,8 +454,7 @@ _byte_t* copy_n_from_continue_to_continue(type_t* type, _byte_t* from, size_t el
 void fill_n(output_iterator_t* from, size_t n, void* val)
 {
   type_t* type = _ITERATOR_TYPE_INFO_TYPE(from);
-  switch (_ITERATOR_CONTAINER_TYPE(from))
-  {
+  switch (_ITERATOR_CONTAINER_TYPE(from)) {
     case _VECTOR_CONTAINER:
       from->_t_pos = fill_n_continue(type, from->_t_pos, n, val);
       break;
@@ -483,8 +491,7 @@ _byte_t* fill_n_continue(type_t* type, _byte_t* destPosition, size_t n, void* va
 {
   bfun_t cpyctor = type->_t_typecopy;
   _byte_t* e = destPosition + type->_t_typesize * n;
-  switch (type->_t_typeid)
-  {
+  switch (type->_t_typeid) {
     case cstl_int8:
       fill_n_char((char*) destPosition, n, *(char*) val);
       break;
@@ -519,7 +526,8 @@ _byte_t* fill_n_continue(type_t* type, _byte_t* destPosition, size_t n, void* va
         size_t tsize = type->_t_typesize;
         for (; destPosition != e; destPosition += tsize)
           cpyctor(destPosition, val, &is_copy_assign);
-      } else
+      }
+      else
       { // pod struct
         size_t tsize = type->_t_typesize;
         for (; destPosition != e; destPosition += tsize)
@@ -653,8 +661,7 @@ int16_t* fill_n_int16(int16_t* first, size_t n, int16_t c)
 void fill_continue(type_t* type, _byte_t* first, _byte_t* e, void* val)
 {
   bfun_t cpyctor = type->_t_typecopy;
-  switch (type->_t_typeid)
-  {
+  switch (type->_t_typeid) {
     case cstl_int8:
       fill_char((char*) first, e, *(char*) val);
       break;
@@ -689,7 +696,8 @@ void fill_continue(type_t* type, _byte_t* first, _byte_t* e, void* val)
         size_t tsize = type->_t_typesize;
         for (; first != e; first += tsize)
           cpyctor(first, val, &is_copy_assign);
-      } else
+      }
+      else
       { // pod struct
         size_t tsize = type->_t_typesize;
         for (; first != e; first += tsize)
