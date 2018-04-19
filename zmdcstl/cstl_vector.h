@@ -299,8 +299,7 @@ extern void vector_set_capacity(vector_t* cpvec_vector, size_t n);
 extern void vector_shrink_to_fit(vector_t* cpvec_vector);
 
 #define vector_data(cpvec_vector) ((cpvec_vector)->_pby_start)
-#define vector_at(pvec, position) \
-((pvec)->_pby_start + position * _GET_VECTOR_TYPE_INFO_TYPE((pvec))->_t_typesize)
+#define vector_at(pvec, position) ((pvec)->_pby_start + position * _GET_VECTOR_TYPE_INFO_TYPE((pvec))->_t_typesize)
 
 #define vector_front(eletype,pvec) ((eletype*)((pvec)->_pby_start))
 #define vector_back(eletype,cpvec_vector) \

@@ -444,9 +444,7 @@ TEST test_vector_ctor_range_n_user_defined_non_pod()
   vector_ctor_n_v(&pvec_vector, elesize, &v, 1, user_defined_non_pod_id);
 
   size_t copysize = 50;
-  random_access_iterator_t first;
-  first._pt_container = &pvec_vector;
-  _VECTOR_ITERATOR_COREPOS(&first) = pvec_vector._pby_start + 20 * _GET_VECTOR_TYPE_SIZE(&pvec_vector);
+  vector_create_iterator(first, &pvec_vector, vector_at(&pvec_vector, 20));
 
   vector_t pvec_vector_;
   vector_ctor_range_n(&pvec_vector_, &first, copysize);

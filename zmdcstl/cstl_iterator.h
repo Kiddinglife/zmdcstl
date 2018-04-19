@@ -21,6 +21,7 @@ extern "C"
 #define _VECTOR_ITERATOR_COREPOS(it_iter)               ((it_iter)->_t_pos)
 #define _VECTOR_ITERATOR_CONTAINER(it_iter)             ((vector_t*)((it_iter)->_pt_container))
 #define _VECTOR_ITERATOR_CONTAINER_TYPE(it_iter)     (((meta_t*)((it_iter)->_pt_container))->_t_containertype)
+
 //#define _VECTOR_ITERATOR_ITERATOR_TYPE(it_iter)         (((meta_t*)((it_iter)->_pt_container))->_t_iteratortype)
 /* list iterator handler */
 #define _LIST_ITERATOR_COREPOS(it_iter)                 ((it_iter)._t_pos._pby_corepos)

@@ -252,6 +252,7 @@ bool vector_iterator_valid(const vector_t* cpvec_vector, vector_iterator_t* it_i
 {
   return vector_is_inited(cpvec_vector) &&
   _VECTOR_ITERATOR_CONTAINER_TYPE(it_iter) == _VECTOR_CONTAINER &&
+  _ITERATOR_TYPE(it_iter) == _RANDOM_ACCESS_ITERATOR &&
   _VECTOR_ITERATOR_CONTAINER(it_iter) == cpvec_vector &&
   _VECTOR_ITERATOR_COREPOS(it_iter) >= cpvec_vector->_pby_start &&
   _VECTOR_ITERATOR_COREPOS(it_iter) <= cpvec_vector->_pby_finish;
