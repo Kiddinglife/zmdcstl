@@ -366,8 +366,6 @@ bool vector_is_inited(const vector_t* cpvec_vector)
 		return false;
 	if (cpvec_vector->meta.iterator_next != vector_iterator_next)
 		return false;
-	if (cpvec_vector->meta.iterator_equal != vector_iterator_equal)
-		return false;
 	if (cpvec_vector->meta.iterator_next != vector_iterator_next)
 		return false;
 
