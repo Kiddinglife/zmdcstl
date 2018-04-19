@@ -225,10 +225,9 @@ extern size_t vector_iterator_minus(vector_iterator_t* it_first, vector_iterator
 extern bool vector_iterator_valid(const vector_t* cpvec_vector, vector_iterator_t* it_iter);
 extern bool vector_iterator_valid_end(const vector_t* cpvec_vector, vector_iterator_t* it_iter);
 /**
- * Test vector is initialized by vector initialization functions.
+ * Test vector's meta infos is initialized by vector_ctor_*()
  * @param cpvec_vector  vector container.
  * @return if vector is initialized by vector initialization functions, then return true, else return false.
- * @remarks if cpvec_vector == NULL, then the behavior is undefined.
  */
 extern bool vector_is_inited(const vector_t* cpvec_vector);
 

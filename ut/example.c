@@ -400,7 +400,6 @@ TEST test_vector_ctor_range_user_defined_non_pod()
   vector_ctor_n_v(&pvec_vector, elesize, &v, 1, user_defined_non_pod_id);
 
   size_t copysize = 50;
-  // first = index50 last = index55
   random_access_iterator_t first;
   vector_begin(&pvec_vector, &first);
   vector_iterator_next_n(&first, elesize / 2);
@@ -408,7 +407,9 @@ TEST test_vector_ctor_range_user_defined_non_pod()
   vector_iterator_next_n(&last, copysize);
 
   vector_t pvec_vector_;
+  printf(">>>>>>>>>>>>>>>>>>>>>>>>>\n");
   vector_ctor_range(&pvec_vector_, &first, &last);
+  printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 
   ASSERT_EQ(pvec_vector_._pby_endofstorage, pvec_vector_._pby_finish);
   ASSERT_EQ(pvec_vector_._pby_endofstorage - pvec_vector_._pby_start, copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector_));
@@ -827,6 +828,7 @@ SUITE(test_vector)
 {
   RUN_TEST(test_vector_ctor_scalar_type);
   RUN_TEST(test_vector_ctor_n_scalar_type);
+
   RUN_TEST(test_vector_ctor_n_v_scalar_type);
   RUN_TEST(test_vector_ctor_vec_scalar_type);
   RUN_TEST(test_vector_ctor_range_scalar_type);

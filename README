@@ -1,3 +1,40 @@
 zmdcstl is a data structure  and algorithm library that mimic c++ stl. 
 Bugs, support requests, and feature requests are welcome.
 
+benchmark_vector:
+zmdcstlvec:0.000255ms, stdvec:0ms, ratio: inf
+PASS benchmark_vector_ctor:  (1 ticks, 0.001 sec)
+
+zmdcstlvec:681.317ms, stdvec:964.43ms, ratio: 0.706445
+PASS benchmark_vector_ctor_n:  (2935 ticks, 2.935 sec)
+
+vec_ctor_n_v_non_pod:1008.4ms, stdvec_n_v_non_pod:994.384ms, ratio: 1.0141
+vec_ctor_n_v_pod:57.88ms, stdvec_n_v_pod:52.2712ms, ratio: 1.1073
+vec_ctor_n_v_ctype:4.77279ms, stdvec_n_v_ctype:6.27634ms, ratio: 0.760441
+PASS benchmark_vector_ctor_n_v:  (3524 ticks, 3.524 sec)
+
+zmdcstlvec:1227.39ms, stdvec:1196.01ms, ratio: 1.02624
+PASS benchmark_vector_ctor_range:  (7499 ticks, 7.499 sec)
+
+zmdcstlvec:1256.16ms, stdvec:1211.05ms, ratio: 1.03725
+PASS benchmark_vector_ctor_range_n:  (7812 ticks, 7.812 sec)
+
+cstl_vector_ctor_vector:1225.48ms, std_vector_ctor_vector:1229.65ms, ratio: 0.996611
+PASS benchmark_vector_ctor_vector:  (7857 ticks, 7.857 sec)
+
+zmdcstlvec:20.4933ms, stdvec:540.694ms, ratio: 0.0379018
+PASS benchmark_vector_erase:  (3640 ticks, 3.640 sec)
+
+cstlvec_swap_ctype:0.000511ms, stdvec_swap_ctype:0ms, ratio: inf
+PASS benchmark_vector_swap:  (32 ticks, 0.032 sec)
+
+cstlvec_reserve_non_pod:634.302ms, stdvec_reserve_non_pod:1963.87ms, ratio: 0.322986
+cstlvec_reserve_pod:92.4203ms, stdvec_reserve_pod:83.7403ms, ratio: 1.10365
+cstlvec_reserve_ctype:8.57114ms, stdvec_reserve_ctype:8.10692ms, ratio: 1.05726
+PASS benchmark_vector_reserve:  (6465 ticks, 6.465 sec)
+
+
+9 tests - 9 passed, 0 failed, 0 skipped (39770 ticks, 39.770 sec)
+
+Total: 11 tests (39771 ticks, 39.771 sec), 0 assertions
+Pass: 11, fail: 0, skip: 0.

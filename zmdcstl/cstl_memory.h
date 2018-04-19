@@ -15,12 +15,6 @@ extern "C"
 
 #include "cstl_iterator.h"
 
-typedef struct _tagalloc_ret
-{
-  void* tr;
-  size_t n;
-} alloc_pair;
-
 /// align
 ///
 /// Same as C++11 std::align. http://en.cppreference.com/w/cpp/memory/align
@@ -101,10 +95,6 @@ extern void uninitialized_fill_n(forward_iterator_t* destination, const void* va
 ///    uninitialized_copy(pSourceDataBegin, pSourceDataBegin + 10, pArray);
 ///
 extern void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward_iterator_t* result);
-/// vector, deque and string
-extern _byte_t* uninitialized_copy_from_any_to_continue(forward_iterator_t* from, forward_iterator_t* end,
-    _byte_t* result);
-extern void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* end, forward_iterator_t* result);
 
 /// firstly copy an element and then destruct it
 
@@ -119,12 +109,8 @@ extern void uninitialized_copy_from_continueous_to_any(_byte_t* from, _byte_t* e
 /// return value: Iterator of dest type to the element past the last element copied.
 ///
 extern void uninitialized_copy_n(input_iterator_t* first, size_t n, forward_iterator_t* result);
-extern void uninitialized_copy_n_from_continoues_to_any(_byte_t* from, size_t nstep, forward_iterator_t* result);
-extern _byte_t* copy_n_from_continue_to_continue(type_t* type, _byte_t* from, size_t nbytes, _byte_t* result);
 
 extern void fill_n(output_iterator_t* dest, size_t n, void* val);
-extern _byte_t* fill_n_continue(type_t* type, _byte_t* destPosition, size_t n, void* val);
-
 extern char* fill_n_char(char* first, size_t n, char c);
 extern unsigned char* fill_n_uchar(unsigned char* first, size_t n, unsigned char c);
 #if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__ICL) // ICL = Intel compiler
@@ -151,7 +137,6 @@ int16_t* fill_n_int16(int16_t* first, size_t n, int16_t c);
 #endif
 
 extern void fill(forward_iterator_t* first, forward_iterator_t* end, void* val);
-extern void fill_continue(type_t* type, _byte_t* first, _byte_t* end, void* val);
 void fill_char(char* first, char* last, char c);
 void fill_uchar(unsigned char* first, unsigned char* last, unsigned char c);
 #if(defined(EA_COMPILER_GNUC) || defined(EA_COMPILER_CLANG)) && (defined(EA_PROCESSOR_X86) || defined(EA_PROCESSOR_X86_64))
