@@ -407,9 +407,7 @@ TEST test_vector_ctor_range_user_defined_non_pod()
   vector_iterator_next_n(&last, copysize);
 
   vector_t pvec_vector_;
-  printf(">>>>>>>>>>>>>>>>>>>>>>>>>\n");
   vector_ctor_range(&pvec_vector_, &first, &last);
-  printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 
   ASSERT_EQ(pvec_vector_._pby_endofstorage, pvec_vector_._pby_finish);
   ASSERT_EQ(pvec_vector_._pby_endofstorage - pvec_vector_._pby_start, copysize * _GET_VECTOR_TYPE_SIZE(&pvec_vector_));

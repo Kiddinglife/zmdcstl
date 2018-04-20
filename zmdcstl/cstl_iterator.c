@@ -474,47 +474,5 @@ void iterator_disadvance(bidirectional_iterator_t* it_iter, size_t n_step)
 int iterator_distance(iterator_t* it_first, iterator_t* it_second)
 {
 	assert(iterator_same_type(it_first, it_second));
-	switch (_ITERATOR_CONTAINER_TYPE(it_first))
-	{
-	case _VECTOR_CONTAINER:
-	case _DEQUE_CONTAINER:
-	case _BASIC_STRING_CONTAINER:
-		return iterator_continue_minus(it_first, it_second);
-		break;
-	case _LIST_CONTAINER:
-		//return _list_iterator_distance(it_first, it_second);
-		break;
-	case _SLIST_CONTAINER:
-		//return _slist_iterator_distance(it_first, it_second);
-		break;
-	case _SET_CONTAINER:
-		//return _set_iterator_distance(it_first, it_second);
-		break;
-	case _MULTISET_CONTAINER:
-		//return _multiset_iterator_distance(it_first, it_second);
-		break;
-	case _MAP_CONTAINER:
-		//return _map_iterator_distance(it_first, it_second);
-		break;
-	case _MULTIMAP_CONTAINER:
-		// return _multimap_iterator_distance(it_first, it_second);
-		break;
-	case _HASH_SET_CONTAINER:
-		// return _hash_set_iterator_distance(it_first, it_second);
-		break;
-	case _HASH_MULTISET_CONTAINER:
-		//return _hash_multiset_iterator_distance(it_first, it_second);
-		break;
-	case _HASH_MAP_CONTAINER:
-		//return _hash_map_iterator_distance(it_first, it_second);
-		break;
-	case _HASH_MULTIMAP_CONTAINER:
-		//return _hash_multimap_iterator_distance(it_first, it_second);
-		break;
-	default:
-		assert(false);
-		return -1;
-		break;
-	}
 	return -1;
 }

@@ -167,6 +167,7 @@ typedef struct _tagiterator
 
 typedef _byte_t* (*iterator_dref_t)(iterator_t*);
 typedef bool (*iterator_equal_t)(iterator_t*, iterator_t*);
+typedef size_t (*iterator_distance_t)(iterator_t*, iterator_t*);
 typedef void (*iterator_next_t)(iterator_t*);
 typedef void (*iterator_pre_t)(iterator_t*);
 typedef void (*iterator_next_n_t)(iterator_t*, size_t);
@@ -180,6 +181,7 @@ type_info_t _t_typeinfo;
 type_t* _t_type;
 iterator_dref_t iterator_dref;
 iterator_equal_t iterator_equal;
+iterator_distance_t iterator_distance;
 iterator_next_t iterator_next;
 iterator_pre_t iterator_pre;
 iterator_next_n_t iterator_next_n;
