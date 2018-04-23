@@ -37,31 +37,31 @@ static inline void uninitialized_fill_continue(type_t* type, _byte_t* first, _by
   switch (type->_t_typeid)
   {
     case cstl_int8:
-      fill_char((char*) first, (char*)e, *(char*) val);
+      fill_char((char*) first, (char*) e, *(char*) val);
       break;
     case cstl_uint8:
       fill_uchar((unsigned char*) first, e, *(unsigned char*) val);
       break;
     case cstl_int16:
-      fill_int16((int16_t*) first, (int16_t*)e, *(int16_t*) val);
+      fill_int16((int16_t*) first, (int16_t*) e, *(int16_t*) val);
       break;
     case cstl_uint16:
-      fill_uint16((uint16_t*) first, (uint16_t*)e, *(uint16_t*) val);
+      fill_uint16((uint16_t*) first, (uint16_t*) e, *(uint16_t*) val);
       break;
     case cstl_int32:
-      fill_int32((int32_t*) first, (int32_t*)e, *(int32_t*) val);
+      fill_int32((int32_t*) first, (int32_t*) e, *(int32_t*) val);
       break;
     case cstl_uint32:
-      fill_uint32((uint32_t*) first, (uint32_t*)e, *(uint32_t*) val);
+      fill_uint32((uint32_t*) first, (uint32_t*) e, *(uint32_t*) val);
       break;
     case cstl_int64:
-      fill_int64((int64_t*) first, (int64_t*)e, *(int64_t*) val);
+      fill_int64((int64_t*) first, (int64_t*) e, *(int64_t*) val);
       break;
     case cstl_uint64:
-      fill_uint64((uint64_t*) first, (uint64_t*)e, *(uint64_t*) val);
+      fill_uint64((uint64_t*) first, (uint64_t*) e, *(uint64_t*) val);
       break;
     case cstl_void_pt:
-      fill_uint64((uint64_t*) first, (uint64_t*)e, *(uint64_t*) val);
+      fill_uint64((uint64_t*) first, (uint64_t*) e, *(uint64_t*) val);
       break;
     default:
       if (cpyctor)
@@ -88,31 +88,31 @@ static inline _byte_t* uninitialized_fill_n_continue(type_t* type, _byte_t* dest
   switch (type->_t_typeid)
   {
     case cstl_int8:
-      fill_char((char*) destPosition, (char*)end, *(char*) val);
+      fill_char((char*) destPosition, (char*) end, *(char*) val);
       break;
     case cstl_uint8:
       fill_uchar((unsigned char*) destPosition, end, *(unsigned char*) val);
       break;
     case cstl_int16:
-      fill_int16((int16_t*) destPosition, (int16_t*)end, *(int16_t*) val);
+      fill_int16((int16_t*) destPosition, (int16_t*) end, *(int16_t*) val);
       break;
     case cstl_uint16:
-      fill_uint16((uint16_t*) destPosition, (uint16_t*)end, *(uint16_t*) val);
+      fill_uint16((uint16_t*) destPosition, (uint16_t*) end, *(uint16_t*) val);
       break;
     case cstl_int32:
-      fill_int32((int32_t*) destPosition, (int32_t*)end, *(int32_t*) val);
+      fill_int32((int32_t*) destPosition, (int32_t*) end, *(int32_t*) val);
       break;
     case cstl_uint32:
-      fill_uint32((uint32_t*) destPosition, (uint32_t*)end, *(uint32_t*) val);
+      fill_uint32((uint32_t*) destPosition, (uint32_t*) end, *(uint32_t*) val);
       break;
     case cstl_int64:
-      fill_int64((int64_t*) destPosition, (int64_t*)end, *(int64_t*) val);
+      fill_int64((int64_t*) destPosition, (int64_t*) end, *(int64_t*) val);
       break;
     case cstl_uint64:
-      fill_uint64((uint64_t*) destPosition, (uint64_t*)end, *(uint64_t*) val);
+      fill_uint64((uint64_t*) destPosition, (uint64_t*) end, *(uint64_t*) val);
       break;
     case cstl_void_pt:
-      fill_uint64((uint64_t*) destPosition, (uint64_t*)end, *(uint64_t*) val);
+      fill_uint64((uint64_t*) destPosition, (uint64_t*) end, *(uint64_t*) val);
       break;
     default:
       if (cpyctor)
@@ -274,31 +274,31 @@ static inline void fill_vec(type_t* type, _byte_t* first, _byte_t* e, void* val)
   switch (type->_t_typeid)
   {
     case cstl_int8:
-      fill_char((char*) first, (char*)e, *(char*) val);
+      fill_char((char*) first, (char*) e, *(char*) val);
       break;
     case cstl_uint8:
       fill_uchar((unsigned char*) first, e, *(unsigned char*) val);
       break;
     case cstl_int16:
-      fill_int16((int16_t*) first, (int16_t*)e, *(int16_t*) val);
+      fill_int16((int16_t*) first, (int16_t*) e, *(int16_t*) val);
       break;
     case cstl_uint16:
-      fill_uint16((uint16_t*) first, (uint16_t*)e, *(uint16_t*) val);
+      fill_uint16((uint16_t*) first, (uint16_t*) e, *(uint16_t*) val);
       break;
     case cstl_int32:
-      fill_int32((int32_t*) first, (int32_t*)e, *(int32_t*) val);
+      fill_int32((int32_t*) first, (int32_t*) e, *(int32_t*) val);
       break;
     case cstl_uint32:
-      fill_uint32((uint32_t*) first, (uint32_t*)e, *(uint32_t*) val);
+      fill_uint32((uint32_t*) first, (uint32_t*) e, *(uint32_t*) val);
       break;
     case cstl_int64:
-      fill_int64((int64_t*) first, (int64_t*)e, *(int64_t*) val);
+      fill_int64((int64_t*) first, (int64_t*) e, *(int64_t*) val);
       break;
     case cstl_uint64:
-      fill_uint64((uint64_t*) first, (uint64_t*)e, *(uint64_t*) val);
+      fill_uint64((uint64_t*) first, (uint64_t*) e, *(uint64_t*) val);
       break;
     case cstl_void_pt:
-      fill_uint64((uint64_t*) first, (uint64_t*)e, *(uint64_t*) val);
+      fill_uint64((uint64_t*) first, (uint64_t*) e, *(uint64_t*) val);
       break;
     default:
       if (cpyctor)
@@ -1127,27 +1127,27 @@ void vector_erase(random_access_iterator_t* position, bool destruct_element)
       break;
     case cstl_int16:
       for (; first != last; first += tsize, destPosition += tsize)
-        *(short*) destPosition = *(short*) first;
+        *(int16_t*) destPosition = *(short*) first;
       break;
     case cstl_uint16:
       for (; first != last; first += tsize, destPosition += tsize)
-        *(unsigned short*) destPosition = *(unsigned short*) first;
+        *(uint16_t*) destPosition = *(uint16_t*) first;
       break;
     case cstl_int32:
       for (; first != last; first += tsize, destPosition += tsize)
-        *(int*) destPosition = *(int*) first;
+        *(int32_t*) destPosition = *(int32_t*) first;
       break;
     case cstl_uint32:
       for (; first != last; first += tsize, destPosition += tsize)
-        *(unsigned int*) destPosition = *(unsigned int*) first;
+        *(uint32_t*) destPosition = *(uint32_t*) first;
       break;
     case cstl_int64:
       for (; first != last; first += tsize, destPosition += tsize)
-        *(long long*) destPosition = *(long long*) first;
+        *(int64_t*) destPosition = *(int64_t*) first;
       break;
     case cstl_uint64:
       for (; first != last; first += tsize, destPosition += tsize)
-        *(unsigned long long*) destPosition = *(unsigned long long*) first;
+        *(uint64_t*) destPosition = *(uint64_t*) first;
       break;
     case cstl_void_pt:
       for (; first != last; first += tsize, destPosition += tsize)
@@ -1155,14 +1155,28 @@ void vector_erase(random_access_iterator_t* position, bool destruct_element)
       break;
     default:
       for (; first != last; first += tsize, destPosition += tsize)
-        cstl_memcpy(destPosition, first, tsize);
-      // this is move so use shadow copy not typecopy for deepcopy
+        cstl_memcpy(destPosition, first, tsize); // move so use cstl_memcpy as shadow copy
       break;
   }
 
   ((vector_t*) (position->_pt_container))->_pby_finish -= type->_t_typesize;
 }
+void vector_erase_unsort(random_access_iterator_t* position, bool destruct_element)
+{
+  assert(position->_t_pos >= ((vector_t* )(position->_pt_container))->_pby_start);
+  assert(position->_t_pos < ((vector_t* )(position->_pt_container))->_pby_finish);
 
+  type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(position->_pt_container);
+  if (type->_t_typedestroy && destruct_element)
+  {
+    bool ret;
+    type->_t_typedestroy(position->_t_pos, &ret); // destruct the erased element
+  }
+  vector_t* pvec = (vector_t*) (position->_pt_container);
+  pvec->_pby_finish -= type->_t_typesize;
+  if (position->_t_pos != pvec->_pby_finish)
+    cstl_memcpy(position->_t_pos, pvec->_pby_finish, type->_t_typesize);
+}
 void vector_assign_n_v(vector_t* pvec, void* val, size_t elesize)
 {
   assert(vector_is_inited(pvec));
@@ -1260,21 +1274,22 @@ void vector_assign_vector(vector_t* to, vector_t* from)
 
 void vector_erase_range(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct)
 {
+  if (first->_t_pos == last->_t_pos)
+    return;
 
+  vector_t* pvec = ((vector_t*) first->_pt_container);
+  type_t* type = pvec->meta._t_type;
+  vector_create_iterator(end, pvec, pvec->_pby_finish);
+
+  if (destruct && type->_t_typedestroy)
+    destruct_vec(type, first->_t_pos, last->_t_pos);
+
+  cstl_move(last, &end, first);
+  destruct_vec(type, first->_t_pos, pvec->_pby_finish);
+  pvec->_pby_finish -= (size_t) (last->_t_pos - first->_t_pos);
 }
 
-void vector_insert_range(random_access_iterator_t* insertpos, random_access_iterator_t* first,
-    random_access_iterator_t* last)
-{
-
-}
-
-void vector_insert_range_n(random_access_iterator_t* insertpos, input_iterator_t* first, size_t elesize)
-{
-
-}
-
-void vector_erase_range_n(random_access_iterator_t* first, size_t n, bool destruct)
+void vector_insert_range(random_access_iterator_t* insertpos, input_iterator_t* first, input_iterator_t* last)
 {
 
 }
@@ -1375,74 +1390,8 @@ void vector_assign_range(vector_t* pvec, input_iterator_t * first, input_iterato
   }
 }
 
-#define vector_assign_range_n_aux(itertor_next)\
-if (cpy)\
-{\
-  bool is_opt_assign = true;\
-  for (; s != e && n > 0; s += tsize, n--, itertor_next(first))\
-    cpy(s, first->_t_pos, &is_opt_assign);\
-} else\
-{\
-  for (; s != e && n > 0; s += tsize, itertor_next(first))\
-    cstl_memcpy(s, first->_t_pos, tsize);\
-}\
-if (n > 0)\
-{\
-  vector_create_iterator(sitr, to, s);\
-  vector_erase_range_n(&sitr, n, true);\
-} else\
-{\
-  vector_create_iterator(pos, to, to->_pby_finish);\
-  vector_insert_range_n(&pos, first, n);\
-}
-
-void vector_assign_range_n(vector_t* to, input_iterator_t * first, size_t n)
+void vector_assign_array(vector_t* to, _byte_t* elearr, size_t elesize)
 {
-  //todo  need earse() and insert() done
-  assert(vector_is_inited(to));
-  assert(_GET_VECTOR_TYPE_INFO_TYPE(to)->_t_typeid == _ITERATOR_TYPE_INFO_TYPE(first)->_t_typeid);
 
-  if (n == 0)
-    return;
-
-  type_t* type = _GET_VECTOR_TYPE_INFO_TYPE(to);
-  size_t tsize = type->_t_typesize;
-  bfun_t cpy = type->_t_typecopy;
-  _byte_t* s = to->_pby_start;
-  _byte_t* e = to->_pby_finish;
-
-  switch (to->meta._t_containertype)
-  {
-    case _VECTOR_CONTAINER:
-      vector_assign_const_vector_aux(to, first->_t_pos,
-          first->_t_pos + n * _GET_VECTOR_TYPE_INFO_TYPE(to)->_t_typesize);
-      break;
-    case _DEQUE_CONTAINER:
-      break;
-    case _BASIC_STRING_CONTAINER:
-      break;
-    case _LIST_CONTAINER:
-      vector_assign_range_n_aux(vector_iterator_next)
-      break;
-    case _SLIST_CONTAINER:
-      break;
-    case _SET_CONTAINER:
-      break;
-    case _MULTISET_CONTAINER:
-      break;
-    case _MAP_CONTAINER:
-      break;
-    case _MULTIMAP_CONTAINER:
-      break;
-    case _HASH_SET_CONTAINER:
-      break;
-    case _HASH_MULTISET_CONTAINER:
-      break;
-    case _HASH_MAP_CONTAINER:
-      break;
-    case _HASH_MULTIMAP_CONTAINER:
-      break;
-    default:
-      break;
-  }
 }
+

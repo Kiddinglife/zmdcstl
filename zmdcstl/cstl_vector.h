@@ -275,7 +275,7 @@ extern void vector_assign_n_v(vector_t* pvec, void* v, size_t n);
 extern void vector_assign_vector(vector_t* to, vector_t* from);
 extern void vector_assign_const_vector(vector_t* to, const vector_t* from);
 extern void vector_assign_range(vector_t* to, input_iterator_t* first, input_iterator_t* last);
-extern void vector_assign_range_n(vector_t* to, input_iterator_t* first, size_t n);
+extern void vector_assign_array(vector_t* to, _byte_t* elearr, size_t elesize);
 
 extern size_t vector_size(vector_t* cpvec_vector);
 extern size_t vector_capacity(vector_t* cpvec_vector);
@@ -313,13 +313,13 @@ extern void emplace_back(size_t argssize, ...);
 
 extern void vector_insert_range(random_access_iterator_t* insertpos, input_iterator_t* first, input_iterator_t* last);
 extern void vector_insert_range_n(random_access_iterator_t* insertpos, input_iterator_t* first, size_t elesize);
+extern void vector_insert_deep_copy(random_access_iterator_t* insertpos, void* value);
+extern void vector_insert_shadow_copy(random_access_iterator_t* insertpos, void* value);
+extern void vector_insert_array(random_access_iterator_t* insertpos, _byte_t* elearr, size_t elesize);
 
 extern void vector_erase(random_access_iterator_t* position, bool destruct);
 extern void vector_erase_unsort(random_access_iterator_t* position, bool destruct);
 extern void vector_erase_range(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct);
-extern void vector_erase_range_unsort(random_access_iterator_t* first, random_access_iterator_t* last, bool destruct);
-extern void vector_erase_range_n(random_access_iterator_t* first, size_t n, bool destruct);
-extern void vector_erase_range_n_unsort(random_access_iterator_t* first, size_t n, bool destruct);
 
 /**
  * a iterator that points just beyond the end of vector container.
