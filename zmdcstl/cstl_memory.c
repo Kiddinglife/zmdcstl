@@ -467,43 +467,44 @@ int16_t* fill_n_int16(int16_t* first, size_t n, int16_t c)
 }
 #endif
 
-void fill(forward_iterator_t * first, forward_iterator_t * end, void * val)
+void fill(forward_iterator_t * it_first, forward_iterator_t * it_end, void * val)
 {
-	assert(iterator_is_valid(first) && iterator_is_valid(end));
+	assert(iterator_is_valid(it_first) && iterator_is_valid(it_end));
 
-	type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
+	type_t* type = _ITERATOR_TYPE_INFO_TYPE(it_first);
 	bfun_t cpyctor = type->_t_typecopy;
+  _byte_t* e = it_end->_t_pos;
+  _byte_t* first = it_first->_t_pos;
 
-	if (_ITERATOR_TYPE(first) == _RANDOM_ACCESS_ITERATOR)
+	if (_ITERATOR_TYPE(it_first) == _RANDOM_ACCESS_ITERATOR)
 	{
-		_byte_t* e = end->_t_pos;
 		switch (type->_t_typeid) {
 		case cstl_int8:
-			fill_char((char*)first, e, *(char*)val);
+			fill_char((char*)first, (char*)e, *(char*)val);
 			break;
 		case cstl_uint8:
 			fill_uchar((unsigned char*)first, e, *(unsigned char*)val);
 			break;
 		case cstl_int16:
-			fill_int16((int16_t*)first, e, *(int16_t*)val);
+			fill_int16((int16_t*)first, (int16_t*)e, *(int16_t*)val);
 			break;
 		case cstl_uint16:
-			fill_uint16((uint16_t*)first, e, *(uint16_t*)val);
+			fill_uint16((uint16_t*)first, (uint16_t*)e, *(uint16_t*)val);
 			break;
 		case cstl_int32:
-			fill_int32((int32_t*)first, e, *(int32_t*)val);
+			fill_int32((int32_t*)first, (int32_t*)e, *(int32_t*)val);
 			break;
 		case cstl_uint32:
-			fill_uint32((uint32_t*)first, e, *(uint32_t*)val);
+			fill_uint32((uint32_t*)first, (uint32_t*)e, *(uint32_t*)val);
 			break;
 		case cstl_int64:
-			fill_int64((int64_t*)first, e, *(int64_t*)val);
+			fill_int64((int64_t*)first, (int64_t*)e, *(int64_t*)val);
 			break;
 		case cstl_uint64:
-			fill_uint64((uint64_t*)first, e, *(uint64_t*)val);
+			fill_uint64((uint64_t*)first, (uint64_t*)e, *(uint64_t*)val);
 			break;
 		case cstl_void_pt:
-			fill_uint64((uint64_t*)first, e, *(uint64_t*)val);
+			fill_uint64((uint64_t*)first, (uint64_t*)e, *(uint64_t*)val);
 			break;
 		default:
 			if (cpyctor)
@@ -524,25 +525,25 @@ void fill(forward_iterator_t * first, forward_iterator_t * end, void * val)
 	}
 	else
 	{
-		iterator_pre_t next = _ITERATOR_META_TYPE(first)->iterator_next;
-		iterator_dref_t dref = _ITERATOR_META_TYPE(first)->iterator_dref;
-		iterator_equal_t equal = _ITERATOR_META_TYPE(first)->iterator_equal;
+		iterator_pre_t next = _ITERATOR_META_TYPE(it_first)->iterator_next;
+		iterator_dref_t dref = _ITERATOR_META_TYPE(it_first)->iterator_dref;
+		iterator_equal_t equal = _ITERATOR_META_TYPE(it_first)->iterator_equal;
 		if (cpyctor)
 		{
 			bool assign = true;
-			while (!equal(first, end))
+			while (!equal(it_first, it_end))
 			{
-				cpyctor(dref(first), val, &assign);
-				next(first);
+				cpyctor(dref(it_first), val, &assign);
+				next(it_first);
 			}
 		}
 		else
 		{
 			size_t tsize = type->_t_typesize;
-			while (!equal(first, end))
+			while (!equal(it_first, it_end))
 			{
-				cstl_memcpy(dref(first), val, tsize);
-				next(first);
+				cstl_memcpy(dref(it_first), val, tsize);
+				next(it_first);
 		}
 	}
 }

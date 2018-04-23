@@ -21,9 +21,7 @@ void _type_less_default(const void* cpv_first, const void* cpv_second, void* pv_
 }
 void _type_destroy_default(const void* cpv_input, void* pv_output)
 {
-  void* pv_avoidwarning = NULL;
   assert(cpv_input != NULL && pv_output != NULL);
-  pv_avoidwarning = (void*) cpv_input;
   *(bool*) pv_output = true;
 }
 

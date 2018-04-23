@@ -175,23 +175,23 @@ typedef void (*iterator_pre_n_t)(iterator_t*, size_t);
 
 typedef struct _tagmeta
 {
-containertype_t _t_containertype;
-iteratortype_t _t_iteratortype_t;
-type_info_t _t_typeinfo;
-type_t* _t_type;
-iterator_dref_t iterator_dref;
-iterator_equal_t iterator_equal;
-iterator_distance_t iterator_distance;
-iterator_next_t iterator_next;
-iterator_pre_t iterator_pre;
-iterator_next_n_t iterator_next_n;
-iterator_pre_n_t iterator_pre_n;
+  containertype_t _t_containertype;
+  iteratortype_t _t_iteratortype_t;
+  type_info_t _t_typeinfo;
+  type_t* _t_type;
+  iterator_dref_t iterator_dref;
+  iterator_equal_t iterator_equal;
+  iterator_distance_t iterator_distance;
+  iterator_next_t iterator_next;
+  iterator_pre_t iterator_pre;
+  iterator_next_n_t iterator_next_n;
+  iterator_pre_n_t iterator_pre_n;
 } meta_t;
 
 typedef struct _tagrange
 {
-iterator_t* it_begin;
-iterator_t* it_end;
+  iterator_t* it_begin;
+  iterator_t* it_end;
 } range_t;
 
 /* declaration five iterator type */
@@ -202,19 +202,19 @@ typedef forward_iterator_t bidirectional_iterator_t;
 typedef bidirectional_iterator_t random_access_iterator_t;
 
 /* declaration four iterator adapters */
-  /// reverse_iterator
-  ///
-  /// From the C++ standard:
-  /// Bidirectional and random access iterators have corresponding reverse
-  /// iterator adaptors that iterate through the data structure in the
-  /// opposite direction. They have the same signatures as the corresponding
-  /// iterators. The fundamental relation between a reverse iterator and its
-  /// corresponding iterator i is established by the identity:
-  ///     &*(reverse_iterator(i)) == &*(i - 1).
-  /// This mapping is dictated by the fact that while there is always a pointer
-  /// past the end of an array, there might not be a valid pointer before the
-  /// beginning of an array.
-  ///
+/// reverse_iterator
+///
+/// From the C++ standard:
+/// Bidirectional and random access iterators have corresponding reverse
+/// iterator adaptors that iterate through the data structure in the
+/// opposite direction. They have the same signatures as the corresponding
+/// iterators. The fundamental relation between a reverse iterator and its
+/// corresponding iterator i is established by the identity:
+///     &*(reverse_iterator(i)) == &*(i - 1).
+/// This mapping is dictated by the fact that while there is always a pointer
+/// past the end of an array, there might not be a valid pointer before the
+/// beginning of an array.
+///
 typedef iterator_t reverse_iterator_t;
 typedef output_iterator_t insert_iterator_t;
 typedef input_iterator_t istream_iterator_t;
@@ -423,7 +423,8 @@ extern void iterator_disadvance(bidirectional_iterator_t* it_iter, size_t n_step
  * @return iterator distance.
  * @remakes two iterator must be valid, otherwise the behavior is undefined.
  */
-extern int iterator_distance(iterator_t* from, iterator_t* to);
+#define iterator_distance(it_first, it_second) \
+((_ITERATOR_META_TYPE(first)->iterator_distance)(it_first, it_second))
 
 #ifdef __cplusplus
 }

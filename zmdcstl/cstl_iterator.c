@@ -471,8 +471,3 @@ void iterator_disadvance(bidirectional_iterator_t* it_iter, size_t n_step)
 		iterator_prev(it_iter);
 }
 
-int iterator_distance(iterator_t* it_first, iterator_t* it_second)
-{
-	assert(iterator_same_type(it_first, it_second));
-	return -1;
-}

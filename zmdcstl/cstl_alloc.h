@@ -61,7 +61,7 @@ extern "C"
 #define cstl_alloc_ex_totaln(align,n) cstl_alloc_(0,0,(n),align)
 #endif
 
-#ifndef cstl_free(p)
+#ifndef cstl_free
 #define cstl_free(p) if(p) free(*((void**) p - 1))
 #endif
 
