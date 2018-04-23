@@ -105,6 +105,7 @@ static void func_copy_user_defined_type_init_destroy_copy_less(const void* in, c
 {
   if (in == in_)
     return;
+
   if (*(bool*) is_copy__assign)
     cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
 

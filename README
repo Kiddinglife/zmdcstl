@@ -1,5 +1,11 @@
 zmdcstl is a data structure  and algorithm library that mimic c++ stl. 
+
 Bugs, support requests, and feature requests are welcome.
+
+Below are comparisons  results between c++ stl and zmdcstl:
+currently without fully optimised, in average zmdcstl slower 
+by 10% than c++stl in some tests cases. in some other test cases, 
+zmdcstl can be faster than c++stl.
 
 benchmark_vector:
 zmdcstlvec:0.000255ms, stdvec:0ms, ratio: inf
@@ -38,3 +44,5 @@ PASS benchmark_vector_reserve:  (6465 ticks, 6.465 sec)
 
 Total: 11 tests (39771 ticks, 39.771 sec), 0 assertions
 Pass: 11, fail: 0, skip: 0.
+
+Enjoy coding, cheers !
