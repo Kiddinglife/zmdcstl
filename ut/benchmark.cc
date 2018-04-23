@@ -481,9 +481,10 @@ int main(int argc, char **argv)
 
   /* command-line options, initialization. */
   GREATEST_MAIN_BEGIN();
+  printf("elements size used in all test cases: 5M\n");
   /* Individual tests can be run directly in main, outside of suites. */
-  RUN_TEST(how_std_vector_opt_assign_works);
-  RUN_TEST(how_std_fill_n_works);
+  //RUN_TEST(how_std_vector_opt_assign_works);
+  //RUN_TEST(how_std_fill_n_works);
   /* Tests can also be gathered into test suites. */
   RUN_SUITE(benchmark_vector);
   GREATEST_MAIN_END(); /* display results */
