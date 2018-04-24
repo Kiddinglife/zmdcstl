@@ -13,10 +13,11 @@ extern "C"
 // if all same f1=l1 else f1 points to unsame element fist2 also points to unsame element
 extern bool cstl_equal(input_iterator_t* first1, input_iterator_t* last1, input_iterator_t* first2);
 /**
+ *
  * Moves the elements from the range [first, last), to another range ending at d_last.
  * The elements are moved in reverse order (the last element is moved first), but their
- * relative order is preserved. The behavior is undefined if d_last is within (first, last].
- * cstl_move must be used instead of cstl_move_backward in that case.
+ * relative order is preserved. The behavior is undefined if the ending position of
+ * d_last is within (first, last]. cstl_move must be used instead of cstl_move_backward in that case.
  *
  * @param first-last
  * the range of the elements to move
@@ -26,6 +27,9 @@ extern bool cstl_equal(input_iterator_t* first1, input_iterator_t* last1, input_
  *
  * @return
  * Iterator in the destination range, pointing at the last element moved.
+ *
+ * @remark
+ * this function assumes that the initial start-moving d_last is
  */
 extern void cstl_move_backward(bidirectional_iterator_t* first, bidirectional_iterator_t* last,
     bidirectional_iterator_t* d_last);

@@ -452,8 +452,7 @@ TEST how_std_vector_opt_assign_works(void)
 
 bfun_t mytype_get_func(int funcid)
 {
-  switch (funcid)
-  {
+  switch (funcid) {
     case 0:
       return func_less_user_defined_type_init0_destroy0_copy0_less;
       break;
@@ -467,6 +466,42 @@ TEST how_std_fill_n_works(void)
   user_defined_type_init_destroy_copy_less v3;
   std::vector<user_defined_type_init_destroy_copy_less> v { v1, v2 };
   std::fill_n(v.begin(), 1, v3); // fill_n will internally call opt assign
+  PASS();
+}
+TEST how_std_move_and_move_backwards_work(void)
+{
+  std::vector<int> src { 0, 1, 2, 3, 4 };
+  std::vector<int> dest { 5, 6, 7, 8 };
+
+  std::cout << "src: ";
+  for (const auto &s : src)
+  {
+    std::cout << s << ' ';
+  }
+  std::cout << "\ndest: ";
+  for (const auto &s : dest)
+  {
+    std::cout << s << ' ';
+  }
+  std::cout << '\n';
+
+  auto itr = std::move_backward(src.begin() + 1, src.end() - 1, src.end());
+  // this can apprive iter is pointing to the second 1
+  std::cout << *itr << "\n"; // print 1
+  itr++;
+  std::cout << *(itr) << "\n"; // print 2
+
+  std::cout << "src: ";
+  for (const auto &s : src)
+  {
+    std::cout << s << ' ';
+  }
+  std::cout << "\ndest: ";
+  for (const auto &s : dest)
+  {
+    std::cout << s << ' ';
+  }
+  std::cout << '\n';
   PASS();
 }
 int main(int argc, char **argv)
@@ -483,9 +518,10 @@ int main(int argc, char **argv)
   /* command-line options, initialization. */
   GREATEST_MAIN_BEGIN();
   printf("elements size used in all test cases: 5M\n");
-  /* Individual tests can be run directly in main, outside of suites. */
-  //RUN_TEST(how_std_vector_opt_assign_works);
-  //RUN_TEST(how_std_fill_n_works);
+  /* Individual tests can be run directly in main, outside of suites.*/
+  RUN_TEST(how_std_vector_opt_assign_works);
+  RUN_TEST(how_std_fill_n_works);
+  RUN_TEST(how_std_move_and_move_backwards_work);
   /* Tests can also be gathered into test suites. */
   RUN_SUITE(benchmark_vector);
   GREATEST_MAIN_END(); /* display results */
