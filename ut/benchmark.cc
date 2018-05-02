@@ -43,12 +43,14 @@ static void func_less_user_defined_type_init0_destroy0_copy0_less(const void* in
 struct user_defined_type_init_destroy_copy_less
 {
     int a;
+    int id;
     // no deep copy and so copy function cam be NULL
     int* b;
     char c[32];
 
     user_defined_type_init_destroy_copy_less()
     {
+      id = 0;
       a = 100;
       b = cstl_alloc(int, a);
       //b = (int*)malloc(a*sizeof(int));
@@ -61,33 +63,47 @@ struct user_defined_type_init_destroy_copy_less
     {
       if (this == &x)
         return;
-
+      id = x.id;
       a = x.a;
       b = cstl_alloc(int, a);
       //printf("cpy ctor called, x.a=%d,x.b=%p,x.c[0]=%d, this->b=%p\n", x.a, x.b, x.c[0], b);
       cstl_memcpy(b, x.b, a * sizeof(int));
       cstl_memcpy(c, x.c, 32);
+      std::cout << "cpt ctor called, id=" << id << ", b=" << b << std::endl;
     }
+
     void operator =(const user_defined_type_init_destroy_copy_less &x)
     {
       if (this == &x)
         return;
-
+      std::cout << "opt= called, id=" << id << "<-x.id=" << x.id;
       a = x.a;
-      //printf("operator = called, this->b=%p, x.b=%p,\n", b, x.b);
+      id = x.id;
       // cannot use this as std earse will call detor of last element ehich causes double free o last element
       // this is something std should improve because we do not need to deep copy all moved elements shadow cpy is enough
       //b = x.b;
+      std::cout << ", free old b=" << b;
       cstl_free(b);
       b = cstl_alloc(int, a);
+      std::cout << ", new b=" << b << std::endl;
       //printf("operator = called, this->b=%p, x.b=%p,\n", b, x.b);
       cstl_memcpy(b, x.b, a * sizeof(int));
       cstl_memcpy(c, x.c, 32);
     }
+    void operator =(user_defined_type_init_destroy_copy_less &&x)
+    {
+      if (this == &x)
+        return;
+      a = x.a;
+      id = x.id;
+      b = x.b;
+      x.b = 0;
+    }
     ~user_defined_type_init_destroy_copy_less()
     {
-      //printf("dtor called, b=%p\n", b);
+      printf("dtor called, id=%d, b=%p\n", id, b);
       cstl_free(b);
+      b = 0;
     }
 };
 static typeid_t user_defined_non_pod_id;
@@ -468,6 +484,26 @@ TEST how_std_fill_n_works(void)
   std::fill_n(v.begin(), 1, v3); // fill_n will internally call opt assign
   PASS();
 }
+TEST how_std_vector_erase_works(void)
+{
+  user_defined_type_init_destroy_copy_less v1;
+  std::vector<user_defined_type_init_destroy_copy_less> myvector;
+  myvector.reserve(10); // reserve void memory alloc
+  for (int i = 1; i <= 5; i++)
+  {
+    v1.id = i;
+    myvector.push_back(v1);
+  }
+  v1.id = 0;
+  // erase the 6th element
+  std::cout << myvector.size() << std::endl;
+  // earse willuse move if  move opt= is given
+  // otherwise it will use copy ctor thas is much slower
+  myvector.erase(myvector.begin());
+  std::cout << myvector.size() << std::endl;
+  PASS();
+}
+
 TEST how_std_move_and_move_backwards_work(void)
 {
   std::vector<int> src { 0, 1, 2, 3, 4 };
@@ -519,11 +555,12 @@ int main(int argc, char **argv)
   GREATEST_MAIN_BEGIN();
   printf("elements size used in all test cases: 5M\n");
   /* Individual tests can be run directly in main, outside of suites.*/
-  RUN_TEST(how_std_vector_opt_assign_works);
-  RUN_TEST(how_std_fill_n_works);
-  RUN_TEST(how_std_move_and_move_backwards_work);
+  //RUN_TEST(how_std_vector_opt_assign_works);
+  //RUN_TEST(how_std_fill_n_works);
+  //RUN_TEST(how_std_move_and_move_backwards_work);
+  RUN_TEST(how_std_vector_erase_works);
   /* Tests can also be gathered into test suites. */
-  RUN_SUITE(benchmark_vector);
+  //RUN_SUITE(benchmark_vector);
   GREATEST_MAIN_END(); /* display results */
 
   destroy_types();

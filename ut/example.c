@@ -577,7 +577,7 @@ TEST test_vector_assign_n_v()
     tmp += _GET_VECTOR_TYPE_SIZE(&pvec_vector);
   }
   vector_dtor(&pvec_vector);
-
+  printf("iamhere\n");
   // branch test: (elesize == vector_capacity) > vector_size
   elesize = 100;
   vector_ctor_n(&pvec_vector, elesize, 1, user_defined_pod_id);
