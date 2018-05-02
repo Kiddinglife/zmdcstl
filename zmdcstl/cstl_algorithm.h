@@ -43,7 +43,7 @@ extern void cstl_move_backward(bidirectional_iterator_t* first, bidirectional_it
  * the range of elements to move
  *
  * @param d_first
- * the beginning of the destination range. If d_first is within [first, last),
+ * the beginning of the destination range. If the ending d_first is within [first, last),
  * cstl_move_backward must be used instead of move.
  *
  * @return
