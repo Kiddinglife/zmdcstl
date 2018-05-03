@@ -116,8 +116,9 @@ msvc/.vs
 *.db
 # Executables
 *.out
-*.app
-
+*.app64
+/Debug
+/Release
 # virtual studio temp files
 *.suo
 *.pdf
