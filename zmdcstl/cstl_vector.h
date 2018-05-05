@@ -298,12 +298,10 @@ extern void vector_shrink_to_fit(vector_t* cpvec_vector);
 
 #define vector_data(cpvec_vector) ((cpvec_vector)->_pby_start)
 #define vector_at(pvec, position) ((pvec)->_pby_start + position * _GET_VECTOR_TYPE_INFO_TYPE((pvec))->_t_typesize)
-
 #define vector_front(eletype,pvec) ((eletype*)((pvec)->_pby_start))
-#define vector_back(eletype,cpvec_vector) \
-((eletype*)((cpvec_vector)->_pby_finish - _GET_VECTOR_TYPE_SIZE((cpvec_vector))))
+#define vector_back(eletype,cpvec_vector) ((eletype*)((cpvec_vector)->_pby_finish - _GET_VECTOR_TYPE_SIZE((cpvec_vector))))
 
-extern void* vector_push_back();
+extern void* vector_push_back(vector_t* cpvec_vector);
 extern void vector_push_back_v(vector_t* cpvec_vector, void* value);
 extern void* vector_push_back_v_placement(vector_t* cpvec_vector);
 extern void vector_pop_back(vector_t* cpvec_vector);
@@ -313,8 +311,8 @@ extern void emplace_back(size_t argssize, ...);
 
 extern void vector_insert_range(random_access_iterator_t* insertpos, input_iterator_t* first, input_iterator_t* last);
 extern void vector_insert_range_n(random_access_iterator_t* insertpos, input_iterator_t* first, size_t elesize);
-extern void vector_insert_deep_copy(random_access_iterator_t* insertpos, void* value);
-extern void vector_insert_shadow_copy(random_access_iterator_t* insertpos, void* value);
+extern void vector_insert_v_copy(random_access_iterator_t* insertpos, void* value);
+extern void vector_insert_v_move(random_access_iterator_t* insertpos, void* value);
 extern void vector_insert_array(random_access_iterator_t* insertpos, _byte_t* elearr, size_t elesize);
 
 extern void vector_erase(random_access_iterator_t* position, bool destruct);
