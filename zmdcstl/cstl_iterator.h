@@ -173,19 +173,24 @@ typedef void (*iterator_pre_t)(iterator_t*);
 typedef void (*iterator_next_n_t)(iterator_t*, size_t);
 typedef void (*iterator_pre_n_t)(iterator_t*, size_t);
 
+typedef struct _tagiterator_funs
+{
+	iterator_dref_t iterator_dref;
+	iterator_equal_t iterator_equal;
+	iterator_distance_t iterator_distance;
+	iterator_next_t iterator_next;
+	iterator_pre_t iterator_pre;
+	iterator_next_n_t iterator_next_n;
+	iterator_pre_n_t iterator_pre_n;
+}iterator_funs_t;
+
 typedef struct _tagmeta
 {
   containertype_t _t_containertype;
   iteratortype_t _t_iteratortype_t;
   type_info_t _t_typeinfo;
   type_t* _t_type;
-  iterator_dref_t iterator_dref;
-  iterator_equal_t iterator_equal;
-  iterator_distance_t iterator_distance;
-  iterator_next_t iterator_next;
-  iterator_pre_t iterator_pre;
-  iterator_next_n_t iterator_next_n;
-  iterator_pre_n_t iterator_pre_n;
+  iterator_funs_t* _t_iterator_funs;
 } meta_t;
 
 typedef struct _tagrange

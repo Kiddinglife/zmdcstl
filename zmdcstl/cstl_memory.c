@@ -59,9 +59,9 @@ void destruct(forward_iterator_t* first, forward_iterator_t* last)
 	ufun_t dtor = _ITERATOR_TYPE_INFO_TYPE(first)->_t_typedestroy;
 	if (dtor)
 	{
-		iterator_pre_t next = _ITERATOR_META_TYPE(first)->iterator_next;
-		iterator_dref_t dref = _ITERATOR_META_TYPE(first)->iterator_dref;
-		iterator_equal_t equal = _ITERATOR_META_TYPE(first)->iterator_equal;
+		iterator_pre_t next = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_next;
+		iterator_dref_t dref = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_dref;
+		iterator_equal_t equal = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_equal;
 		bool ret;
 		for (; !equal(first, last); next(first))
 		{
@@ -75,8 +75,8 @@ void destruct_n(forward_iterator_t* first, int n)
 	ufun_t dtor = _ITERATOR_TYPE_INFO_TYPE(first)->_t_typedestroy;
 	if (dtor)
 	{
-		iterator_pre_t next = _ITERATOR_META_TYPE(first)->iterator_next;
-		iterator_dref_t dref = _ITERATOR_META_TYPE(first)->iterator_dref;
+		iterator_pre_t next = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_next;
+		iterator_dref_t dref = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_dref;
 		bool ret = false;
 		for (; n > 0; n--, next(first))
 			dtor(dref(first), &ret);
@@ -179,12 +179,12 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward
 	type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
 	bfun_t cpy = type->_t_typecopy;
 
-	iterator_pre_t next = _ITERATOR_META_TYPE(first)->iterator_next;
-	iterator_dref_t dref = _ITERATOR_META_TYPE(first)->iterator_dref;
-	iterator_equal_t equal = _ITERATOR_META_TYPE(first)->iterator_equal;
+	iterator_pre_t next = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_next;
+	iterator_dref_t dref = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_dref;
+	iterator_equal_t equal = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_equal;
 
-	iterator_pre_t result_next = _ITERATOR_META_TYPE(result)->iterator_next;
-	iterator_dref_t result_dref = _ITERATOR_META_TYPE(result)->iterator_dref;
+	iterator_pre_t result_next = _ITERATOR_META_TYPE(result)->_t_iterator_funs->iterator_next;
+	iterator_dref_t result_dref = _ITERATOR_META_TYPE(result)->_t_iterator_funs->iterator_dref;
 
 	if (!cpy)
 	{
@@ -224,11 +224,11 @@ void uninitialized_copy_n(input_iterator_t* first, size_t n, forward_iterator_t*
 	type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
 	bfun_t cpy = type->_t_typecopy;
 
-	iterator_pre_t next = _ITERATOR_META_TYPE(first)->iterator_next;
-	iterator_dref_t dref = _ITERATOR_META_TYPE(first)->iterator_dref;
+	iterator_pre_t next = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_next;
+	iterator_dref_t dref = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_dref;
 
-	iterator_pre_t result_next = _ITERATOR_META_TYPE(result)->iterator_next;
-	iterator_dref_t result_dref = _ITERATOR_META_TYPE(result)->iterator_dref;
+	iterator_pre_t result_next = _ITERATOR_META_TYPE(result)->_t_iterator_funs->iterator_next;
+	iterator_dref_t result_dref = _ITERATOR_META_TYPE(result)->_t_iterator_funs->iterator_dref;
 
 	if (!cpy)
 	{
@@ -323,8 +323,8 @@ void fill_n(output_iterator_t* from, size_t n, void* val)
 	}
 	else
 	{
-		iterator_pre_t next = _ITERATOR_META_TYPE(from)->iterator_next;
-		iterator_dref_t dref = _ITERATOR_META_TYPE(from)->iterator_dref;
+		iterator_pre_t next = _ITERATOR_META_TYPE(from)->_t_iterator_funs->iterator_next;
+		iterator_dref_t dref = _ITERATOR_META_TYPE(from)->_t_iterator_funs->iterator_dref;
 		if (cpyctor)
 		{
 			bool is_copy_assign = true;
@@ -525,9 +525,9 @@ void fill(forward_iterator_t * it_first, forward_iterator_t * it_end, void * val
 	}
 	else
 	{
-		iterator_pre_t next = _ITERATOR_META_TYPE(it_first)->iterator_next;
-		iterator_dref_t dref = _ITERATOR_META_TYPE(it_first)->iterator_dref;
-		iterator_equal_t equal = _ITERATOR_META_TYPE(it_first)->iterator_equal;
+		iterator_pre_t next = _ITERATOR_META_TYPE(it_first)->_t_iterator_funs->iterator_next;
+		iterator_dref_t dref = _ITERATOR_META_TYPE(it_first)->_t_iterator_funs->iterator_dref;
+		iterator_equal_t equal = _ITERATOR_META_TYPE(it_first)->_t_iterator_funs->iterator_equal;
 		if (cpyctor)
 		{
 			bool assign = true;

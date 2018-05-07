@@ -4,6 +4,8 @@
 #include "cstl_vector.h"
 #include "cstl_algorithm.h"
 
+static iterator_funs_t  vector_iterator_funs = { 0 };
+
 static inline void destruct_vec(type_t* type, _byte_t* first, _byte_t* end)
 {
 	ufun_t dtor = type->_t_typedestroy;
@@ -344,13 +346,13 @@ bool vector_is_inited(const vector_t* cpvec_vector)
 		return false;
 	if (cpvec_vector->meta._t_iteratortype_t != _RANDOM_ACCESS_ITERATOR)
 		return false;
-	if (cpvec_vector->meta.iterator_dref != vector_iterator_dref)
+	if (cpvec_vector->meta._t_iterator_funs->iterator_dref != vector_iterator_dref)
 		return false;
-	if (cpvec_vector->meta.iterator_equal != vector_iterator_equal)
+	if (cpvec_vector->meta._t_iterator_funs->iterator_equal != vector_iterator_equal)
 		return false;
-	if (cpvec_vector->meta.iterator_next != vector_iterator_next)
+	if (cpvec_vector->meta._t_iterator_funs->iterator_next != vector_iterator_next)
 		return false;
-	if (cpvec_vector->meta.iterator_next != vector_iterator_next)
+	if (cpvec_vector->meta._t_iterator_funs->iterator_next != vector_iterator_next)
 		return false;
 	return true;
 }
@@ -517,6 +519,20 @@ size_t vector_iterator_minus(vector_iterator_t* it_first, vector_iterator_t* it_
 	return (_VECTOR_ITERATOR_COREPOS(it_second) - _VECTOR_ITERATOR_COREPOS(it_first))
 		/ (int)_GET_VECTOR_TYPE_SIZE(_VECTOR_ITERATOR_CONTAINER(it_first));
 }
+
+static inline vector_fill_iterator_funs()
+{
+	if (vector_iterator_funs.iterator_distance == NULL)
+	{
+		vector_iterator_funs.iterator_dref = vector_iterator_dref;
+		vector_iterator_funs.iterator_equal = vector_iterator_equal;
+		vector_iterator_funs.iterator_distance = vector_iterator_distance;
+		vector_iterator_funs.iterator_next = vector_iterator_next;
+		vector_iterator_funs.iterator_pre = vector_iterator_prev;
+		vector_iterator_funs.iterator_next_n = vector_iterator_next_n;
+		vector_iterator_funs.iterator_pre_n = vector_iterator_prev_n;
+	}
+}
 void vector_ctor(vector_t* pvec_vector, size_t size, ...)
 {
 	// map_t<vector_t<int>, list<string>>
@@ -537,15 +553,9 @@ void vector_ctor(vector_t* pvec_vector, size_t size, ...)
 	pvec_vector->meta._t_containertype = _VECTOR_CONTAINER;
 	pvec_vector->meta._t_iteratortype_t = _RANDOM_ACCESS_ITERATOR;
 	pvec_vector->meta._t_typeinfo._t_typeidsize = size;
-	pvec_vector->meta.iterator_equal = vector_iterator_equal;
-	pvec_vector->meta.iterator_next = vector_iterator_next;
-	pvec_vector->meta.iterator_next_n = vector_iterator_next_n;
-	pvec_vector->meta.iterator_pre = vector_iterator_prev;
-	pvec_vector->meta.iterator_pre_n = vector_iterator_prev_n;
-	pvec_vector->meta.iterator_dref = vector_iterator_dref;
-	pvec_vector->meta.iterator_distance = vector_iterator_distance;
+	vector_fill_iterator_funs();
+	pvec_vector->meta._t_iterator_funs = &vector_iterator_funs;
 	pvec_vector->meta._t_type = _INIT_VECTOR_TYPE_INFO_TYPE(pvec_vector);
-
 	pvec_vector->_pby_finish = pvec_vector->_pby_start = pvec_vector->_pby_endofstorage = NULL;
 }
 void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
@@ -566,13 +576,8 @@ void vector_ctor_n(vector_t* pvec_vector, size_t elesize, size_t size, ...)
 	pvec_vector->meta._t_containertype = _VECTOR_CONTAINER;
 	pvec_vector->meta._t_iteratortype_t = _RANDOM_ACCESS_ITERATOR;
 	pvec_vector->meta._t_typeinfo._t_typeidsize = size;
-	pvec_vector->meta.iterator_equal = vector_iterator_equal;
-	pvec_vector->meta.iterator_next = vector_iterator_next;
-	pvec_vector->meta.iterator_next_n = vector_iterator_next_n;
-	pvec_vector->meta.iterator_pre = vector_iterator_prev;
-	pvec_vector->meta.iterator_pre_n = vector_iterator_prev_n;
-	pvec_vector->meta.iterator_dref = vector_iterator_dref;
-	pvec_vector->meta.iterator_distance = vector_iterator_distance;
+	vector_fill_iterator_funs();
+	pvec_vector->meta._t_iterator_funs = &vector_iterator_funs;
 	pvec_vector->meta._t_type = _INIT_VECTOR_TYPE_INFO_TYPE(pvec_vector);
 
 	type_t* type = pvec_vector->meta._t_type;
@@ -600,13 +605,8 @@ void vector_ctor_n_v(vector_t* pvec_vector, size_t elesize, void* val, size_t si
 	pvec_vector->meta._t_containertype = _VECTOR_CONTAINER;
 	pvec_vector->meta._t_iteratortype_t = _RANDOM_ACCESS_ITERATOR;
 	pvec_vector->meta._t_typeinfo._t_typeidsize = size;
-	pvec_vector->meta.iterator_equal = vector_iterator_equal;
-	pvec_vector->meta.iterator_next = vector_iterator_next;
-	pvec_vector->meta.iterator_next_n = vector_iterator_next_n;
-	pvec_vector->meta.iterator_pre = vector_iterator_prev;
-	pvec_vector->meta.iterator_pre_n = vector_iterator_prev_n;
-	pvec_vector->meta.iterator_dref = vector_iterator_dref;
-	pvec_vector->meta.iterator_distance = vector_iterator_distance;
+	vector_fill_iterator_funs();
+	pvec_vector->meta._t_iterator_funs = &vector_iterator_funs;
 	pvec_vector->meta._t_type = _INIT_VECTOR_TYPE_INFO_TYPE(pvec_vector);
 	type_t* type = pvec_vector->meta._t_type;
 	size = type->_t_typesize * elesize;
@@ -633,13 +633,8 @@ void vector_ctor_array(vector_t* pvec_vector, size_t elesize, void* array, size_
 	pvec_vector->meta._t_containertype = _VECTOR_CONTAINER;
 	pvec_vector->meta._t_iteratortype_t = _RANDOM_ACCESS_ITERATOR;
 	pvec_vector->meta._t_typeinfo._t_typeidsize = size;
-	pvec_vector->meta.iterator_equal = vector_iterator_equal;
-	pvec_vector->meta.iterator_next = vector_iterator_next;
-	pvec_vector->meta.iterator_next_n = vector_iterator_next_n;
-	pvec_vector->meta.iterator_pre = vector_iterator_prev;
-	pvec_vector->meta.iterator_pre_n = vector_iterator_prev_n;
-	pvec_vector->meta.iterator_dref = vector_iterator_dref;
-	pvec_vector->meta.iterator_distance = vector_iterator_distance;
+	vector_fill_iterator_funs();
+	pvec_vector->meta._t_iterator_funs = &vector_iterator_funs;
 	pvec_vector->meta._t_type = _INIT_VECTOR_TYPE_INFO_TYPE(pvec_vector);
 	type_t* type = pvec_vector->meta._t_type;
 	size = type->_t_typesize * elesize;
@@ -661,7 +656,7 @@ void vector_ctor_range(vector_t* pvec_vector, forward_iterator_t* first, forward
 		memcpy(pvec_vector->meta._t_typeinfo.typeids_ptr,
 			_ITERATOR_TYPE_INFO(first).typeids_ptr, size);
 	}
-	size = (_ITERATOR_META_TYPE(first)->iterator_distance)(first, last);
+	size = (_ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_distance)(first, last);
 	if (size == 0)
 	{
 		pvec_vector->_pby_start = pvec_vector->_pby_finish = pvec_vector->_pby_endofstorage = NULL;
@@ -1331,4 +1326,3 @@ void vector_assign_array(vector_t* to, _byte_t* elearr, size_t elesize)
 {
 
 }
-
