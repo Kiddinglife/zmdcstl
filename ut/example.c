@@ -10,7 +10,7 @@ typedef struct
   char c[32];
 } user_defined_type_init0_destroy0_copy0_less;
 static typeid_t user_defined_pod_id;
-static int func_less_user_defined_type_init0_destroy0_copy0_less(void* in, const void* in_)
+static int func_less_user_defined_type_init0_destroy0_copy0_less(void* in, void* in_)
 {
   int a = ((user_defined_type_init0_destroy0_copy0_less*) in)->a;
   int b = ((user_defined_type_init0_destroy0_copy0_less*) in_)->a;
@@ -967,11 +967,6 @@ int main(int argc, char **argv)
   user_defined_pod_id = register_type(sizeof(user_defined_type_init0_destroy0_copy0_less),
   CSTL_ALIGN_OF(user_defined_type_init0_destroy0_copy0_less), 0, 0, 0, 0, 0, 0, 0,
       func_less_user_defined_type_init0_destroy0_copy0_less);
-  /**
-   * dtor_t dtor, ctor_default_t ctor_default,
-   ctor_custom_t ctor_custom, ctor_copy_t ctor_copy, ctor_move_t ctor_move, opt_assign_copy_t opt_assign_copy,
-   opt_assign_move_t opt_assign_move, compare_t compare)
-   */
   user_defined_non_pod_id = register_type(sizeof(user_defined_type_init_destroy_copy_less),
   CSTL_ALIGN_OF(user_defined_type_init_destroy_copy_less), func_destroy_user_defined_type_init_destroy_copy_less,
       func_init_user_defined_type_init_destroy_copy_less, 0, func_ctor_copy_user_defined_type_init_destroy_copy_less,
