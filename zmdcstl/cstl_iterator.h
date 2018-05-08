@@ -118,6 +118,7 @@ typedef enum _tagcontainertype
   _HASH_MULTISET_CONTAINER,
   _HASH_MAP_CONTAINER,
   _HASH_MULTIMAP_CONTAINER,
+  _IOSTREAM_CONTAINER,
 } containertype_t;
 
 /* iterator type */

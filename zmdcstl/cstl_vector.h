@@ -274,7 +274,8 @@ extern void vector_swap(vector_t* pvec_first, vector_t* pvec_second);
 extern void vector_assign_n_v(vector_t* pvec, void* v, size_t n);
 extern void vector_assign_vector(vector_t* to, vector_t* from);
 extern void vector_assign_const_vector(vector_t* to, const vector_t* from);
-extern void vector_assign_range(vector_t* to, input_iterator_t* first, input_iterator_t* last);
+extern void vector_assign_range_copy(vector_t* to, input_iterator_t* first, input_iterator_t* last);
+extern void vector_assign_range_move(vector_t* to, input_iterator_t* first, input_iterator_t* last);
 extern void vector_assign_array(vector_t* to, _byte_t* elearr, size_t elesize);
 
 extern size_t vector_size(vector_t* cpvec_vector);
@@ -309,7 +310,8 @@ extern void vector_pop_back(vector_t* cpvec_vector);
 extern void emplace(random_access_iterator_t* pos, size_t argssize, ...);
 extern void emplace_back(size_t argssize, ...);
 
-extern void vector_insert_range(random_access_iterator_t* insertpos, input_iterator_t* first, input_iterator_t* last);
+extern void vector_insert_range_copy(random_access_iterator_t* insertpos, input_iterator_t* first, input_iterator_t* last);
+extern void vector_insert_range_move(random_access_iterator_t* insertpos, input_iterator_t* first, input_iterator_t* last);
 extern void vector_insert_range_n(random_access_iterator_t* insertpos, input_iterator_t* first, size_t elesize);
 extern void vector_insert_v_copy(random_access_iterator_t* insertpos, void** value);
 extern void vector_insert_v_move(random_access_iterator_t* insertpos, void** value);
