@@ -311,8 +311,8 @@ extern void emplace_back(size_t argssize, ...);
 
 extern void vector_insert_range(random_access_iterator_t* insertpos, input_iterator_t* first, input_iterator_t* last);
 extern void vector_insert_range_n(random_access_iterator_t* insertpos, input_iterator_t* first, size_t elesize);
-extern void vector_insert_v_copy(random_access_iterator_t* insertpos, void* value);
-extern void vector_insert_v_move(random_access_iterator_t* insertpos, void* value);
+extern void vector_insert_v_copy(random_access_iterator_t* insertpos, void** value);
+extern void vector_insert_v_move(random_access_iterator_t* insertpos, void** value);
 extern void vector_insert_array(random_access_iterator_t* insertpos, _byte_t* elearr, size_t elesize);
 
 extern void vector_erase(random_access_iterator_t* position, bool destruct);
