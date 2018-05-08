@@ -56,81 +56,73 @@ void* align_advance(size_t alignment, size_t size, void* ptr, size_t space, void
 void destruct(forward_iterator_t* first, forward_iterator_t* last)
 {
 	assert(iterator_is_valid(first) && iterator_is_valid(last));
-	ufun_t dtor = _ITERATOR_TYPE_INFO_TYPE(first)->_t_typedestroy;
+	dtor_t dtor = _ITERATOR_TYPE_INFO_TYPE(first)->dtor;
 	if (dtor)
 	{
 		iterator_pre_t next = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_next;
 		iterator_dref_t dref = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_dref;
 		iterator_equal_t equal = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_equal;
-		bool ret;
 		for (; !equal(first, last); next(first))
-		{
-			dtor(dref(first), &ret);
-		}
+			dtor(dref(first));
 	}
 }
 void destruct_n(forward_iterator_t* first, int n)
 {
 	assert(iterator_is_valid(first));
-	ufun_t dtor = _ITERATOR_TYPE_INFO_TYPE(first)->_t_typedestroy;
+	dtor_t dtor = _ITERATOR_TYPE_INFO_TYPE(first)->dtor;
 	if (dtor)
 	{
-		iterator_pre_t next = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_next;
+		iterator_next_t next = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_next;
 		iterator_dref_t dref = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_dref;
-		bool ret = false;
 		for (; n > 0; n--, next(first))
-			dtor(dref(first), &ret);
+			dtor(dref(first));
 	}
 }
 void destruct_at(input_iterator_t* destination)
 {
 	assert(iterator_is_valid(destination));
 	type_t* type = _ITERATOR_TYPE_INFO_TYPE(destination);
-	if (type->_t_typedestroy)
-	{
-		bool ret;
-		type->_t_typedestroy(destination->_t_pos, &ret);
-	}
+  if (type->dtor)
+    type->dtor(destination->_t_pos);
 }
 void destruct_at_vec(type_t* type, _byte_t* destination)
 {
-	if (type->_t_typedestroy)
-	{
-		bool ret;
-		type->_t_typedestroy(destination, &ret);
-	}
+	if (type->dtor)
+		type->dtor(destination);
 }
 
 void uninitialized_default_fill_n(forward_iterator_t* destination, size_t n)
 {
 	assert(iterator_is_valid(destination));
-	bool ret = false;
 	type_t* type = _ITERATOR_TYPE_INFO_TYPE(destination);
-	ufun_t dctor = type->_t_typeinit;
-	if (dctor)
+	size_t tsize = type->_t_typesize;
+	ctor_default_t ctor_default = type->ctor_default;
+  iterator_next_t iterator_next = _ITERATOR_META_TYPE(destination)->_t_iterator_funs->iterator_next;
+	if (ctor_default)
 	{
 		for (; n > 0; n--)
 		{
-			dctor(destination->_t_pos, &ret);
+		  ctor_default(destination->_t_pos);
 			iterator_next(destination);
 		}
 	}
 	else
 	{
 		for (; n > 0; n--, iterator_next(destination))
-			memset(destination->_t_pos, 0, type->_t_typesize);
+			memset(destination->_t_pos, 0, tsize);
 	}
 }
-void uninitialized_fill_n(forward_iterator_t* destination, const void* value, int n)
+void uninitialized_fill_n(forward_iterator_t* destination, void* value, int n)
 {
 	assert(iterator_is_valid(destination));
 	type_t* type = _ITERATOR_TYPE_INFO_TYPE(destination);
+	iterator_next_t iterator_next = _ITERATOR_META_TYPE(destination)->_t_iterator_funs->iterator_next;
 	for (; n > 0; n--)
 	{
-		if (type->_t_typecopy)
+		if (type->ctor_copy)
 		{
 			bool ret = false;
-			type->_t_typecopy(destination->_t_pos, value, &ret);
+			type->ctor_copy(destination->_t_pos, value);
 			assert(ret);
 		}
 		else
@@ -144,25 +136,23 @@ void uninitialized_fill_n(forward_iterator_t* destination, const void* value, in
 void uninitialized_default_fill(forward_iterator_t* first, forward_iterator_t* last)
 {
 	assert(iterator_is_valid(first) && iterator_is_valid(last));
-	bool ret = false;
 	type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
 	for (; !iterator_equal(first, last); iterator_next(first))
 	{
-		if (type->_t_typeinit)
-			type->_t_typeinit(first->_t_pos, &ret);
+		if (type->ctor_default)
+			type->ctor_default(first->_t_pos);
 		else
 			memset(first->_t_pos, 0, type->_t_typesize);
 	}
 }
-void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last, const void* value)
+void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last,  void* value)
 {
 	assert(iterator_is_valid(first) && iterator_is_valid(last));
 	type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
-	if (type->_t_typecopy)
+	if (type->ctor_copy)
 	{
-		bool ret = false;
 		for (; !iterator_equal(first, last); iterator_next(first))
-			type->_t_typecopy(first->_t_pos, value, &ret);
+			type->ctor_copy(first->_t_pos, value);
 	}
 	else
 	{
@@ -177,13 +167,13 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward
 	assert(iterator_same_elem_type(first, last) && iterator_same_elem_type(first, result));
 
 	type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
-	bfun_t cpy = type->_t_typecopy;
+  ctor_copy_t cpy = type->ctor_copy;
 
-	iterator_pre_t next = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_next;
+  iterator_next_t next = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_next;
 	iterator_dref_t dref = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_dref;
 	iterator_equal_t equal = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_equal;
 
-	iterator_pre_t result_next = _ITERATOR_META_TYPE(result)->_t_iterator_funs->iterator_next;
+	iterator_next_t result_next = _ITERATOR_META_TYPE(result)->_t_iterator_funs->iterator_next;
 	iterator_dref_t result_dref = _ITERATOR_META_TYPE(result)->_t_iterator_funs->iterator_dref;
 
 	if (!cpy)
@@ -208,10 +198,9 @@ void uninitialized_copy(input_iterator_t* first, input_iterator_t* last, forward
 	}
 	else
 	{
-		bool is_assign = false;
 		while (!equal(first, last))
 		{
-			cpy(result_dref(result), dref(first), &is_assign);
+			cpy(result_dref(result), dref(first));
 			next(first);
 			result_next(result);
 		}
@@ -222,7 +211,7 @@ void uninitialized_copy_n(input_iterator_t* first, size_t n, forward_iterator_t*
 	assert(iterator_is_valid(first) && iterator_is_valid(result));
 
 	type_t* type = _ITERATOR_TYPE_INFO_TYPE(first);
-	bfun_t cpy = type->_t_typecopy;
+	ctor_copy_t cpy = type->ctor_copy;
 
 	iterator_pre_t next = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_next;
 	iterator_dref_t dref = _ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_dref;
@@ -252,10 +241,9 @@ void uninitialized_copy_n(input_iterator_t* first, size_t n, forward_iterator_t*
 	}
 	else
 	{
-		bool is_assign = false;
 		for (; n > 0; n--)
 		{
-			cpy(result_dref(result), dref(first), &is_assign);
+			cpy(result_dref(result), dref(first));
 			next(first);
 			result_next(result);
 		}
@@ -267,7 +255,7 @@ void fill_n(output_iterator_t* from, size_t n, void* val)
 	assert(iterator_is_valid(from));
 
 	type_t* type = _ITERATOR_TYPE_INFO_TYPE(from);
-	bfun_t cpyctor = type->_t_typecopy;
+  opt_assign_copy_t cpyctor = type->opt_assign_copy;
 
 	if (_ITERATOR_TYPE(from) == _RANDOM_ACCESS_ITERATOR)
 	{
@@ -308,9 +296,8 @@ void fill_n(output_iterator_t* from, size_t n, void* val)
 			size_t tsize = type->_t_typesize;
 			if (cpyctor)
 			{ // heap-allocation inside this struct
-				bool is_copy_assign = true;
 				for (; destPosition != e; destPosition += tsize)
-					cpyctor(destPosition, val, &is_copy_assign);
+					cpyctor(destPosition, val);
 			}
 			else
 			{ // pod struct
@@ -327,10 +314,9 @@ void fill_n(output_iterator_t* from, size_t n, void* val)
 		iterator_dref_t dref = _ITERATOR_META_TYPE(from)->_t_iterator_funs->iterator_dref;
 		if (cpyctor)
 		{
-			bool is_copy_assign = true;
 			for (; n > 0; n--)
 			{
-				cpyctor(dref(from), val, &is_copy_assign);
+				cpyctor(dref(from), val);
 				next(from);
 			}
 		}
@@ -472,7 +458,7 @@ void fill(forward_iterator_t * it_first, forward_iterator_t * it_end, void * val
 	assert(iterator_is_valid(it_first) && iterator_is_valid(it_end));
 
 	type_t* type = _ITERATOR_TYPE_INFO_TYPE(it_first);
-	bfun_t cpyctor = type->_t_typecopy;
+	opt_assign_copy_t cpyctor = type->opt_assign_copy;
   _byte_t* e = it_end->_t_pos;
   _byte_t* first = it_first->_t_pos;
 
@@ -509,10 +495,9 @@ void fill(forward_iterator_t * it_first, forward_iterator_t * it_end, void * val
 		default:
 			if (cpyctor)
 			{ // heap-allocation inside this struct
-				bool is_copy_assign = true;
 				size_t tsize = type->_t_typesize;
 				for (; first != e; first += tsize)
-					cpyctor(first, val, &is_copy_assign);
+					cpyctor(first, val);
 			}
 			else
 			{ // pod struct
@@ -530,10 +515,9 @@ void fill(forward_iterator_t * it_first, forward_iterator_t * it_end, void * val
 		iterator_equal_t equal = _ITERATOR_META_TYPE(it_first)->_t_iterator_funs->iterator_equal;
 		if (cpyctor)
 		{
-			bool assign = true;
 			while (!equal(it_first, it_end))
 			{
-				cpyctor(dref(it_first), val, &assign);
+				cpyctor(dref(it_first), val);
 				next(it_first);
 			}
 		}

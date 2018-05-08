@@ -6,18 +6,18 @@ bool cstl_equal(input_iterator_t* first1, input_iterator_t* last1, input_iterato
   assert(iterator_is_valid(first1) && iterator_is_valid(last1) && iterator_is_valid(first2));
   assert(iterator_same_elem_type(first1, last1) && iterator_same_elem_type(first1, first2));
   _byte_t *d, *s;
-  char ret;
   iterator_pre_t from_next = _ITERATOR_META_TYPE(first1)->_t_iterator_funs->iterator_next;
   iterator_dref_t from_dref = _ITERATOR_META_TYPE(first1)->_t_iterator_funs->iterator_dref;
   iterator_equal_t frome_equal = _ITERATOR_META_TYPE(first1)->_t_iterator_funs->iterator_equal;
   iterator_pre_t dest_next = _ITERATOR_META_TYPE(first2)->_t_iterator_funs->iterator_next;
   iterator_dref_t dest_dref = _ITERATOR_META_TYPE(first2)->_t_iterator_funs->iterator_dref;
-  bfun_t less = _ITERATOR_TYPE_INFO_TYPE(first2)->_t_typeless;
+  compare_t comparor = _ITERATOR_TYPE_INFO_TYPE(first2)->compare;
+  int ret;
   for (; !frome_equal(first1, last1); from_next(first1), dest_next(first2))
   {
     s = from_dref(first1);
     d = dest_dref(first2);
-    less(s, d, &ret);
+    ret = comparor(s, d);
     if (ret != 0)
       return false;
   }

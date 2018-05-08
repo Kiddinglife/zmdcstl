@@ -75,14 +75,14 @@ extern "C"
 	/// Copy-constructs the elements in the destination range with the given input value.
 	/// Returns void. It wouldn't be useful to return the end of the destination range,
 	/// as that is the same as the 'last' input parameter.
-	extern void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last, const void* value);
+	extern void uninitialized_fill(forward_iterator_t* first, forward_iterator_t* last, void* value);
 
 	/// uninitialized_fill_n
 	///
 	/// Copy-constructs the range of [first, first + n) with the given input value.
 	/// Returns void as per the C++ standard, though returning the end input iterator
 	/// value may be of use.
-	extern void uninitialized_fill_n(forward_iterator_t* destination, const void* value, int n);
+	extern void uninitialized_fill_n(forward_iterator_t* destination, void* value, int n);
 
 	/// uninitialized_copy
 	///

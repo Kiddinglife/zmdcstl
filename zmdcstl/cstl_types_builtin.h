@@ -25,72 +25,21 @@ extern void _type_destroy_default(const void* cpv_input, void* pv_output);
  */
 /* c builtin */
 /* char */
-extern void _type_less_char(const void* cpv_first, const void* cpv_second, void* pv_output);
-/* unsigned char */
-extern void _type_init_uchar(const void* cpv_input, void* pv_output);
-extern void _type_copy_uchar(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_uchar(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_uchar(const void* cpv_input, void* pv_output);
-/* short */
-extern void _type_init_short(const void* cpv_input, void* pv_output);
-extern void _type_copy_short(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_short(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_short(const void* cpv_input, void* pv_output);
-/* unsigned short */
-extern void _type_init_ushort(const void* cpv_input, void* pv_output);
-extern void _type_copy_ushort(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_ushort(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_ushort(const void* cpv_input, void* pv_output);
-/* int */
-extern void _type_init_int(const void* cpv_input, void* pv_output);
-extern void _type_copy_int(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_int(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_int(const void* cpv_input, void* pv_output);
-/* unsigned int */
-extern void _type_init_uint(const void* cpv_input, void* pv_output);
-extern void _type_copy_uint(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_uint(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_uint(const void* cpv_input, void* pv_output);
-/* long */
-extern void _type_init_long(const void* cpv_input, void* pv_output);
-extern void _type_copy_long(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_long(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_long(const void* cpv_input, void* pv_output);
-/* unsigned long */
-extern void _type_init_ulong(const void* cpv_input, void* pv_output);
-extern void _type_copy_ulong(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_ulong(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_ulong(const void* cpv_input, void* pv_output);
-/* float */
-extern void _type_init_float(const void* cpv_input, void* pv_output);
-extern void _type_copy_float(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_float(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_float(const void* cpv_input, void* pv_output);
-/* double */
-extern void _type_init_double(const void* cpv_input, void* pv_output);
-extern void _type_copy_double(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_double(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_double(const void* cpv_input, void* pv_output);
-/* long double */
-extern void _type_init_long_double(const void* cpv_input, void* pv_output);
-extern void _type_copy_long_double(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_long_double(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_long_double(const void* cpv_input, void* pv_output);
-/* bool_t */
-extern void _type_init_cstl_bool(const void* cpv_input, void* pv_output);
-extern void _type_copy_cstl_bool(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_cstl_bool(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_cstl_bool(const void* cpv_input, void* pv_output);
-/* char* */
-extern void _type_init_cstr(const void* cpv_input, void* pv_output);
-extern void _type_copy_cstr(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_cstr(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_cstr(const void* cpv_input, void* pv_output);
-/* void* */
-extern void _type_init_pointer(const void* cpv_input, void* pv_output);
-extern void _type_copy_pointer(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_less_pointer(const void* cpv_first, const void* cpv_second, void* pv_output);
-extern void _type_destroy_pointer(const void* cpv_input, void* pv_output);
+#define declare_type_less_ctype(type) \
+extern int _type_less_##type(void* cpv_first, void* cpv_second);
+
+declare_type_less_ctype(int8_t);
+declare_type_less_ctype(uint8_t);
+declare_type_less_ctype(int16_t);
+declare_type_less_ctype(uint16_t);
+declare_type_less_ctype(int32_t);
+declare_type_less_ctype(uint32_t);
+declare_type_less_ctype(int64_t);
+declare_type_less_ctype(uint64_t);
+declare_type_less_ctype(float);
+declare_type_less_ctype(double);
+extern int _type_less_pointer(void* cpv_first, void* cpv_second);
+
 /* cstl container */
 /* vector_t */
 extern void _type_init_vector(const void* cpv_input, void* pv_output);
