@@ -35,80 +35,76 @@ static typeid_t user_defined_non_pod_id;
 
 static void func_init_user_defined_type_init_destroy_copy_less(void* in)
 {
-  ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int, 32);
-  //printf("init alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
-  memset(((user_defined_type_init_destroy_copy_less*) in)->b, 0, 32 * sizeof(int));
-  ((user_defined_type_init_destroy_copy_less*) in)->a = 32;
-  memset(((user_defined_type_init_destroy_copy_less*) in)->c, 0, 32);
+  user_defined_type_init_destroy_copy_less* dest = (user_defined_type_init_destroy_copy_less*) in;
+  dest->b = cstl_alloc(int, 32);
+  //printf("init alloc = %x\n", dest->b);
+  memset(dest->b, 0, 32 * sizeof(int));
+  dest->a = 32;
+  memset(dest->c, 0, 32);
 }
 static void func_ctor_copy_user_defined_type_init_destroy_copy_less(void* in, void* in_)
 {
   //assert(in != in_);
   if (in == in_)
     return;
-
-  ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int,
-      ((user_defined_type_init_destroy_copy_less* )in_)->a);
-  //printf("copy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->b, ((user_defined_type_init_destroy_copy_less*) in_)->b,
-      ((user_defined_type_init_destroy_copy_less*) in_)->a * sizeof(int));
-  ((user_defined_type_init_destroy_copy_less*) in)->a = ((user_defined_type_init_destroy_copy_less*) in_)->a;
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->c, ((user_defined_type_init_destroy_copy_less*) in_)->c,
-      32);
+  user_defined_type_init_destroy_copy_less* dest = (user_defined_type_init_destroy_copy_less*) in;
+  user_defined_type_init_destroy_copy_less* src = (user_defined_type_init_destroy_copy_less*) in_;
+  dest->b = cstl_alloc(int, src->a);
+  //printf("copy alloc = %x\n", dest->b);
+  cstl_memcpy(dest->b, src->b, src->a * sizeof(int));
+  dest->a = src->a;
+  cstl_memcpy(dest->c, src->c, 32);
 }
 static void func_ctor_move_user_defined_type_init_destroy_copy_less(void* in, void* in_)
 {
   //assert(in != in_);
   if (in == in_)
     return;
-  ((user_defined_type_init_destroy_copy_less*) in_)->b = 0;
-
-  ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int,
-      ((user_defined_type_init_destroy_copy_less* )in_)->a);
-  //printf("copy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->b, ((user_defined_type_init_destroy_copy_less*) in_)->b,
-      ((user_defined_type_init_destroy_copy_less*) in_)->a * sizeof(int));
-  ((user_defined_type_init_destroy_copy_less*) in)->a = ((user_defined_type_init_destroy_copy_less*) in_)->a;
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->c, ((user_defined_type_init_destroy_copy_less*) in_)->c,
-      32);
+  user_defined_type_init_destroy_copy_less* dest = (user_defined_type_init_destroy_copy_less*) in;
+  user_defined_type_init_destroy_copy_less* src = (user_defined_type_init_destroy_copy_less*) in_;
+  src->b = 0;
+  dest->b = cstl_alloc(int, src->a);
+  //printf("copy alloc = %x\n", dest->b);
+  cstl_memcpy(dest->b, src->b, src->a * sizeof(int));
+  dest->a = src->a;
+  cstl_memcpy(dest->c, src->c, 32);
 }
 static void func_opt_assign_copy_user_defined_type_init_destroy_copy_less(void* in, void* in_)
 {
   //assert(in != in_);
   if (in == in_)
     return;
-
-  cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
-  ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int,
-      ((user_defined_type_init_destroy_copy_less* )in_)->a);
-  //printf("copy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->b, ((user_defined_type_init_destroy_copy_less*) in_)->b,
-      ((user_defined_type_init_destroy_copy_less*) in_)->a * sizeof(int));
-  ((user_defined_type_init_destroy_copy_less*) in)->a = ((user_defined_type_init_destroy_copy_less*) in_)->a;
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->c, ((user_defined_type_init_destroy_copy_less*) in_)->c,
-      32);
+  user_defined_type_init_destroy_copy_less* dest = (user_defined_type_init_destroy_copy_less*) in;
+  user_defined_type_init_destroy_copy_less* src = (user_defined_type_init_destroy_copy_less*) in_;
+  cstl_free(dest->b);
+  dest->b = cstl_alloc(int, src->a);
+  //printf("copy alloc = %x\n", dest->b);
+  cstl_memcpy(dest->b, src->b, src->a * sizeof(int));
+  dest->a = src->a;
+  cstl_memcpy(dest->c, src->c, 32);
 }
 static void func_opt_assign_move_user_defined_type_init_destroy_copy_less(void* in, void* in_)
 {
   //assert(in != in_);
   if (in == in_)
     return;
-  ((user_defined_type_init_destroy_copy_less*) in_)->b = 0;
 
-  cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
-  ((user_defined_type_init_destroy_copy_less*) in)->b = cstl_alloc(int,
-      ((user_defined_type_init_destroy_copy_less* )in_)->a);
-  //printf("copy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->b, ((user_defined_type_init_destroy_copy_less*) in_)->b,
-      ((user_defined_type_init_destroy_copy_less*) in_)->a * sizeof(int));
-  ((user_defined_type_init_destroy_copy_less*) in)->a = ((user_defined_type_init_destroy_copy_less*) in_)->a;
-  cstl_memcpy(((user_defined_type_init_destroy_copy_less*) in)->c, ((user_defined_type_init_destroy_copy_less*) in_)->c,
-      32);
+  user_defined_type_init_destroy_copy_less* dest = (user_defined_type_init_destroy_copy_less*) in;
+  user_defined_type_init_destroy_copy_less* src = (user_defined_type_init_destroy_copy_less*) in_;
+
+  src->b = 0;
+  cstl_free(dest->b);
+  dest->b = cstl_alloc(int, src->a);
+  //printf("copy alloc = %x\n", dest->b);
+  cstl_memcpy(dest->b, src->b, src->a * sizeof(int));
+  dest->a = src->a;
+  cstl_memcpy(dest->c, src->c, 32);
 }
 static void func_destroy_user_defined_type_init_destroy_copy_less(void* in)
 {
-  //printf("destroy alloc = %x\n", ((user_defined_type_init_destroy_copy_less*) in)->b);
-  cstl_free(((user_defined_type_init_destroy_copy_less* )in)->b);
+  //printf("destroy alloc = %x\n", dest->b);
+  user_defined_type_init_destroy_copy_less* dest = (user_defined_type_init_destroy_copy_less*) in;
+  cstl_free(dest->b);
 }
 static int func_less_user_defined_type_init_destroy_copy_less(void* in, void* in_)
 {
@@ -908,6 +904,52 @@ TEST test_vector_reserve()
   cstl_free(firstv.b);
   PASS();
 }
+
+TEST test_vector_insert_v_copy()
+{
+  user_defined_type_init_destroy_copy_less firstv;
+  firstv.a = 1;
+  firstv.b = cstl_alloc(int, firstv.a);
+  firstv.c[0] = 100;
+  user_defined_type_init_destroy_copy_less* firstvp = &firstv;
+
+  // given empty vector
+  vector_t pvec_vector;
+  vector_ctor(&pvec_vector, 1,user_defined_non_pod_id);
+  // when insert at front
+  iterator_t begin;
+  vector_begin(&pvec_vector, &begin);
+  vector_insert_v_copy(&begin, (void**) &firstvp);
+  // size should equal to 1
+  ASSERT_EQ(vector_size(&pvec_vector), 1);
+  ASSERT_EQ(pvec_vector._pby_finish, pvec_vector._pby_endofstorage);
+  // when insert at front again
+  firstv.a = 2;
+  vector_begin(&pvec_vector, &begin);
+  vector_insert_v_copy(&begin, (void**) &firstvp);
+  // size should equal to 2
+  ASSERT_EQ_FMT(2, (int)vector_size(&pvec_vector), "%d");
+  // first ele is 1 and second is 0
+  firstvp = (user_defined_type_init_destroy_copy_less*) vector_at(&pvec_vector, 0);
+  ASSERT_EQ_FMT(2,firstvp->a, "%d");
+  firstvp = (user_defined_type_init_destroy_copy_less*) vector_at(&pvec_vector, 1);
+  ASSERT_EQ_FMT(1, firstvp->a, "%d");
+  // when insert at end
+  firstv.a = 3;
+  firstvp = &firstv; // reset ptr to point to firstv
+  iterator_t end;
+  vector_end(&pvec_vector, &end);
+  vector_insert_v_copy(&end, (void**) &firstvp);
+  // size should equal to 3
+  ASSERT_EQ_FMT(3, (int)vector_size(&pvec_vector), "%d");
+  firstvp = (user_defined_type_init_destroy_copy_less*) vector_at(&pvec_vector, 2);
+  ASSERT_EQ_FMT(3,firstvp->a, "%d");
+
+  cstl_free(firstv.b);
+  vector_dtor(&pvec_vector);
+  PASS();
+}
+
 SUITE(test_vector)
 {
   RUN_TEST(test_vector_ctor_scalar_type);
@@ -933,6 +975,7 @@ SUITE(test_vector)
   RUN_TEST(test_vector_erase_range);
   RUN_TEST(test_vector_swap);
   RUN_TEST(test_vector_reserve);
+  RUN_TEST(test_vector_insert_v_copy);
 }
 
 TEST test_union_ptr_as_buf(void)
