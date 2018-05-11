@@ -62,12 +62,13 @@ static void func_ctor_move_user_defined_type_init_destroy_copy_less(void* in, vo
     return;
   user_defined_type_init_destroy_copy_less* dest = (user_defined_type_init_destroy_copy_less*) in;
   user_defined_type_init_destroy_copy_less* src = (user_defined_type_init_destroy_copy_less*) in_;
-  src->b = 0;
   dest->b = cstl_alloc(int, src->a);
   //printf("copy alloc = %x\n", dest->b);
   cstl_memcpy(dest->b, src->b, src->a * sizeof(int));
   dest->a = src->a;
   cstl_memcpy(dest->c, src->c, 32);
+
+  src->b = 0;
 }
 static void func_opt_assign_copy_user_defined_type_init_destroy_copy_less(void* in, void* in_)
 {
@@ -92,13 +93,14 @@ static void func_opt_assign_move_user_defined_type_init_destroy_copy_less(void* 
   user_defined_type_init_destroy_copy_less* dest = (user_defined_type_init_destroy_copy_less*) in;
   user_defined_type_init_destroy_copy_less* src = (user_defined_type_init_destroy_copy_less*) in_;
 
-  src->b = 0;
   cstl_free(dest->b);
   dest->b = cstl_alloc(int, src->a);
   //printf("copy alloc = %x\n", dest->b);
   cstl_memcpy(dest->b, src->b, src->a * sizeof(int));
   dest->a = src->a;
   cstl_memcpy(dest->c, src->c, 32);
+
+  src->b = 0;
 }
 static void func_destroy_user_defined_type_init_destroy_copy_less(void* in)
 {
@@ -912,10 +914,11 @@ TEST test_vector_insert_v_copy()
   firstv.b = cstl_alloc(int, firstv.a);
   firstv.c[0] = 100;
   user_defined_type_init_destroy_copy_less* firstvp = &firstv;
+  //user_defined_type_init_destroy_copy_less* tmp;
 
   // given empty vector
   vector_t pvec_vector;
-  vector_ctor(&pvec_vector, 1,user_defined_non_pod_id);
+  vector_ctor(&pvec_vector, 1, user_defined_non_pod_id);
   // when insert at front
   iterator_t begin;
   vector_begin(&pvec_vector, &begin);
@@ -923,6 +926,12 @@ TEST test_vector_insert_v_copy()
   // size should equal to 1
   ASSERT_EQ(vector_size(&pvec_vector), 1);
   ASSERT_EQ(pvec_vector._pby_finish, pvec_vector._pby_endofstorage);
+//  for (int i = 0; i < vector_size(&pvec_vector); i++)
+//  {
+//    tmp = (user_defined_type_init_destroy_copy_less*) vector_at(&pvec_vector, i);
+//    printf("int a = %d, b = %p\n", tmp->a, tmp->b);
+//  }
+//  printf("\n");
   // when insert at front again
   firstv.a = 2;
   vector_begin(&pvec_vector, &begin);
@@ -942,10 +951,108 @@ TEST test_vector_insert_v_copy()
   vector_insert_v_copy(&end, (void**) &firstvp);
   // size should equal to 3
   ASSERT_EQ_FMT(3, (int)vector_size(&pvec_vector), "%d");
-  firstvp = (user_defined_type_init_destroy_copy_less*) vector_at(&pvec_vector, 2);
+  firstvp = (user_defined_type_init_destroy_copy_less*)(end._t_pos);
   ASSERT_EQ_FMT(3,firstvp->a, "%d");
+  firstvp = &firstv; // reset ptr to point to firstv
+
+  // given full vector
+  vector_t pvec_vector1;
+  vector_ctor_n(&pvec_vector1, 10000, 1, user_defined_non_pod_id);
+  firstv.a = 10000;
+  vector_begin(&pvec_vector1, &begin);
+  vector_insert_v_copy(&begin, (void**) &firstvp);
+  // size should equal to 2
+  ASSERT_EQ_FMT(10001, (int)vector_size(&pvec_vector1), "%d");
+  // first ele is 1 and second is 0
+  firstvp = (user_defined_type_init_destroy_copy_less*)(begin._t_pos);
+  ASSERT_EQ_FMT(10000,firstvp->a, "%d");
 
   cstl_free(firstv.b);
+  vector_dtor(&pvec_vector);
+  vector_dtor(&pvec_vector1);
+  PASS();
+}
+
+TEST test_vector_insert_v_move()
+{
+  user_defined_type_init_destroy_copy_less firstv;
+  firstv.a = 1;
+  firstv.b = cstl_alloc(int, firstv.a);
+  firstv.c[0] = 100;
+  user_defined_type_init_destroy_copy_less* firstvp = &firstv;
+
+  // given empty vector
+  vector_t pvec_vector;
+  vector_ctor(&pvec_vector, 1, user_defined_non_pod_id);
+
+  // when insert at front
+  iterator_t begin;
+  vector_begin(&pvec_vector, &begin);
+  vector_insert_v_move(&begin, (void**) &firstvp);
+  // size should equal to 1
+  ASSERT_EQ(vector_size(&pvec_vector), 1);
+  ASSERT_EQ(pvec_vector._pby_finish, pvec_vector._pby_endofstorage);
+  firstvp = &firstv; // reset ptr to point to firstv
+
+  // when insert at front again
+  firstv.a = 2;
+  firstv.b = cstl_alloc(int, firstv.a);
+  vector_begin(&pvec_vector, &begin);
+  vector_insert_v_move(&begin, (void**) &firstvp);
+  // size should equal to 2
+  ASSERT_EQ_FMT(2, (int)vector_size(&pvec_vector), "%d");
+  // first ele is 1 and second is 0
+  firstvp = (user_defined_type_init_destroy_copy_less*) vector_at(&pvec_vector, 0);
+  ASSERT_EQ_FMT(2,firstvp->a, "%d");
+  firstvp = (user_defined_type_init_destroy_copy_less*) vector_at(&pvec_vector, 1);
+  ASSERT_EQ_FMT(1, firstvp->a, "%d");
+
+  // when insert at end
+  firstv.a = 3;
+  firstv.b = cstl_alloc(int, firstv.a);
+  firstvp = &firstv; // reset ptr to point to firstv
+  iterator_t end;
+  vector_end(&pvec_vector, &end);
+  vector_insert_v_move(&end, (void**) &firstvp);
+  // size should equal to 3
+  ASSERT_EQ_FMT(3, (int)vector_size(&pvec_vector), "%d");
+  firstvp = (user_defined_type_init_destroy_copy_less*)(end._t_pos);
+  ASSERT_EQ_FMT(3,firstvp->a, "%d");
+  firstvp = &firstv; // reset ptr to point to firstv
+  vector_dtor(&pvec_vector);
+
+  // given full vector
+  vector_t pvec_vector1;
+  vector_ctor_n(&pvec_vector1, 10000, 1, user_defined_non_pod_id);
+  firstv.a = 10000;
+  firstv.b = cstl_alloc(int, firstv.a);
+  //when insert at begin
+  vector_begin(&pvec_vector1, &begin);
+  vector_insert_v_move(&begin, (void**) &firstvp);
+  // size should equal to 2
+  ASSERT_EQ_FMT(10001, (int)vector_size(&pvec_vector1), "%d");
+  // first ele is 1 and second is 0
+  firstvp = (user_defined_type_init_destroy_copy_less*)(begin._t_pos);
+  ASSERT_EQ_FMT(10000,firstvp->a, "%d");
+  ASSERT_EQ(0, firstv.b);
+
+  // when inserted ele is from vecotr itself and before insertion position
+  iterator_t insertpos = begin;
+  vector_iterator_next_n(&insertpos, 100);
+  vector_insert_v_move(&insertpos, (void**)&begin._t_pos);
+  firstvp = (user_defined_type_init_destroy_copy_less*)(insertpos._t_pos);
+  ASSERT_EQ(10000, firstvp->a);
+  ASSERT_EQ_FMT(10002, (int)vector_size(&pvec_vector1), "%d");
+
+
+  // when inserted ele is from vecotr itself and after insertion position
+  vector_insert_v_move(&begin, (void**)&insertpos._t_pos);
+  firstvp = (user_defined_type_init_destroy_copy_less*)(begin._t_pos);
+  ASSERT_EQ(10000, firstvp->a);
+  ASSERT_EQ_FMT(10003, (int)vector_size(&pvec_vector1), "%d");
+  firstvp = (user_defined_type_init_destroy_copy_less*)(insertpos._t_pos);
+  ASSERT_EQ(0, firstvp->b);
+
   vector_dtor(&pvec_vector);
   PASS();
 }
@@ -954,7 +1061,6 @@ SUITE(test_vector)
 {
   RUN_TEST(test_vector_ctor_scalar_type);
   RUN_TEST(test_vector_ctor_n_scalar_type);
-
   RUN_TEST(test_vector_ctor_n_v_scalar_type);
   RUN_TEST(test_vector_ctor_vec_scalar_type);
   RUN_TEST(test_vector_ctor_range_scalar_type);
@@ -976,6 +1082,7 @@ SUITE(test_vector)
   RUN_TEST(test_vector_swap);
   RUN_TEST(test_vector_reserve);
   RUN_TEST(test_vector_insert_v_copy);
+  RUN_TEST(test_vector_insert_v_move);
 }
 
 TEST test_union_ptr_as_buf(void)

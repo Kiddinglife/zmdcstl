@@ -1210,32 +1210,17 @@ void vector_insert_range_copy(random_access_iterator_t* insertpos, input_iterato
           first->_t_pos += tsize;
           insertpos += tsize;
         }
-        _byte_t* dest = pvec->_pby_start + nPosSize;
-        while (pvec->_pby_start != dest)
-        {
-          ctor_copy(pNewEnd, pvec->_pby_start);
-          pvec->_pby_start += tsize;
-          pNewEnd += tsize;
-        }
-        pNewEnd += n;
-        while (dest != pvec->_pby_finish)
-        {
-          ctor_copy(pNewEnd, dest);
-          dest += tsize;
-          pNewEnd += tsize;
-        }
       }
       else
-      {
         memcpy(insertpos, first->_t_pos, n);
-        // move old eles to new buffer
-        pNewEnd = (_byte_t*) (memcpy(pNewData, pvec->_pby_start, nPosSize));
-        pNewEnd += tsize;
-        nPosSize = pvec->_pby_finish - destPosition;
-        pNewEnd = (_byte_t*) (memcpy(pNewEnd, destPosition, nPosSize));
-      }
+      // move old eles to new buffer
+      memcpy(pNewData, pvec->_pby_start, nPosSize);
+      pNewEnd += tsize + nPosSize;
+      nPosSize = pvec->_pby_finish - destPosition;
+      memcpy(pNewEnd, destPosition, nPosSize);
+      pNewEnd += nPosSize;
       // destruct old vec
-      destruct_vec(type, pvec->_pby_start, pvec->_pby_finish);
+      // destruct_vec(type, pvec->_pby_start, pvec->_pby_finish);
       cstl_free(pvec->_pby_start);
       //reset new vec
       pvec->_pby_start = pNewData;
@@ -1261,26 +1246,71 @@ void vector_insert_range_copy(random_access_iterator_t* insertpos, input_iterato
     else
     {
       n = (_ITERATOR_META_TYPE(first)->_t_iterator_funs->iterator_distance)(first, last) * tsize;
-      memmove(destPosition + n, destPosition, n);
-      if (ctor_copy)
+      if (n <= pvec->_pby_endofstorage - pvec->_pby_finish) // enough space
       {
-        while (!iterator_equal(first, last))
+        memmove(destPosition + n, destPosition, n);
+        if (ctor_copy)
         {
-          d = iterator_dref(first);
-          ctor_copy(destPosition, d);
-          iterator_next(first);
-          destPosition += tsize;
+          while (!iterator_equal(first, last))
+          {
+            d = iterator_dref(first);
+            ctor_copy(destPosition, d);
+            iterator_next(first);
+            destPosition += tsize;
+          }
+        }
+        else
+        {
+          while (!iterator_equal(first, last))
+          {
+            d = iterator_dref(first);
+            memcpy(destPosition, d, tsize);
+            iterator_next(first);
+            destPosition += tsize;
+          }
         }
       }
       else
       {
-        while (!iterator_equal(first, last))
+        const size_t newsize = get_new_capacity_(pvec->_pby_finish - pvec->_pby_start, tsize);
+        _byte_t* pNewData = cstl_alloc_ex_totaln(type->_t_typealign, newsize);
+        // move inserted eles to new buffer
+        size_t nPosSize = nbytes;
+        _byte_t* pNewEnd = pNewData;
+        _byte_t* insertpos = pNewData + nPosSize;
+        if (ctor_copy)
         {
-          d = iterator_dref(first);
-          memcpy(destPosition, d, tsize);
-          iterator_next(first);
-          destPosition += tsize;
+          while (!iterator_equal(first, last))
+          {
+            d = iterator_dref(first);
+            ctor_copy(insertpos, d);
+            iterator_next(first);
+            insertpos += tsize;
+          }
         }
+        else
+        {
+          while (!iterator_equal(first, last))
+          {
+            d = iterator_dref(first);
+            memcpy(insertpos, d, tsize);
+            iterator_next(first);
+            insertpos += tsize;
+          }
+        }
+        // move old eles to new buffer
+        memcpy(pNewData, pvec->_pby_start, nPosSize);
+        pNewEnd += tsize + nPosSize;
+        nPosSize = pvec->_pby_finish - destPosition;
+        memcpy(pNewEnd, destPosition, nPosSize);
+        pNewEnd += nPosSize;
+        // destruct old vec
+        // destruct_vec(type, pvec->_pby_start, pvec->_pby_finish);
+        cstl_free(pvec->_pby_start);
+        //reset new vec
+        pvec->_pby_start = pNewData;
+        pvec->_pby_finish = pNewEnd;
+        pvec->_pby_endofstorage = pNewData + newsize;
       }
     }
   }
@@ -1336,7 +1366,7 @@ void vector_insert_v_copy(random_access_iterator_t* first, void** v)
     memcpy(pNewEnd, destPosition, nPosSize);
     pNewEnd += nPosSize;
     // destruct old vec
-    destruct_vec(type, pvec->_pby_start, pvec->_pby_finish);
+    // destruct_vec(type, pvec->_pby_start, pvec->_pby_finish);
     cstl_free(pvec->_pby_start);
     //reset new vec
     pvec->_pby_start = pNewData;
@@ -1350,7 +1380,7 @@ void vector_insert_v_move(random_access_iterator_t* first, void** v)
   vector_t* pvec = ((vector_t*) first->_pt_container);
   type_t* type = pvec->meta._t_type;
   assert(vector_is_inited(pvec));
-  assert(pvec->_pby_start < pvec->_pby_finish);
+  assert(pvec->_pby_start <= pvec->_pby_finish);
   assert(first->_t_pos >= pvec->_pby_start && first->_t_pos <= pvec->_pby_finish);
   assert(type->ctor_move);
   assert(type->dtor); // havextor_move, must have dtor as there is heap allocation
@@ -1380,16 +1410,18 @@ void vector_insert_v_move(random_access_iterator_t* first, void** v)
   {
     const size_t newsize = get_new_capacity_(pvec->_pby_finish - pvec->_pby_start, tsize);
     _byte_t* pNewData = cstl_alloc_ex_totaln(type->_t_typealign, newsize);
+    _byte_t* pNewEnd = pNewData;
     // move inserted ele to new buffer
     size_t nPosSize = nbytes;
     type->ctor_move(pNewData + nPosSize, *value);
     // move old eles to new buffer
-    _byte_t* pNewEnd = (_byte_t*) (memcpy(pNewData, pvec->_pby_start, nPosSize));
-    pNewEnd += tsize;
+    memcpy(pNewData, pvec->_pby_start, nPosSize);
+    pNewEnd += tsize + nPosSize;
     nPosSize = pvec->_pby_finish - destPosition;
-    pNewEnd = (_byte_t*) (memcpy(pNewEnd, destPosition, nPosSize));
-    // destruct old vec
-    destruct_vec(type, pvec->_pby_start, pvec->_pby_finish);
+    memcpy(pNewEnd, destPosition, nPosSize);
+    pNewEnd += nPosSize;
+    // no need to destruct old vec elements, but destruct vec
+    //destruct_vec(type, pvec->_pby_start, pvec->_pby_finish);
     cstl_free(pvec->_pby_start);
     //reset new vec
     pvec->_pby_start = pNewData;
