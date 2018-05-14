@@ -951,7 +951,7 @@ TEST test_vector_insert_v_copy()
   vector_insert_v_copy(&end, (void**) &firstvp);
   // size should equal to 3
   ASSERT_EQ_FMT(3, (int)vector_size(&pvec_vector), "%d");
-  firstvp = (user_defined_type_init_destroy_copy_less*)(end._t_pos);
+  firstvp = (user_defined_type_init_destroy_copy_less*) (end._t_pos);
   ASSERT_EQ_FMT(3,firstvp->a, "%d");
   firstvp = &firstv; // reset ptr to point to firstv
 
@@ -964,7 +964,7 @@ TEST test_vector_insert_v_copy()
   // size should equal to 2
   ASSERT_EQ_FMT(10001, (int)vector_size(&pvec_vector1), "%d");
   // first ele is 1 and second is 0
-  firstvp = (user_defined_type_init_destroy_copy_less*)(begin._t_pos);
+  firstvp = (user_defined_type_init_destroy_copy_less*) (begin._t_pos);
   ASSERT_EQ_FMT(10000,firstvp->a, "%d");
 
   cstl_free(firstv.b);
@@ -1016,7 +1016,7 @@ TEST test_vector_insert_v_move()
   vector_insert_v_move(&end, (void**) &firstvp);
   // size should equal to 3
   ASSERT_EQ_FMT(3, (int)vector_size(&pvec_vector), "%d");
-  firstvp = (user_defined_type_init_destroy_copy_less*)(end._t_pos);
+  firstvp = (user_defined_type_init_destroy_copy_less*) (end._t_pos);
   ASSERT_EQ_FMT(3,firstvp->a, "%d");
   firstvp = &firstv; // reset ptr to point to firstv
   vector_dtor(&pvec_vector);
@@ -1032,25 +1032,24 @@ TEST test_vector_insert_v_move()
   // size should equal to 2
   ASSERT_EQ_FMT(10001, (int)vector_size(&pvec_vector1), "%d");
   // first ele is 1 and second is 0
-  firstvp = (user_defined_type_init_destroy_copy_less*)(begin._t_pos);
+  firstvp = (user_defined_type_init_destroy_copy_less*) (begin._t_pos);
   ASSERT_EQ_FMT(10000,firstvp->a, "%d");
   ASSERT_EQ(0, firstv.b);
 
   // when inserted ele is from vecotr itself and before insertion position
   iterator_t insertpos = begin;
   vector_iterator_next_n(&insertpos, 100);
-  vector_insert_v_move(&insertpos, (void**)&begin._t_pos);
-  firstvp = (user_defined_type_init_destroy_copy_less*)(insertpos._t_pos);
+  vector_insert_v_move(&insertpos, (void**) &begin._t_pos);
+  firstvp = (user_defined_type_init_destroy_copy_less*) (insertpos._t_pos);
   ASSERT_EQ(10000, firstvp->a);
   ASSERT_EQ_FMT(10002, (int)vector_size(&pvec_vector1), "%d");
 
-
   // when inserted ele is from vecotr itself and after insertion position
-  vector_insert_v_move(&begin, (void**)&insertpos._t_pos);
-  firstvp = (user_defined_type_init_destroy_copy_less*)(begin._t_pos);
+  vector_insert_v_move(&begin, (void**) &insertpos._t_pos);
+  firstvp = (user_defined_type_init_destroy_copy_less*) (begin._t_pos);
   ASSERT_EQ(10000, firstvp->a);
   ASSERT_EQ_FMT(10003, (int)vector_size(&pvec_vector1), "%d");
-  firstvp = (user_defined_type_init_destroy_copy_less*)(insertpos._t_pos);
+  firstvp = (user_defined_type_init_destroy_copy_less*) (insertpos._t_pos);
   ASSERT_EQ(0, firstvp->b);
 
   vector_dtor(&pvec_vector);
@@ -1106,7 +1105,6 @@ TEST test_union_ptr_as_buf(void)
   }
   PASS();
 }
-
 /* Add definitions that need to be in the test runner's main file. */
 GREATEST_MAIN_DEFS()
 ;
